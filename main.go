@@ -11,52 +11,52 @@ import (
 	"log"
 )
 
-type SystemDefinedEntity struct {
+type SystemWayModel struct {
 	gorm.Model
 	ID          string         `gorm:"type:text;primary_key"`
 	Name        string         `gorm:"type:text;not null"`
 	Description sql.NullString `gorm:"type:text"`
 }
 
-type UserDefinedWayEntity struct {
+type UserWayModel struct {
 	gorm.Model
-	ID          uuid.UUID      `gorm:"type:uuid;primary_key"`
+	ID          uuid.UUID      `gorm:"type:uuid;primary_key;default:uuid_generate_v4()"`
 	Name        string         `gorm:"type:text;not null"`
 	Description sql.NullString `gorm:"type:text"`
 }
 
-type UserTenantWayEntity struct {
-	UserDefinedWayEntity `gorm:"embedded"`
-	Tenant               Tenant `gorm:"foreignKey:Tenant"`
+type TenantWayModel struct {
+	UserWayModel `gorm:"embedded"`
+	Tenant       Tenant `gorm:"foreignKey:Tenant"`
 }
 
 type Tenant struct {
-	UserDefinedWayEntity `gorm:"embedded"`
+	UserWayModel `gorm:"embedded"`
 }
 
 type Application struct {
-	UserTenantWayEntity `gorm:"embedded"`
+	TenantWayModel `gorm:"embedded"`
 }
 
 type Profile struct {
-	UserTenantWayEntity `gorm:"embedded"`
+	TenantWayModel `gorm:"embedded"`
 }
 
 type RuleScope struct {
-	SystemDefinedEntity `gorm:"embedded"`
+	SystemWayModel `gorm:"embedded"`
 }
 
 type RuleType struct {
-	SystemDefinedEntity `gorm:"embedded"`
+	SystemWayModel `gorm:"embedded"`
 }
 
 type Rule struct {
-	UserTenantWayEntity `gorm:"embedded"`
-	RuleTypeID          string    `gorm:"type:text;not null"`
-	Type                RuleType  `gorm:"foreignKey:RuleTypeID"`
-	RuleScopeID         string    `gorm:"type:text;not null"`
-	Scope               RuleScope `gorm:"foreignKey:RuleScopeID"`
-	Data                string    `gorm:"type:jsonb;not null"`
+	TenantWayModel `gorm:"embedded"`
+	RuleTypeID     string    `gorm:"type:text;not null"`
+	Type           RuleType  `gorm:"foreignKey:RuleTypeID"`
+	RuleScopeID    string    `gorm:"type:text;not null"`
+	Scope          RuleScope `gorm:"foreignKey:RuleScopeID"`
+	Data           string    `gorm:"type:jsonb;not null"`
 }
 
 func main() {
