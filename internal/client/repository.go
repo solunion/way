@@ -9,23 +9,23 @@ import (
 
 //goland:noinspection GoNameStartsWithPackageName
 type ClientRepository struct {
-	DB *gorm.DB
+	db *gorm.DB
 }
 
 func (t ClientRepository) FindAll(Clients *[]Client) (db *gorm.DB) {
-	return t.DB.Find(&Clients)
+	return t.db.Find(&Clients)
 }
 
 func (t ClientRepository) FindOne(Client *Client, id uuid.UUID) *gorm.DB {
-	return t.DB.Where("id = @id", sql.Named("id", id)).Take(&Client)
+	return t.db.Where("id = @id", sql.Named("id", id)).Take(&Client)
 }
 
 func (t ClientRepository) Create(Client *Client) (db *gorm.DB) {
-	return t.DB.Create(Client)
+	return t.db.Create(Client)
 }
 
 func (t ClientRepository) Update(Client *Client) (db *gorm.DB) {
-	return t.DB.Updates(&Client)
+	return t.db.Updates(&Client)
 }
 
 func (t ClientRepository) Save(Client *Client) (db *gorm.DB) {
@@ -33,9 +33,9 @@ func (t ClientRepository) Save(Client *Client) (db *gorm.DB) {
 }
 
 func (t ClientRepository) Delete(id uuid.UUID) (db *gorm.DB) {
-	return t.DB.Delete(id)
+	return t.db.Delete(id)
 }
 
 func NewClientRepository(DB *gorm.DB) internal.CRUDRepository[Client, uuid.UUID] {
-	return &ClientRepository{DB: DB}
+	return &ClientRepository{db: DB}
 }

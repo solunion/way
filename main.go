@@ -7,17 +7,25 @@ import (
 	"github.com/solunion/way/internal/client"
 	"github.com/solunion/way/internal/rule"
 	"github.com/solunion/way/internal/tenant"
-	"gorm.io/gorm/clause"
+	"go.uber.org/fx"
+	"gorm.io/gorm"
 	"log"
 )
 
 func main() {
-	db, err := internal.DatabaseConnection()
+	//var db *gorm.DB
+	fx.New(
+		fx.Provide(internal.DatabaseConnection),
+		fx.Invoke(func(d *gorm.DB) {
+			myApp(d)
+		}),
+		//fx.Provide(myApp),
+	).Run()
 
-	if err != nil {
-		log.Fatal(err)
-	}
+}
 
+func myApp(db *gorm.DB) {
+	log.Println(db)
 	var tenants []tenant.Tenant
 
 	var tenantRepository = tenant.NewTenantRepository(db)
@@ -31,18 +39,23 @@ func main() {
 	result = tenantRepository.FindOne(&tenantModel, uuid.MustParse("caa69a15-67b9-4853-9abf-3ead7a53bdfc"))
 
 	fmt.Printf("Row affected: %d, Error: %s\n", result.RowsAffected, result.Error)
-	fmt.Printf("Client: %v\n", tenants)
+	fmt.Printf("Tenant: %v\n", tenantModel)
 
 	var clients []client.Client
-	db.Debug().Find(&clients)
+	var clientRepository = client.NewClientRepository(db)
+	result = clientRepository.FindAll(&clients)
+	fmt.Printf("Row affected: %d, Error: %s\n", result.RowsAffected, result.Error)
+	fmt.Printf("Clients: %v\n", clients)
 
-	var ruleTypes []rule.RuleType
-	db.Debug().Find(&ruleTypes)
-	fmt.Printf("Rule Types: %+v\n", ruleTypes)
+	//var ruleTypes []rule.RuleType
+	//db.Debug().Find(&ruleTypes)
+	//fmt.Printf("Rule Types: %+v\n", ruleTypes)
 
 	var rules []rule.Rule
-
-	db.Debug().Preload(clause.Associations).Find(&rules)
+	var ruleRepository = rule.NewRuleRepository(db)
+	result = ruleRepository.FindAll(&rules)
+	fmt.Printf("Row affected: %d, Error: %s\n", result.RowsAffected, result.Error)
+	fmt.Printf("Rules: %v\n", rules)
 
 	for _, r := range rules {
 		fmt.Printf("Rule[%q]: name=%q, description=%#v, ruleType={ name: %q }, ruleScope={ name: %q }, tenantModel={ name:%q }\n",

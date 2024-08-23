@@ -9,23 +9,23 @@ import (
 
 //goland:noinspection GoNameStartsWithPackageName
 type ProfileRepository struct {
-	DB *gorm.DB
+	db *gorm.DB
 }
 
 func (t ProfileRepository) FindAll(Profiles *[]Profile) (db *gorm.DB) {
-	return t.DB.Find(&Profiles)
+	return t.db.Find(&Profiles)
 }
 
 func (t ProfileRepository) FindOne(Profile *Profile, id uuid.UUID) *gorm.DB {
-	return t.DB.Where("id = @id", sql.Named("id", id)).Take(&Profile)
+	return t.db.Where("id = @id", sql.Named("id", id)).Take(&Profile)
 }
 
 func (t ProfileRepository) Create(Profile *Profile) (db *gorm.DB) {
-	return t.DB.Create(Profile)
+	return t.db.Create(Profile)
 }
 
 func (t ProfileRepository) Update(Profile *Profile) (db *gorm.DB) {
-	return t.DB.Updates(&Profile)
+	return t.db.Updates(&Profile)
 }
 
 func (t ProfileRepository) Save(Profile *Profile) (db *gorm.DB) {
@@ -33,9 +33,9 @@ func (t ProfileRepository) Save(Profile *Profile) (db *gorm.DB) {
 }
 
 func (t ProfileRepository) Delete(id uuid.UUID) (db *gorm.DB) {
-	return t.DB.Delete(id)
+	return t.db.Delete(id)
 }
 
 func NewProfileRepository(DB *gorm.DB) internal.CRUDRepository[Profile, uuid.UUID] {
-	return &ProfileRepository{DB: DB}
+	return &ProfileRepository{db: DB}
 }

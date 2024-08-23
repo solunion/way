@@ -12,10 +12,14 @@ import (
 )
 
 func DatabaseConnection() (*gorm.DB, error) {
+	var db *gorm.DB
+
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		return nil, errors.New(fmt.Sprintf("error loading .env file: %s", err))
 	}
+	log.Printf(".env file loaded")
+
 	port, err := strconv.Atoi(os.Getenv("DATABASE_PORT"))
 
 	if err != nil {
@@ -33,7 +37,11 @@ func DatabaseConnection() (*gorm.DB, error) {
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s", host, user, password, name, port, sslMode, timeZone)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
-	return db, err
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("failed to open db connection: %s", err))
+	}
+
+	return db, nil
 }
