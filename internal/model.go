@@ -19,3 +19,32 @@ type UserModel struct {
 	Name        string         `gorm:"type:text;not null"`
 	Description sql.NullString `gorm:"type:text"`
 }
+
+type DatabaseConfig struct {
+	Host     string
+	Port     int
+	User     string
+	Pass     string
+	Name     string
+	SSLMode  string
+	TimeZone string
+}
+
+type Config interface {
+	DB() *DatabaseConfig
+}
+
+type WayConfig struct {
+	Database DatabaseConfig
+}
+
+func (w WayConfig) DB() *DatabaseConfig {
+
+	return &w.Database
+}
+
+func NewConfiguration() *WayConfig {
+	return &WayConfig{
+		Database: DatabaseConfig{},
+	}
+}
