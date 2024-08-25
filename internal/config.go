@@ -20,13 +20,13 @@ func DatabaseConnection(lf fx.Lifecycle, config Config) (*gorm.DB, error) {
 	fmt.Println(config)
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s",
-		config.DB().Host,
-		config.DB().User,
-		config.DB().Pass,
-		config.DB().Name,
-		config.DB().Port,
-		config.DB().SSLMode,
-		config.DB().TimeZone)
+		config.Database().Host,
+		config.Database().User,
+		config.Database().Pass,
+		config.Database().Name,
+		config.Database().Port,
+		config.Database().SSLMode,
+		config.Database().TimeZone)
 
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
@@ -69,13 +69,13 @@ func InitConfiguration() (*WayConfig, error) {
 		return nil, errors.New(fmt.Sprintf("DATABASE_PORT env variable not set or has invalid value: %q", os.Getenv("DATABASE_PORT")))
 	}
 
-	config.Database.Host = os.Getenv("DATABASE_HOST")
-	config.Database.Port = port
-	config.Database.User = os.Getenv("DATABASE_USER")
-	config.Database.Pass = os.Getenv("DATABASE_PASSWORD")
-	config.Database.Name = os.Getenv("DATABASE_NAME")
-	config.Database.SSLMode = os.Getenv("DATABASE_SSL_MODE")
-	config.Database.TimeZone = os.Getenv("DATABASE_TIMEZONE")
+	config.DB.Host = os.Getenv("DATABASE_HOST")
+	config.DB.Port = port
+	config.DB.User = os.Getenv("DATABASE_USER")
+	config.DB.Pass = os.Getenv("DATABASE_PASSWORD")
+	config.DB.Name = os.Getenv("DATABASE_NAME")
+	config.DB.SSLMode = os.Getenv("DATABASE_SSL_MODE")
+	config.DB.TimeZone = os.Getenv("DATABASE_TIMEZONE")
 
 	return config, nil
 }

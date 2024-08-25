@@ -31,20 +31,20 @@ type DatabaseConfig struct {
 }
 
 type Config interface {
-	DB() *DatabaseConfig
+	Database() *DatabaseConfig
 }
 
 type WayConfig struct {
-	Database DatabaseConfig
+	DB DatabaseConfig
 }
 
-func (w WayConfig) DB() *DatabaseConfig {
+func (w WayConfig) Database() *DatabaseConfig {
 
-	return &w.Database
+	return &w.DB
 }
 
 func NewConfiguration() *WayConfig {
 	return &WayConfig{
-		Database: DatabaseConfig{},
+		DB: DatabaseConfig{},
 	}
 }
