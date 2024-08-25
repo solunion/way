@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"github.com/joho/godotenv"
@@ -13,46 +12,15 @@ import (
 	"strconv"
 )
 
-func DatabaseConnection(lf fx.Lifecycle, config Config) (*gorm.DB, error) {
-	var db *gorm.DB
-	var err error
-
-	fmt.Println(config)
-
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s",
-		config.Database().Host,
-		config.Database().User,
-		config.Database().Pass,
-		config.Database().Name,
-		config.Database().Port,
-		config.Database().SSLMode,
-		config.Database().TimeZone)
-
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-
-	if err != nil {
-		log.Fatal(err)
-		return nil, err
-	}
-
-	lf.Append(
-		fx.Hook{
-			OnStart: func(ctx context.Context) error {
-				db.WithContext(ctx)
-				return nil
-			},
-			OnStop: func(ctx context.Context) error {
-				sqlDB, err := db.DB()
-				if err != nil {
-					return err
-				}
-				return sqlDB.Close()
-			},
-		},
-	)
-
-	return db, nil
-}
+var Module = fx.Module("config",
+	fx.Provide(
+		fx.Annotate(
+			InitConfiguration,
+			fx.As(new(Config)),
+		),
+	),
+	fx.Provide(DatabaseConnection),
+)
 
 func InitConfiguration() (*WayConfig, error) {
 	config := NewConfiguration()
@@ -78,4 +46,20 @@ func InitConfiguration() (*WayConfig, error) {
 	config.DB.TimeZone = os.Getenv("DATABASE_TIMEZONE")
 
 	return config, nil
+}
+
+func DatabaseConnection(config Config) (*gorm.DB, error) {
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s",
+		config.Database().Host,
+		config.Database().User,
+		config.Database().Pass,
+		config.Database().Name,
+		config.Database().Port,
+		config.Database().SSLMode,
+		config.Database().TimeZone,
+	)
+
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
+	return db, err
 }
