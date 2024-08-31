@@ -8,34 +8,38 @@ import (
 )
 
 //goland:noinspection GoNameStartsWithPackageName
-type ProfileRepository struct {
+type ProfileRepository interface {
+	internal.CRUDRepository[Profile, uuid.UUID]
+}
+
+type profileRepository struct {
 	db *gorm.DB
 }
 
-func (t ProfileRepository) FindAll(Profiles *[]Profile) (db *gorm.DB) {
+func (t profileRepository) FindAll(Profiles *[]Profile) (db *gorm.DB) {
 	return t.db.Find(&Profiles)
 }
 
-func (t ProfileRepository) FindOne(Profile *Profile, id uuid.UUID) *gorm.DB {
+func (t profileRepository) FindOne(Profile *Profile, id uuid.UUID) *gorm.DB {
 	return t.db.Where("id = @id", sql.Named("id", id)).Take(&Profile)
 }
 
-func (t ProfileRepository) Create(Profile *Profile) (db *gorm.DB) {
+func (t profileRepository) Create(Profile *Profile) (db *gorm.DB) {
 	return t.db.Create(Profile)
 }
 
-func (t ProfileRepository) Update(Profile *Profile) (db *gorm.DB) {
+func (t profileRepository) Update(Profile *Profile) (db *gorm.DB) {
 	return t.db.Updates(&Profile)
 }
 
-func (t ProfileRepository) Save(Profile *Profile) (db *gorm.DB) {
+func (t profileRepository) Save(Profile *Profile) (db *gorm.DB) {
 	return t.Save(Profile)
 }
 
-func (t ProfileRepository) Delete(id uuid.UUID) (db *gorm.DB) {
+func (t profileRepository) Delete(id uuid.UUID) (db *gorm.DB) {
 	return t.db.Delete(id)
 }
 
-func NewProfileRepository(DB *gorm.DB) internal.CRUDRepository[Profile, uuid.UUID] {
-	return &ProfileRepository{db: DB}
+func newProfileRepository(DB *gorm.DB) *profileRepository {
+	return &profileRepository{db: DB}
 }

@@ -9,34 +9,38 @@ import (
 )
 
 //goland:noinspection GoNameStartsWithPackageName
-type RuleRepository struct {
+type RuleRepository interface {
+	internal.CRUDRepository[Rule, uuid.UUID]
+}
+
+type ruleRepository struct {
 	db *gorm.DB
 }
 
-func (t RuleRepository) FindAll(Rules *[]Rule) (db *gorm.DB) {
+func (t ruleRepository) FindAll(Rules *[]Rule) (db *gorm.DB) {
 	return t.db.Preload(clause.Associations).Find(&Rules)
 }
 
-func (t RuleRepository) FindOne(Rule *Rule, id uuid.UUID) *gorm.DB {
+func (t ruleRepository) FindOne(Rule *Rule, id uuid.UUID) *gorm.DB {
 	return t.db.Preload(clause.Associations).Where("id = @id", sql.Named("id", id)).Take(&Rule)
 }
 
-func (t RuleRepository) Create(Rule *Rule) (db *gorm.DB) {
+func (t ruleRepository) Create(Rule *Rule) (db *gorm.DB) {
 	return t.db.Create(Rule)
 }
 
-func (t RuleRepository) Update(Rule *Rule) (db *gorm.DB) {
+func (t ruleRepository) Update(Rule *Rule) (db *gorm.DB) {
 	return t.db.Updates(&Rule)
 }
 
-func (t RuleRepository) Save(Rule *Rule) (db *gorm.DB) {
+func (t ruleRepository) Save(Rule *Rule) (db *gorm.DB) {
 	return t.Save(Rule)
 }
 
-func (t RuleRepository) Delete(id uuid.UUID) (db *gorm.DB) {
+func (t ruleRepository) Delete(id uuid.UUID) (db *gorm.DB) {
 	return t.db.Delete(id)
 }
 
-func NewRuleRepository(DB *gorm.DB) internal.CRUDRepository[Rule, uuid.UUID] {
-	return &RuleRepository{db: DB}
+func newRuleRepository(DB *gorm.DB) *ruleRepository {
+	return &ruleRepository{db: DB}
 }

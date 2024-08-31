@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/google/uuid"
 	"github.com/solunion/way/internal"
 	"github.com/solunion/way/internal/client"
+	"github.com/solunion/way/internal/profile"
 	"github.com/solunion/way/internal/rule"
 	"github.com/solunion/way/internal/tenant"
 	"go.uber.org/fx"
@@ -15,36 +15,40 @@ import (
 func main() {
 	fx.New(
 		internal.Module,
+		client.Module,
+		profile.Module,
+		rule.Module,
+		tenant.Module,
 		fx.Invoke(myApp),
 	).Run()
 
 }
 
-func myApp(db *gorm.DB) {
+func myApp(db *gorm.DB,
+	tenantRepository tenant.TenantRepository,
+	clientRepository client.ClientRepository,
+	profileRepository profile.ProfileRepository,
+	ruleRepository rule.RuleRepository,
+) {
 	log.Println(db)
 	var tenants []tenant.Tenant
-
-	var tenantRepository = tenant.NewTenantRepository(db)
 
 	result := tenantRepository.FindAll(&tenants)
 
 	fmt.Printf("Row affected: %d, Error: %s\n", result.RowsAffected, result.Error)
 	fmt.Printf("Tenants: %v\n", tenants)
 
-	var tenantModel tenant.Tenant
-	result = tenantRepository.FindOne(&tenantModel, uuid.MustParse("caa69a15-67b9-4853-9abf-3ead7a53bdfc"))
-
-	fmt.Printf("Row affected: %d, Error: %s\n", result.RowsAffected, result.Error)
-	fmt.Printf("Tenant: %v\n", tenantModel)
-
 	var clients []client.Client
-	var clientRepository = client.NewClientRepository(db)
 	result = clientRepository.FindAll(&clients)
 	fmt.Printf("Row affected: %d, Error: %s\n", result.RowsAffected, result.Error)
 	fmt.Printf("Clients: %v\n", clients)
 
+	var profiles []profile.Profile
+	result = profileRepository.FindAll(&profiles)
+	fmt.Printf("Row affected: %d, Error: %s\n", result.RowsAffected, result.Error)
+	fmt.Printf("Profiles: %v\n", profiles)
+
 	var rules []rule.Rule
-	var ruleRepository = rule.NewRuleRepository(db)
 	result = ruleRepository.FindAll(&rules)
 	fmt.Printf("Row affected: %d, Error: %s\n", result.RowsAffected, result.Error)
 	fmt.Printf("Rules: %v\n", rules)
