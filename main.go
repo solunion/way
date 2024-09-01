@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/solunion/way/internal"
-	"github.com/solunion/way/internal/client"
 	"github.com/solunion/way/internal/profile"
 	"github.com/solunion/way/internal/rule"
 	"github.com/solunion/way/internal/tenant"
@@ -15,7 +14,6 @@ import (
 func main() {
 	fx.New(
 		internal.Module,
-		client.Module,
 		profile.Module,
 		rule.Module,
 		tenant.Module,
@@ -26,7 +24,6 @@ func main() {
 
 func myApp(db *gorm.DB,
 	tenantRepository tenant.TenantRepository,
-	clientRepository client.ClientRepository,
 	profileRepository profile.ProfileRepository,
 	ruleRepository rule.RuleRepository,
 ) {
@@ -37,11 +34,6 @@ func myApp(db *gorm.DB,
 
 	fmt.Printf("Row affected: %d, Error: %s\n", result.RowsAffected, result.Error)
 	fmt.Printf("Tenants: %v\n", tenants)
-
-	var clients []client.Client
-	result = clientRepository.FindAll(&clients)
-	fmt.Printf("Row affected: %d, Error: %s\n", result.RowsAffected, result.Error)
-	fmt.Printf("Clients: %v\n", clients)
 
 	var profiles []profile.Profile
 	result = profileRepository.FindAll(&profiles)
