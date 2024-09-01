@@ -3,12 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/solunion/way/internal"
+	"github.com/solunion/way/internal/application"
 	"github.com/solunion/way/internal/profile"
 	"github.com/solunion/way/internal/rule"
 	"github.com/solunion/way/internal/tenant"
 	"go.uber.org/fx"
-	"gorm.io/gorm"
-	"log"
 )
 
 func main() {
@@ -17,33 +16,35 @@ func main() {
 		profile.Module,
 		rule.Module,
 		tenant.Module,
+		application.Module,
 		fx.Invoke(myApp),
 	).Run()
 
 }
 
-func myApp(db *gorm.DB,
+func myApp(
 	tenantRepository tenant.TenantRepository,
 	profileRepository profile.ProfileRepository,
 	ruleRepository rule.RuleRepository,
+	applicationRepository application.ApplicationRepository,
 ) {
-	log.Println(db)
+	var applications []application.Application
+	result := applicationRepository.FindAll(&applications)
+	fmt.Printf("Row affected: %d, Error: %s, Applications: %v\n", result.RowsAffected, result.Error, applications)
+
 	var tenants []tenant.Tenant
 
-	result := tenantRepository.FindAll(&tenants)
+	result = tenantRepository.FindAll(&tenants)
 
-	fmt.Printf("Row affected: %d, Error: %s\n", result.RowsAffected, result.Error)
-	fmt.Printf("Tenants: %v\n", tenants)
+	fmt.Printf("Row affected: %d, Error: %s, Tenants: %v\n", result.RowsAffected, result.Error, tenants)
 
 	var profiles []profile.Profile
 	result = profileRepository.FindAll(&profiles)
-	fmt.Printf("Row affected: %d, Error: %s\n", result.RowsAffected, result.Error)
-	fmt.Printf("Profiles: %v\n", profiles)
+	fmt.Printf("Row affected: %d, Error: %s, Profiles: %v\n", result.RowsAffected, result.Error, profiles)
 
 	var rules []rule.Rule
 	result = ruleRepository.FindAll(&rules)
-	fmt.Printf("Row affected: %d, Error: %s\n", result.RowsAffected, result.Error)
-	fmt.Printf("Rules: %v\n", rules)
+	fmt.Printf("Row affected: %d, Error: %s, Rules: %v\n", result.RowsAffected, result.Error, rules)
 
 	for _, r := range rules {
 		fmt.Printf("Rule[%q]: name=%q, description=%#v, ruleType={ name: %q }, ruleScope={ name: %q }, tenantModel={ name:%q }\n",
