@@ -21,13 +21,13 @@ type UserModel struct {
 }
 
 type DatabaseConfig struct {
-	Host     string
-	Port     int
-	User     string
-	Pass     string
-	Name     string
-	SSLMode  string
-	TimeZone string
+	Host     string `mapstructure:"DATABASE_HOST"`
+	Port     int    `mapstructure:"DATABASE_PORT"`
+	User     string `mapstructure:"DATABASE_USER"`
+	Pass     string `mapstructure:"DATABASE_PASSWORD"`
+	Name     string `mapstructure:"DATABASE_NAME"`
+	SSLMode  string `mapstructure:"DATABASE_SSLMODE"`
+	TimeZone string `mapstructure:"DATABASE_TIMEZONE"`
 }
 
 type Config interface {
@@ -35,11 +35,10 @@ type Config interface {
 }
 
 type WayConfig struct {
-	DB DatabaseConfig
+	DB DatabaseConfig `mapstructure:",squash"`
 }
 
 func (w WayConfig) Database() *DatabaseConfig {
-
 	return &w.DB
 }
 

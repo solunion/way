@@ -3,13 +3,10 @@ package internal
 import (
 	"errors"
 	"fmt"
-	"github.com/joho/godotenv"
+	"github.com/spf13/viper"
 	"go.uber.org/fx"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
-	"os"
-	"strconv"
 )
 
 var Module = fx.Module("config",
@@ -25,25 +22,24 @@ var Module = fx.Module("config",
 func InitConfiguration() (*WayConfig, error) {
 	config := NewConfiguration()
 
-	err := godotenv.Load()
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("error loading .env file: %s", err))
+	viper.AddConfigPath(".")
+	viper.SetConfigType("env")
+	viper.SetConfigFile(".env")
+
+	viper.AutomaticEnv()
+
+	if err := viper.ReadInConfig(); err != nil {
+		var configFileNotFoundError viper.ConfigFileNotFoundError
+		if errors.As(err, &configFileNotFoundError) {
+			return nil, err
+		}
 	}
-	log.Printf(".env file loaded")
 
-	port, err := strconv.Atoi(os.Getenv("DATABASE_PORT"))
-
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("DATABASE_PORT env variable not set or has invalid value: %q", os.Getenv("DATABASE_PORT")))
+	if err := viper.Unmarshal(&config); err != nil {
+		return nil, err
 	}
 
-	config.DB.Host = os.Getenv("DATABASE_HOST")
-	config.DB.Port = port
-	config.DB.User = os.Getenv("DATABASE_USER")
-	config.DB.Pass = os.Getenv("DATABASE_PASSWORD")
-	config.DB.Name = os.Getenv("DATABASE_NAME")
-	config.DB.SSLMode = os.Getenv("DATABASE_SSL_MODE")
-	config.DB.TimeZone = os.Getenv("DATABASE_TIMEZONE")
+	fmt.Printf("Configuration loaded: %+v\n", config)
 
 	return config, nil
 }
