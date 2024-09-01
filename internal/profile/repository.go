@@ -16,30 +16,35 @@ type profileRepository struct {
 	db *gorm.DB
 }
 
-func (t profileRepository) FindAll(Profiles *[]Profile) (db *gorm.DB) {
-	return t.db.Find(&Profiles)
+func (r profileRepository) FindAll(profiles *[]Profile) (db *gorm.DB) {
+	return r.db.Find(&profiles)
 }
 
-func (t profileRepository) FindOne(Profile *Profile, id uuid.UUID) *gorm.DB {
-	return t.db.Where("id = @id", sql.Named("id", id)).Take(&Profile)
+func (r profileRepository) FindOne(profile *Profile, id uuid.UUID) *gorm.DB {
+	return r.db.Where("id = @id", sql.Named("id", id)).Take(&profile)
 }
 
-func (t profileRepository) Create(Profile *Profile) (db *gorm.DB) {
-	return t.db.Create(Profile)
+func (r profileRepository) Create(profile *Profile) (db *gorm.DB) {
+	return r.db.Create(profile)
 }
 
-func (t profileRepository) Update(Profile *Profile) (db *gorm.DB) {
-	return t.db.Updates(&Profile)
+func (r profileRepository) Update(profile *Profile) (db *gorm.DB) {
+	return r.db.Updates(&profile)
 }
 
-func (t profileRepository) Save(Profile *Profile) (db *gorm.DB) {
-	return t.Save(Profile)
+func (r profileRepository) Save(profile *Profile) (db *gorm.DB) {
+	return r.Save(profile)
 }
 
-func (t profileRepository) Delete(id uuid.UUID) (db *gorm.DB) {
-	return t.db.Delete(id)
+func (r profileRepository) Delete(id uuid.UUID) (db *gorm.DB) {
+	return r.db.Delete(id)
 }
 
-func newProfileRepository(DB *gorm.DB) *profileRepository {
-	return &profileRepository{db: DB}
+func newProfileRepository(db *gorm.DB) *profileRepository {
+	return &profileRepository{db: db}
 }
+
+// Interface checks
+var _ = interface {
+	ProfileRepository
+}(&profileRepository{})

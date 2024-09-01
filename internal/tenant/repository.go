@@ -16,30 +16,38 @@ type tenantRepository struct {
 	db *gorm.DB
 }
 
-func (t tenantRepository) FindAll(tenants *[]Tenant) (db *gorm.DB) {
-	return t.db.Find(&tenants)
+func (r tenantRepository) FindAll(tenants *[]Tenant) (db *gorm.DB) {
+	return r.db.Find(&tenants)
 }
 
-func (t tenantRepository) FindOne(tenant *Tenant, id uuid.UUID) *gorm.DB {
-	return t.db.Where("id = @id", sql.Named("id", id)).Take(&tenant)
+func (r tenantRepository) FindOne(tenant *Tenant, id uuid.UUID) *gorm.DB {
+	return r.db.Where("id = @id", sql.Named("id", id)).Take(&tenant)
 }
 
-func (t tenantRepository) Create(tenant *Tenant) (db *gorm.DB) {
-	return t.db.Create(tenant)
+func (r tenantRepository) Create(tenant *Tenant) (db *gorm.DB) {
+	return r.db.Create(tenant)
 }
 
-func (t tenantRepository) Update(tenant *Tenant) (db *gorm.DB) {
-	return t.db.Updates(&tenant)
+func (r tenantRepository) Update(tenant *Tenant) (db *gorm.DB) {
+	return r.db.Updates(&tenant)
 }
 
-func (t tenantRepository) Save(tenant *Tenant) (db *gorm.DB) {
-	return t.Save(tenant)
+func (r tenantRepository) Save(tenant *Tenant) (db *gorm.DB) {
+	return r.Save(tenant)
 }
 
-func (t tenantRepository) Delete(id uuid.UUID) (db *gorm.DB) {
-	return t.db.Delete(id)
+func (r tenantRepository) Delete(id uuid.UUID) (db *gorm.DB) {
+	return r.db.Delete(id)
 }
 
-func newTenantRepository(DB *gorm.DB) *tenantRepository {
-	return &tenantRepository{db: DB}
+func newTenantRepository(db *gorm.DB) *TenantRepository {
+	f := &tenantRepository{db: db}
+	r := TenantRepository(f)
+	return &r
+	//return i.(tenantRepository)
 }
+
+// Interface checks
+var _ = interface {
+	TenantRepository
+}(&tenantRepository{})
