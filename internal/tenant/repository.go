@@ -40,11 +40,8 @@ func (r tenantRepository) Delete(id uuid.UUID) (db *gorm.DB) {
 	return r.db.Delete(id)
 }
 
-func newTenantRepository(db *gorm.DB) *TenantRepository {
-	f := &tenantRepository{db: db}
-	r := TenantRepository(f)
-	return &r
-	//return i.(tenantRepository)
+func newTenantRepository(db *gorm.DB) *tenantRepository {
+	return &tenantRepository{db: db}
 }
 
 // Interface checks
