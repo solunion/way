@@ -47,12 +47,11 @@ func myApp(
 	fmt.Printf("Row affected: %d, Error: %s, Rules: %v\n", result.RowsAffected, result.Error, rules)
 
 	for _, r := range rules {
-		fmt.Printf("Rule[%q]: name=%q, description=%#v, ruleType={ name: %q }, ruleScope={ name: %q }, tenantModel={ name:%q }\n",
+		fmt.Printf("Rule[%q]: name=%q, description=%#v, ruleType={ name: %q }, tenantModel={ name:%q }\n",
 			r.ID,
 			r.Name,
 			r.Description,
 			r.Type.Name,
-			r.Scope.Name,
 			r.Tenant.Name,
 		)
 	}
