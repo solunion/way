@@ -16,27 +16,27 @@ type applicationRepository struct {
 	db *gorm.DB
 }
 
-func (r applicationRepository) FindAll(applications *[]Application) (db *gorm.DB) {
+func (r *applicationRepository) FindAll(applications *[]Application) (db *gorm.DB) {
 	return r.db.Find(&applications)
 }
 
-func (r applicationRepository) FindOne(application *Application, id uuid.UUID) (db *gorm.DB) {
+func (r *applicationRepository) FindOne(application *Application, id uuid.UUID) (db *gorm.DB) {
 	return r.db.Where("id = @id", sql.Named("id", id)).Take(&application)
 }
 
-func (r applicationRepository) Create(application *Application) (db *gorm.DB) {
+func (r *applicationRepository) Create(application *Application) (db *gorm.DB) {
 	return r.db.Create(&application)
 }
 
-func (r applicationRepository) Update(application *Application) (db *gorm.DB) {
+func (r *applicationRepository) Update(application *Application) (db *gorm.DB) {
 	return r.db.Save(&application)
 }
 
-func (r applicationRepository) Save(application *Application) (db *gorm.DB) {
+func (r *applicationRepository) Save(application *Application) (db *gorm.DB) {
 	return r.db.Save(&application)
 }
 
-func (r applicationRepository) Delete(id uuid.UUID) (db *gorm.DB) {
+func (r *applicationRepository) Delete(id uuid.UUID) (db *gorm.DB) {
 	return r.db.Delete(id)
 }
 
