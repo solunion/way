@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 	"github.com/solunion/way/internal"
-	"github.com/solunion/way/internal/application"
-	"github.com/solunion/way/internal/profile"
-	"github.com/solunion/way/internal/rule"
-	"github.com/solunion/way/internal/tenant"
+	"github.com/solunion/way/internal/app/api/application"
+	"github.com/solunion/way/internal/app/api/profile"
+	"github.com/solunion/way/internal/app/api/rule"
+	"github.com/solunion/way/internal/app/api/tenant"
 	"go.uber.org/fx"
 )
 
@@ -51,7 +51,7 @@ func myApp(
 			r.ID,
 			r.Name,
 			r.Description,
-			r.Type.Name,
+			r.Type,
 			r.Tenant.Name,
 		)
 	}
