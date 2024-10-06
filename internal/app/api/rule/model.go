@@ -6,6 +6,6 @@ import (
 
 type Rule struct {
 	tenant.WithTenantUserModel `gorm:"embedded"`
-	Type                       string `gorm:"type:text;not null;check:role_type,type in ('api')"`
+	Type                       string `gorm:"type:text;not null;check:role_type,type in ('API')"`
 	Data                       string `gorm:"type:jsonb;not null"`
 }

@@ -3,6 +3,9 @@ package internal
 import (
 	"errors"
 	"fmt"
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/spf13/viper"
 	"go.uber.org/fx"
 	"gorm.io/driver/postgres"
@@ -17,6 +20,7 @@ var Module = fx.Module("config",
 		),
 	),
 	fx.Provide(DatabaseConnection),
+	fx.Invoke(MigrateDatabase),
 )
 
 func InitConfiguration() (*WayConfig, error) {
@@ -58,4 +62,28 @@ func DatabaseConnection(config Config) (*gorm.DB, error) {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	return db, err
+}
+
+func MigrateDatabase(db *gorm.DB, config Config) {
+	//FIXME: missing GO migration files (issue https://github.com/golang-migrate/migrate/issues/1177)
+	m, err := migrate.New(
+		"file://db/migrations",
+		fmt.Sprintf("%s://%s:%s@%s:%d/%s?sslmode=%s",
+			config.Database().Type,
+			config.Database().User,
+			config.Database().Pass,
+			config.Database().Host,
+			config.Database().Port,
+			config.Database().Name,
+			config.Database().SSLMode),
+	)
+
+	if err != nil {
+		panic(err)
+	}
+
+	err = m.Up()
+	if err != nil {
+		panic(err)
+	}
 }

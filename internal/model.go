@@ -21,6 +21,7 @@ type UserModel struct {
 }
 
 type DatabaseConfig struct {
+	Type     string `mapstructure:"DATABASE_TYPE"`
 	Host     string `mapstructure:"DATABASE_HOST"`
 	Port     int    `mapstructure:"DATABASE_PORT"`
 	User     string `mapstructure:"DATABASE_USER"`
