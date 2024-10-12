@@ -7,19 +7,25 @@ import (
 	"github.com/solunion/way/internal/app/api/profile"
 	"github.com/solunion/way/internal/app/api/rule"
 	"github.com/solunion/way/internal/app/api/tenant"
+	"github.com/uptrace/bun"
 	"go.uber.org/fx"
 )
 
 func main() {
 	fx.New(
 		internal.Module,
-		profile.Module,
-		rule.Module,
-		tenant.Module,
-		application.Module,
-		fx.Invoke(myApp),
+		//profile.Module,
+		//rule.Module,
+		//tenant.Module,
+		//application.Module,
+		//fx.Invoke(myApp),
+		fx.Invoke(helloWorldApp),
 	).Run()
 
+}
+
+func helloWorldApp(db *bun.DB) {
+	fmt.Println("App started!!!")
 }
 
 func myApp(
