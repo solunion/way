@@ -12,8 +12,6 @@ import (
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
 	"go.uber.org/fx"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 var Module = fx.Module("config",
@@ -25,7 +23,6 @@ var Module = fx.Module("config",
 		),
 	),
 	fx.Provide(BunDatabaseConnection),
-	//fx.Provide(GORMDatabaseConnection),
 )
 
 func ContextConfiguration() context.Context {
@@ -55,22 +52,6 @@ func InitConfiguration() (*WayConfig, error) {
 	fmt.Printf("Configuration loaded: %+v\n", config)
 
 	return config, nil
-}
-
-func GORMDatabaseConnection(config Config) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s",
-		config.Database().Host,
-		config.Database().User,
-		config.Database().Pass,
-		config.Database().Name,
-		config.Database().Port,
-		config.Database().SSLMode,
-		config.Database().TimeZone,
-	)
-
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-
-	return db, err
 }
 
 func BunDatabaseConnection(config Config) *bun.DB {
