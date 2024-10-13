@@ -35,7 +35,7 @@ func (r *profileRepository) Update(profile *Profile) (sql.Result, error) {
 }
 
 func (r *profileRepository) Save(profile *Profile) (sql.Result, error) {
-	return r.db.NewInsert().Model(profile).On("CONFLICTS (id) DO UPDATE").Exec(r.ctx)
+	return r.db.NewInsert().Model(profile).On("CONFLICT (id) DO UPDATE").Exec(r.ctx)
 }
 
 func (r *profileRepository) Delete(id uuid.UUID) (sql.Result, error) {

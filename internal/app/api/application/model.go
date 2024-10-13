@@ -2,11 +2,9 @@ package application
 
 import (
 	"github.com/solunion/way/internal/app/api/tenant"
-	"github.com/uptrace/bun"
 )
 
 type Application struct {
-	bun.BaseModel              `bun:"table:applications"`
-	tenant.WithTenantUserModel `bun:", extends"`
+	tenant.WithTenantUserModel `bun:"table:applications,alias:a,extends"`
 	version                    string `bun:"type:text,notnull"`
 }

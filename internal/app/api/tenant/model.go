@@ -4,12 +4,10 @@ import (
 	"database/sql"
 	"github.com/google/uuid"
 	"github.com/solunion/way/internal"
-	"github.com/uptrace/bun"
 )
 
 type Tenant struct {
-	bun.BaseModel      `bun:"table:tenants,alias:t"`
-	internal.UserModel `bun:",extends"`
+	internal.UserModel `bun:"table:tenants,alias:t,extends"`
 	ID                 uuid.UUID      `bun:"type:uuid,pk,default:uuid_generate_v4()"`
 	Name               string         `bun:"type:text,notnull"`
 	Description        sql.NullString `bun:"type:text"`
