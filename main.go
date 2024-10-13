@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/solunion/way/internal"
+	"github.com/solunion/way/internal/app/api/application"
 	"github.com/solunion/way/internal/app/api/tenant"
 	"go.uber.org/fx"
 )
@@ -13,21 +14,26 @@ func main() {
 		//profile.Module,
 		//rule.Module,
 		tenant.Module,
-		//application.Module,
+		application.Module,
 		//fx.Invoke(myApp),
 		fx.Invoke(simpleApp),
 	).Run()
 
 }
 
-func simpleApp(tenantRepository tenant.TenantRepository) {
+func simpleApp(
+	tenantRepository tenant.TenantRepository,
+	applicationRepository application.ApplicationRepository,
+) {
 	fmt.Println("App started!!!")
 
 	var tenants []tenant.Tenant
-
 	err := tenantRepository.FindAll(&tenants)
-
 	fmt.Printf("Row affected: %d, Error: %s, Tenants: %v\n", len(tenants), err, tenants)
+
+	var applications []application.Application
+	err = applicationRepository.FindAll(&applications)
+	fmt.Printf("Row affected: %d, Error: %s, Applications: %v\n", len(applications), err, applications)
 }
 
 //func myApp(

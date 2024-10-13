@@ -23,7 +23,7 @@ func (r *tenantRepository) FindAll(tenants *[]Tenant) error {
 }
 
 func (r *tenantRepository) FindOne(tenant *Tenant, id uuid.UUID) error {
-	return r.db.NewSelect().Model(&tenant).Where("id = @id", sql.Named("id", id)).Scan(r.ctx)
+	return r.db.NewSelect().Model(&tenant).Where("?Pks", id).Scan(r.ctx)
 }
 
 func (r *tenantRepository) Create(tenant *Tenant) (sql.Result, error) {
@@ -42,11 +42,11 @@ func (r *tenantRepository) Delete(id uuid.UUID) (sql.Result, error) {
 	return r.db.NewDelete().Model((*Tenant)(nil)).Where("?Pks", id).Exec(r.ctx)
 }
 
-func newTenantRepository(db *bun.DB, ctx context.Context) TenantRepository {
+func newTenantRepository(ctx context.Context, db *bun.DB) TenantRepository {
 	return &tenantRepository{db: db, ctx: ctx}
 }
 
 // Interface checks
 var _ = interface {
-	TenantRepository
+	internal.CRUDRepository[Tenant, uuid.UUID]
 }(&tenantRepository{})

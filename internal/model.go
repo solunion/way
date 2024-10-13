@@ -13,14 +13,14 @@ type Model struct {
 }
 
 type SystemModel struct {
-	Model
+	Model       `bun:",extend"`
 	ID          string         `bun:"type:text,pk"`
 	Name        string         `bun:"type:text,notnull"`
 	Description sql.NullString `bun:"type:text"`
 }
 
 type UserModel struct {
-	Model
+	Model       `bun:",extend"`
 	ID          uuid.UUID      `bun:"type:uuid,pk,default:uuid_generate_v4()"`
 	Name        string         `bun:"type:text,notnull"`
 	Description sql.NullString `bun:"type:text"`
