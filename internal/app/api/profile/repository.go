@@ -19,11 +19,11 @@ type profileRepository struct {
 }
 
 func (r *profileRepository) FindAll(profiles *[]Profile) error {
-	return r.db.NewSelect().Model(&profiles).Scan(r.ctx)
+	return r.db.NewSelect().Model(profiles).Scan(r.ctx)
 }
 
 func (r *profileRepository) FindOne(profile *Profile, id uuid.UUID) error {
-	return r.db.NewSelect().Model(&profile).Where("?Pks", id).Scan(r.ctx)
+	return r.db.NewSelect().Model(profile).Where("?Pks", id).Scan(r.ctx)
 }
 
 func (r *profileRepository) Create(profile *Profile) (sql.Result, error) {
@@ -31,11 +31,11 @@ func (r *profileRepository) Create(profile *Profile) (sql.Result, error) {
 }
 
 func (r *profileRepository) Update(profile *Profile) (sql.Result, error) {
-	return r.db.NewUpdate().Model(&profile).Exec(r.ctx)
+	return r.db.NewUpdate().Model(profile).Exec(r.ctx)
 }
 
 func (r *profileRepository) Save(profile *Profile) (sql.Result, error) {
-	return r.db.NewInsert().Model(&profile).On("CONFLICTS (id) DO UPDATE").Exec(r.ctx)
+	return r.db.NewInsert().Model(profile).On("CONFLICTS (id) DO UPDATE").Exec(r.ctx)
 }
 
 func (r *profileRepository) Delete(id uuid.UUID) (sql.Result, error) {

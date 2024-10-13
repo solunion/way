@@ -19,23 +19,23 @@ type applicationRepository struct {
 }
 
 func (r *applicationRepository) FindAll(applications *[]Application) error {
-	return r.db.NewSelect().Model(&applications).Scan(r.ctx)
+	return r.db.NewSelect().Model(applications).Scan(r.ctx)
 }
 
 func (r *applicationRepository) FindOne(application *Application, id uuid.UUID) error {
-	return r.db.NewSelect().Model(&application).Where("?Pks", id).Scan(r.ctx)
+	return r.db.NewSelect().Model(application).Where("?Pks", id).Scan(r.ctx)
 }
 
 func (r *applicationRepository) Create(application *Application) (sql.Result, error) {
-	return r.db.NewInsert().Model(&application).Exec(r.ctx)
+	return r.db.NewInsert().Model(application).Exec(r.ctx)
 }
 
 func (r *applicationRepository) Update(application *Application) (sql.Result, error) {
-	return r.db.NewUpdate().Model(&application).Exec(r.ctx)
+	return r.db.NewUpdate().Model(application).Exec(r.ctx)
 }
 
 func (r *applicationRepository) Save(application *Application) (sql.Result, error) {
-	return r.db.NewInsert().Model(&application).On("CONFLICT (id) DO UPDATE").Exec(r.ctx)
+	return r.db.NewInsert().Model(application).On("CONFLICT (id) DO UPDATE").Exec(r.ctx)
 }
 
 func (r *applicationRepository) Delete(id uuid.UUID) (sql.Result, error) {
