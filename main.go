@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/solunion/way/internal"
 	"github.com/solunion/way/internal/app/api/application"
+	"github.com/solunion/way/internal/app/api/profile"
 	"github.com/solunion/way/internal/app/api/tenant"
 	"go.uber.org/fx"
 )
@@ -11,7 +12,7 @@ import (
 func main() {
 	fx.New(
 		internal.Module,
-		//profile.Module,
+		profile.Module,
 		//rule.Module,
 		tenant.Module,
 		application.Module,
@@ -24,6 +25,7 @@ func main() {
 func simpleApp(
 	tenantRepository tenant.TenantRepository,
 	applicationRepository application.ApplicationRepository,
+	profileRepository profile.ProfileRepository,
 ) {
 	fmt.Println("App started!!!")
 
@@ -34,6 +36,10 @@ func simpleApp(
 	var applications []application.Application
 	err = applicationRepository.FindAll(&applications)
 	fmt.Printf("Row affected: %d, Error: %s, Applications: %v\n", len(applications), err, applications)
+
+	var profiles []profile.Profile
+	err = profileRepository.FindAll(&profiles)
+	fmt.Printf("Row affected: %d, Error: %s, Profiles: %v\n", len(profiles), err, profiles)
 }
 
 //func myApp(
