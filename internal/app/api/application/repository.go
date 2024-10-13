@@ -41,10 +41,11 @@ func (r *applicationRepository) Delete(id uuid.UUID) (db *gorm.DB) {
 }
 
 func newApplicationRepository(db *gorm.DB) ApplicationRepository {
-	return &applicationRepository{db: db}
+	return nil
+	//return &applicationRepository{db: db}
 }
 
 // Interface checks
-var _ = interface {
-	ApplicationRepository
-}(&applicationRepository{})
+//var _ = interface {
+//	ApplicationRepository
+//}(&applicationRepository{})

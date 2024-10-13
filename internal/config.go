@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -16,6 +17,7 @@ import (
 )
 
 var Module = fx.Module("config",
+	fx.Provide(ContextConfiguration),
 	fx.Provide(
 		fx.Annotate(
 			InitConfiguration,
@@ -25,6 +27,10 @@ var Module = fx.Module("config",
 	fx.Provide(BunDatabaseConnection),
 	//fx.Provide(GORMDatabaseConnection),
 )
+
+func ContextConfiguration() context.Context {
+	return context.Background()
+}
 
 func InitConfiguration() (*WayConfig, error) {
 	config := NewConfiguration()

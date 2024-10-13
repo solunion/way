@@ -42,10 +42,11 @@ func (r *ruleRepository) Delete(id uuid.UUID) (db *gorm.DB) {
 }
 
 func newRuleRepository(db *gorm.DB) RuleRepository {
-	return &ruleRepository{db: db}
+	return nil
+	//return &ruleRepository{db: db}
 }
 
 // Interface checks
-var _ = interface {
-	RuleRepository
-}(&ruleRepository{})
+//var _ = interface {
+//	RuleRepository
+//}(&ruleRepository{})

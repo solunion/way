@@ -3,11 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/solunion/way/internal"
-	"github.com/solunion/way/internal/app/api/application"
-	"github.com/solunion/way/internal/app/api/profile"
-	"github.com/solunion/way/internal/app/api/rule"
 	"github.com/solunion/way/internal/app/api/tenant"
-	"github.com/uptrace/bun"
 	"go.uber.org/fx"
 )
 
@@ -16,50 +12,56 @@ func main() {
 		internal.Module,
 		//profile.Module,
 		//rule.Module,
-		//tenant.Module,
+		tenant.Module,
 		//application.Module,
 		//fx.Invoke(myApp),
-		fx.Invoke(helloWorldApp),
+		fx.Invoke(simpleApp),
 	).Run()
 
 }
 
-func helloWorldApp(db *bun.DB) {
+func simpleApp(tenantRepository tenant.TenantRepository) {
 	fmt.Println("App started!!!")
-}
-
-func myApp(
-	tenantRepository tenant.TenantRepository,
-	profileRepository profile.ProfileRepository,
-	ruleRepository rule.RuleRepository,
-	applicationRepository application.ApplicationRepository,
-) {
-	var applications []application.Application
-	result := applicationRepository.FindAll(&applications)
-	fmt.Printf("Row affected: %d, Error: %s, Applications: %v\n", result.RowsAffected, result.Error, applications)
 
 	var tenants []tenant.Tenant
 
-	result = tenantRepository.FindAll(&tenants)
+	err := tenantRepository.FindAll(&tenants)
 
-	fmt.Printf("Row affected: %d, Error: %s, Tenants: %v\n", result.RowsAffected, result.Error, tenants)
-
-	var profiles []profile.Profile
-	result = profileRepository.FindAll(&profiles)
-	fmt.Printf("Row affected: %d, Error: %s, Profiles: %v\n", result.RowsAffected, result.Error, profiles)
-
-	var rules []rule.Rule
-	result = ruleRepository.FindAll(&rules)
-	fmt.Printf("Row affected: %d, Error: %s, Rules: %v\n", result.RowsAffected, result.Error, rules)
-
-	for _, r := range rules {
-		fmt.Printf("Rule[%q]: name=%q, description=%#v, ruleType={ name: %q }, tenantModel={ name:%q }\n",
-			r.ID,
-			r.Name,
-			r.Description,
-			r.Type,
-			r.Tenant.Name,
-		)
-	}
-
+	fmt.Printf("Row affected: %d, Error: %s, Tenants: %v\n", len(tenants), err, tenants)
 }
+
+//func myApp(
+//	tenantRepository tenant.TenantRepository,
+//	profileRepository profile.ProfileRepository,
+//	ruleRepository rule.RuleRepository,
+//	applicationRepository application.ApplicationRepository,
+//) {
+//	var applications []application.Application
+//	result := applicationRepository.FindAll(&applications)
+//	fmt.Printf("Row affected: %d, Error: %s, Applications: %v\n", result.RowsAffected, result.Error, applications)
+//
+//	var tenants []tenant.Tenant
+//
+//	result = tenantRepository.FindAll(&tenants)
+//
+//	fmt.Printf("Row affected: %d, Error: %s, Tenants: %v\n", result.RowsAffected, result.Error, tenants)
+//
+//	var profiles []profile.Profile
+//	result = profileRepository.FindAll(&profiles)
+//	fmt.Printf("Row affected: %d, Error: %s, Profiles: %v\n", result.RowsAffected, result.Error, profiles)
+//
+//	var rules []rule.Rule
+//	result = ruleRepository.FindAll(&rules)
+//	fmt.Printf("Row affected: %d, Error: %s, Rules: %v\n", result.RowsAffected, result.Error, rules)
+//
+//	for _, r := range rules {
+//		fmt.Printf("Rule[%q]: name=%q, description=%#v, ruleType={ name: %q }, tenantModel={ name:%q }\n",
+//			r.ID,
+//			r.Name,
+//			r.Description,
+//			r.Type,
+//			r.Tenant.Name,
+//		)
+//	}
+//
+//}

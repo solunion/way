@@ -41,10 +41,11 @@ func (r *profileRepository) Delete(id uuid.UUID) (db *gorm.DB) {
 }
 
 func newProfileRepository(db *gorm.DB) ProfileRepository {
-	return &profileRepository{db: db}
+	return nil
+	//return &profileRepository{db: db}
 }
 
 // Interface checks
-var _ = interface {
-	ProfileRepository
-}(&profileRepository{})
+//var _ = interface {
+//	ProfileRepository
+//}(&profileRepository{})
