@@ -19,7 +19,7 @@ type tenantRepository struct {
 }
 
 func (r *tenantRepository) FindAll(tenants *[]Tenant) error {
-	return r.db.NewSelect().Model(&tenants).Scan(r.ctx)
+	return r.db.NewSelect().Model(tenants).Scan(r.ctx)
 }
 
 func (r *tenantRepository) FindOne(tenant *Tenant, id uuid.UUID) error {
