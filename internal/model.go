@@ -39,12 +39,22 @@ type DatabaseConfig struct {
 	TimeZone string `mapstructure:"DATABASE_TIMEZONE"`
 }
 
+type EnvironmentConfig struct {
+	Type string `mapstructure:"ENVIRONMENT"`
+}
+
 type Config interface {
+	Environment() *EnvironmentConfig
 	Database() *DatabaseConfig
 }
 
 type WayConfig struct {
-	DB DatabaseConfig `mapstructure:",squash"`
+	DB  DatabaseConfig    `mapstructure:",squash"`
+	Env EnvironmentConfig `mapstructure:",squash"`
+}
+
+func (w WayConfig) Environment() *EnvironmentConfig {
+	return &w.Env
 }
 
 func (w WayConfig) Database() *DatabaseConfig {
@@ -53,6 +63,7 @@ func (w WayConfig) Database() *DatabaseConfig {
 
 func NewConfiguration() *WayConfig {
 	return &WayConfig{
-		DB: DatabaseConfig{},
+		Env: EnvironmentConfig{Type: "Development"},
+		DB:  DatabaseConfig{},
 	}
 }
