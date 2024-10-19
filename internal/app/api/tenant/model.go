@@ -4,18 +4,17 @@ import (
 	"database/sql"
 	"github.com/google/uuid"
 	"github.com/solunion/way/internal"
-	"gorm.io/gorm"
 )
 
 type Tenant struct {
-	gorm.Model
-	ID          uuid.UUID      `gorm:"type:uuid;primary_key;default:uuid_generate_v4()"`
-	Name        string         `gorm:"type:text;not null"`
-	Description sql.NullString `gorm:"type:text"`
+	internal.UserModel `bun:"table:tenants,alias:t,extends"`
+	ID                 uuid.UUID      `bun:"type:uuid,pk,default:uuid_generate_v4()"`
+	Name               string         `bun:"type:text,notnull"`
+	Description        sql.NullString `bun:"type:text"`
 }
 
 type WithTenantUserModel struct {
-	internal.UserModel
-	TenantID uuid.UUID `gorm:"type:uuid;not null"`
-	Tenant   Tenant    `gorm:"foreignKey:TenantID"`
+	internal.UserModel `bun:",extends"`
+	Tenant             Tenant    `bun:"rel:belongs-to,join:tenant_id=id"`
+	TenantId           uuid.UUID `bun:"type:uuid,notnull"`
 }

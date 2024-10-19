@@ -1,10 +1,11 @@
 package tenant
 
 import (
+	"context"
 	"database/sql"
 	"github.com/google/uuid"
 	"github.com/solunion/way/internal"
-	"gorm.io/gorm"
+	"github.com/uptrace/bun"
 )
 
 //goland:noinspection GoNameStartsWithPackageName
@@ -13,38 +14,39 @@ type TenantRepository interface {
 }
 
 type tenantRepository struct {
-	db *gorm.DB
+	db  *bun.DB
+	ctx context.Context
 }
 
-func (r *tenantRepository) FindAll(tenants *[]Tenant) (db *gorm.DB) {
-	return r.db.Find(&tenants)
+func (r *tenantRepository) FindAll(tenants *[]Tenant) error {
+	return r.db.NewSelect().Model(tenants).Scan(r.ctx)
 }
 
-func (r *tenantRepository) FindOne(tenant *Tenant, id uuid.UUID) *gorm.DB {
-	return r.db.Where("id = @id", sql.Named("id", id)).Take(&tenant)
+func (r *tenantRepository) FindOne(tenant *Tenant, id uuid.UUID) error {
+	return r.db.NewSelect().Model(&tenant).Where("?Pks", id).Scan(r.ctx)
 }
 
-func (r *tenantRepository) Create(tenant *Tenant) (db *gorm.DB) {
-	return r.db.Create(tenant)
+func (r *tenantRepository) Create(tenant *Tenant) (sql.Result, error) {
+	return r.db.NewInsert().Model(&tenant).Exec(r.ctx)
 }
 
-func (r *tenantRepository) Update(tenant *Tenant) (db *gorm.DB) {
-	return r.db.Updates(&tenant)
+func (r *tenantRepository) Update(tenant *Tenant) (sql.Result, error) {
+	return r.db.NewUpdate().Model(&tenant).Exec(r.ctx)
 }
 
-func (r *tenantRepository) Save(tenant *Tenant) (db *gorm.DB) {
-	return r.Save(tenant)
+func (r *tenantRepository) Save(tenant *Tenant) (sql.Result, error) {
+	return r.db.NewInsert().Model(&tenant).On("CONFLICT (id) DO UPDATE").Exec(r.ctx)
 }
 
-func (r *tenantRepository) Delete(id uuid.UUID) (db *gorm.DB) {
-	return r.db.Delete(id)
+func (r *tenantRepository) Delete(id uuid.UUID) (sql.Result, error) {
+	return r.db.NewDelete().Model((*Tenant)(nil)).Where("?Pks", id).Exec(r.ctx)
 }
 
-func newTenantRepository(db *gorm.DB) TenantRepository {
-	return &tenantRepository{db: db}
+func newTenantRepository(ctx context.Context, db *bun.DB) TenantRepository {
+	return &tenantRepository{db: db, ctx: ctx}
 }
 
 // Interface checks
 var _ = interface {
-	TenantRepository
+	internal.CRUDRepository[Tenant, uuid.UUID]
 }(&tenantRepository{})

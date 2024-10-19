@@ -1,27 +1,33 @@
 package internal
 
 import (
+	"context"
+	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/spf13/viper"
+	"github.com/uptrace/bun"
+	"github.com/uptrace/bun/dialect/pgdialect"
+	"github.com/uptrace/bun/driver/pgdriver"
 	"go.uber.org/fx"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 var Module = fx.Module("config",
+	fx.Provide(ContextConfiguration),
 	fx.Provide(
 		fx.Annotate(
 			InitConfiguration,
 			fx.As(new(Config)),
 		),
 	),
-	fx.Provide(DatabaseConnection),
-	fx.Invoke(MigrateDatabase),
+	fx.Provide(BunDatabaseConnection),
 )
+
+func ContextConfiguration() context.Context {
+	return context.Background()
+}
 
 func InitConfiguration() (*WayConfig, error) {
 	config := NewConfiguration()
@@ -48,42 +54,17 @@ func InitConfiguration() (*WayConfig, error) {
 	return config, nil
 }
 
-func DatabaseConnection(config Config) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s",
-		config.Database().Host,
+func BunDatabaseConnection(config Config) *bun.DB {
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s",
 		config.Database().User,
 		config.Database().Pass,
-		config.Database().Name,
+		config.Database().Host,
 		config.Database().Port,
+		config.Database().Name,
 		config.Database().SSLMode,
-		config.Database().TimeZone,
 	)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	conn := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 
-	return db, err
-}
-
-func MigrateDatabase(db *gorm.DB, config Config) {
-	//FIXME: missing GO migration files (issue https://github.com/golang-migrate/migrate/issues/1177)
-	m, err := migrate.New(
-		"file://db/migrations",
-		fmt.Sprintf("%s://%s:%s@%s:%d/%s?sslmode=%s",
-			config.Database().Type,
-			config.Database().User,
-			config.Database().Pass,
-			config.Database().Host,
-			config.Database().Port,
-			config.Database().Name,
-			config.Database().SSLMode),
-	)
-
-	if err != nil {
-		panic(err)
-	}
-
-	err = m.Up()
-	if err != nil {
-		panic(err)
-	}
+	return bun.NewDB(conn, pgdialect.New())
 }

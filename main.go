@@ -17,34 +17,33 @@ func main() {
 		rule.Module,
 		tenant.Module,
 		application.Module,
-		fx.Invoke(myApp),
+		fx.Invoke(simpleApp),
 	).Run()
-
 }
 
-func myApp(
+func simpleApp(
 	tenantRepository tenant.TenantRepository,
+	applicationRepository application.ApplicationRepository,
 	profileRepository profile.ProfileRepository,
 	ruleRepository rule.RuleRepository,
-	applicationRepository application.ApplicationRepository,
 ) {
-	var applications []application.Application
-	result := applicationRepository.FindAll(&applications)
-	fmt.Printf("Row affected: %d, Error: %s, Applications: %v\n", result.RowsAffected, result.Error, applications)
+	fmt.Println("App started!!!")
 
 	var tenants []tenant.Tenant
+	err := tenantRepository.FindAll(&tenants)
+	fmt.Printf("Row affected: %d, Error: %s, Tenants: %v\n", len(tenants), err, tenants)
 
-	result = tenantRepository.FindAll(&tenants)
-
-	fmt.Printf("Row affected: %d, Error: %s, Tenants: %v\n", result.RowsAffected, result.Error, tenants)
+	var applications []application.Application
+	err = applicationRepository.FindAll(&applications)
+	fmt.Printf("Row affected: %d, Error: %s, Applications: %v\n", len(applications), err, applications)
 
 	var profiles []profile.Profile
-	result = profileRepository.FindAll(&profiles)
-	fmt.Printf("Row affected: %d, Error: %s, Profiles: %v\n", result.RowsAffected, result.Error, profiles)
+	err = profileRepository.FindAll(&profiles)
+	fmt.Printf("Row affected: %d, Error: %s, Profiles: %v\n", len(profiles), err, profiles)
 
 	var rules []rule.Rule
-	result = ruleRepository.FindAll(&rules)
-	fmt.Printf("Row affected: %d, Error: %s, Rules: %v\n", result.RowsAffected, result.Error, rules)
+	err = ruleRepository.FindAll(&rules)
+	fmt.Printf("Row affected: %d, Error: %s, Rules: %v\n", len(rules), err, rules)
 
 	for _, r := range rules {
 		fmt.Printf("Rule[%q]: name=%q, description=%#v, ruleType={ name: %q }, tenantModel={ name:%q }\n",
@@ -55,5 +54,4 @@ func myApp(
 			r.Tenant.Name,
 		)
 	}
-
 }

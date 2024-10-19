@@ -1,10 +1,11 @@
 package application
 
 import (
+	"context"
 	"database/sql"
 	"github.com/google/uuid"
 	"github.com/solunion/way/internal"
-	"gorm.io/gorm"
+	"github.com/uptrace/bun"
 )
 
 //goland:noinspection GoNameStartsWithPackageName
@@ -13,38 +14,39 @@ type ApplicationRepository interface {
 }
 
 type applicationRepository struct {
-	db *gorm.DB
+	db  *bun.DB
+	ctx context.Context
 }
 
-func (r *applicationRepository) FindAll(applications *[]Application) (db *gorm.DB) {
-	return r.db.Find(&applications)
+func (r *applicationRepository) FindAll(applications *[]Application) error {
+	return r.db.NewSelect().Model(applications).Scan(r.ctx)
 }
 
-func (r *applicationRepository) FindOne(application *Application, id uuid.UUID) (db *gorm.DB) {
-	return r.db.Where("id = @id", sql.Named("id", id)).Take(&application)
+func (r *applicationRepository) FindOne(application *Application, id uuid.UUID) error {
+	return r.db.NewSelect().Model(application).Where("?Pks", id).Scan(r.ctx)
 }
 
-func (r *applicationRepository) Create(application *Application) (db *gorm.DB) {
-	return r.db.Create(&application)
+func (r *applicationRepository) Create(application *Application) (sql.Result, error) {
+	return r.db.NewInsert().Model(application).Exec(r.ctx)
 }
 
-func (r *applicationRepository) Update(application *Application) (db *gorm.DB) {
-	return r.db.Save(&application)
+func (r *applicationRepository) Update(application *Application) (sql.Result, error) {
+	return r.db.NewUpdate().Model(application).Exec(r.ctx)
 }
 
-func (r *applicationRepository) Save(application *Application) (db *gorm.DB) {
-	return r.db.Save(&application)
+func (r *applicationRepository) Save(application *Application) (sql.Result, error) {
+	return r.db.NewInsert().Model(application).On("CONFLICT (id) DO UPDATE").Exec(r.ctx)
 }
 
-func (r *applicationRepository) Delete(id uuid.UUID) (db *gorm.DB) {
-	return r.db.Delete(id)
+func (r *applicationRepository) Delete(id uuid.UUID) (sql.Result, error) {
+	return r.db.NewDelete().Model((*Application)(nil)).Where("?Pks", id).Exec(r.ctx)
 }
 
-func newApplicationRepository(db *gorm.DB) ApplicationRepository {
-	return &applicationRepository{db: db}
+func newApplicationRepository(db *bun.DB, ctx context.Context) ApplicationRepository {
+	return &applicationRepository{db: db, ctx: ctx}
 }
 
 // Interface checks
 var _ = interface {
-	ApplicationRepository
+	internal.CRUDRepository[Application, uuid.UUID]
 }(&applicationRepository{})

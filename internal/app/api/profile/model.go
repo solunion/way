@@ -5,5 +5,5 @@ import (
 )
 
 type Profile struct {
-	tenant.WithTenantUserModel `gorm:"embedded"`
+	tenant.WithTenantUserModel `bun:"table:profiles,alias:p,extends"`
 }

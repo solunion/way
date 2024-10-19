@@ -1,11 +1,11 @@
 package rule
 
 import (
+	"context"
 	"database/sql"
 	"github.com/google/uuid"
 	"github.com/solunion/way/internal"
-	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
+	"github.com/uptrace/bun"
 )
 
 //goland:noinspection GoNameStartsWithPackageName
@@ -14,38 +14,39 @@ type RuleRepository interface {
 }
 
 type ruleRepository struct {
-	db *gorm.DB
+	db  *bun.DB
+	ctx context.Context
 }
 
-func (r *ruleRepository) FindAll(rules *[]Rule) (db *gorm.DB) {
-	return r.db.Preload(clause.Associations).Find(&rules)
+func (r *ruleRepository) FindAll(rules *[]Rule) error {
+	return r.db.NewSelect().Model(rules).Scan(r.ctx)
 }
 
-func (r *ruleRepository) FindOne(rule *Rule, id uuid.UUID) *gorm.DB {
-	return r.db.Preload(clause.Associations).Where("id = @id", sql.Named("id", id)).Take(&rule)
+func (r *ruleRepository) FindOne(rule *Rule, id uuid.UUID) error {
+	return r.db.NewSelect().Model(rule).Where("?Pks", id).Scan(r.ctx)
 }
 
-func (r *ruleRepository) Create(rule *Rule) (db *gorm.DB) {
-	return r.db.Create(rule)
+func (r *ruleRepository) Create(rule *Rule) (sql.Result, error) {
+	return r.db.NewInsert().Model(rule).Exec(r.ctx)
 }
 
-func (r *ruleRepository) Update(rule *Rule) (db *gorm.DB) {
-	return r.db.Updates(&rule)
+func (r *ruleRepository) Update(rule *Rule) (sql.Result, error) {
+	return r.db.NewUpdate().Model(rule).Exec(r.ctx)
 }
 
-func (r *ruleRepository) Save(rule *Rule) (db *gorm.DB) {
-	return r.Save(rule)
+func (r *ruleRepository) Save(rule *Rule) (sql.Result, error) {
+	return r.db.NewInsert().Model(rule).On("CONFLICT (id) DO UPDATE").Exec(r.ctx)
 }
 
-func (r *ruleRepository) Delete(id uuid.UUID) (db *gorm.DB) {
-	return r.db.Delete(id)
+func (r *ruleRepository) Delete(id uuid.UUID) (sql.Result, error) {
+	return r.db.NewDelete().Model((*Rule)(nil)).Where("?Pks", id).Exec(r.ctx)
 }
 
-func newRuleRepository(db *gorm.DB) RuleRepository {
-	return &ruleRepository{db: db}
+func newRuleRepository(ctx context.Context, db *bun.DB) RuleRepository {
+	return &ruleRepository{db: db, ctx: ctx}
 }
 
 // Interface checks
 var _ = interface {
-	RuleRepository
+	internal.CRUDRepository[Rule, uuid.UUID]
 }(&ruleRepository{})
