@@ -12,6 +12,9 @@ import (
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
 	"go.uber.org/fx"
+	"go.uber.org/zap"
+	"log"
+	"strings"
 )
 
 var Module = fx.Module("config",
@@ -23,6 +26,7 @@ var Module = fx.Module("config",
 		),
 	),
 	fx.Provide(BunDatabaseConnection),
+	fx.Provide(LoggerConfiguration),
 )
 
 func ContextConfiguration() context.Context {
@@ -49,7 +53,7 @@ func InitConfiguration() (*WayConfig, error) {
 		return nil, err
 	}
 
-	fmt.Printf("Configuration loaded: %+v\n", config)
+	fmt.Println("Configuration successfully loaded!!!")
 
 	return config, nil
 }
@@ -67,4 +71,25 @@ func BunDatabaseConnection(config Config) *bun.DB {
 	conn := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 
 	return bun.NewDB(conn, pgdialect.New())
+}
+
+func LoggerConfiguration(config Config) (*zap.Logger, *zap.SugaredLogger) {
+	var logger *zap.Logger
+	var err error
+
+	switch strings.ToLower(config.Environment().Type) {
+	case "development", "dev":
+		logger, err = zap.NewDevelopment()
+	case "production", "prod":
+		logger, err = zap.NewProduction()
+	default:
+		fmt.Printf("Unknown environment type: %s.\n", config.Environment().Type)
+		logger = zap.NewExample()
+	}
+
+	if err != nil {
+		log.Fatalf("Could not initialize zap logger: %v", err)
+	}
+
+	return logger, logger.Sugar()
 }
