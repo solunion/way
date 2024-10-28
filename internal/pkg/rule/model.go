@@ -1,7 +1,7 @@
 package rule
 
 import (
-	"github.com/solunion/way/internal/app/api/tenant"
+	"github.com/solunion/way/internal/pkg/tenant"
 )
 
 type Rule struct {

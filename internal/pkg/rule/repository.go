@@ -4,13 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"github.com/google/uuid"
-	"github.com/solunion/way/internal"
+	"github.com/solunion/way/internal/pkg/common/database"
 	"github.com/uptrace/bun"
 )
 
 //goland:noinspection GoNameStartsWithPackageName
 type RuleRepository interface {
-	internal.CRUDRepository[Rule, uuid.UUID]
+	database.CRUDRepository[Rule, uuid.UUID]
 }
 
 type ruleRepository struct {
@@ -48,5 +48,5 @@ func newRuleRepository(ctx context.Context, db *bun.DB) RuleRepository {
 
 // Interface checks
 var _ = interface {
-	internal.CRUDRepository[Rule, uuid.UUID]
+	database.CRUDRepository[Rule, uuid.UUID]
 }(&ruleRepository{})
