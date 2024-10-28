@@ -4,13 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"github.com/google/uuid"
-	"github.com/solunion/way/internal"
+	"github.com/solunion/way/internal/pkg/common/database"
 	"github.com/uptrace/bun"
 )
 
 //goland:noinspection GoNameStartsWithPackageName
 type TenantRepository interface {
-	internal.CRUDRepository[Tenant, uuid.UUID]
+	database.CRUDRepository[Tenant, uuid.UUID]
 }
 
 type tenantRepository struct {
@@ -48,5 +48,5 @@ func newTenantRepository(ctx context.Context, db *bun.DB) TenantRepository {
 
 // Interface checks
 var _ = interface {
-	internal.CRUDRepository[Tenant, uuid.UUID]
+	database.CRUDRepository[Tenant, uuid.UUID]
 }(&tenantRepository{})

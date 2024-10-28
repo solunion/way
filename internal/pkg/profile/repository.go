@@ -4,13 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"github.com/google/uuid"
-	"github.com/solunion/way/internal"
+	"github.com/solunion/way/internal/pkg/common/database"
 	"github.com/uptrace/bun"
 )
 
 //goland:noinspection GoNameStartsWithPackageName
 type ProfileRepository interface {
-	internal.CRUDRepository[Profile, uuid.UUID]
+	database.CRUDRepository[Profile, uuid.UUID]
 }
 
 type profileRepository struct {
@@ -48,5 +48,5 @@ func newProfileRepository(ctx context.Context, db *bun.DB) ProfileRepository {
 
 // Interface checks
 var _ = interface {
-	internal.CRUDRepository[Profile, uuid.UUID]
+	database.CRUDRepository[Profile, uuid.UUID]
 }(&profileRepository{})

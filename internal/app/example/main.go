@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/solunion/way/internal"
-	"github.com/solunion/way/internal/app/api/application"
-	"github.com/solunion/way/internal/app/api/profile"
-	"github.com/solunion/way/internal/app/api/rule"
-	"github.com/solunion/way/internal/app/api/tenant"
+	"github.com/solunion/way/internal/pkg/application"
+	"github.com/solunion/way/internal/pkg/configs"
+	"github.com/solunion/way/internal/pkg/profile"
+	"github.com/solunion/way/internal/pkg/rule"
+	"github.com/solunion/way/internal/pkg/tenant"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"
@@ -13,7 +13,7 @@ import (
 
 func main() {
 	fx.New(
-		internal.Module,
+		configs.Module,
 		profile.Module,
 		rule.Module,
 		tenant.Module,
