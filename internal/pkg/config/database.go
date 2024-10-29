@@ -1,14 +1,16 @@
-package configs
+package config
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
+	"go.uber.org/fx"
 )
 
-func DatabaseConnection(config *Config) *bun.DB {
+func DatabaseConnection(lc fx.Lifecycle, config *Config) *bun.DB {
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s",
 		config.Database().User,
 		config.Database().Pass,
@@ -19,6 +21,19 @@ func DatabaseConnection(config *Config) *bun.DB {
 	)
 
 	conn := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
+	db := bun.NewDB(conn, pgdialect.New())
 
-	return bun.NewDB(conn, pgdialect.New())
+	lc.Append(fx.Hook{
+		OnStart: func(ctx context.Context) error {
+			return db.PingContext(ctx)
+		},
+		OnStop: func(ctx context.Context) error {
+			if db != nil {
+				return db.Close()
+			}
+			return nil
+		},
+	})
+
+	return db
 }

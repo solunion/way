@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/gofiber/fiber/v3"
-	"github.com/solunion/way/internal/pkg/configs"
+	"github.com/solunion/way/internal/pkg/config"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 )
@@ -13,7 +13,7 @@ var Module = fx.Module("web",
 	fx.Provide(registerFiber),
 )
 
-func registerFiber(lc fx.Lifecycle, log *zap.SugaredLogger, config *configs.Config) *fiber.App {
+func registerFiber(lc fx.Lifecycle, log *zap.SugaredLogger, config *config.Config) *fiber.App {
 	app := fiber.New()
 
 	lc.Append(fx.Hook{

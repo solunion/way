@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"github.com/gofiber/fiber/v3"
-	"github.com/solunion/way/internal/pkg/configs"
+	"github.com/solunion/way/internal/pkg/config"
 	"github.com/solunion/way/internal/pkg/web"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
@@ -12,7 +12,7 @@ import (
 
 func main() {
 	app := fx.New(
-		configs.Module,
+		config.Module,
 		web.Module,
 		fx.Invoke(runWebApp),
 		fx.WithLogger(func(log *zap.Logger) fxevent.Logger {

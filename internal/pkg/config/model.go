@@ -1,4 +1,4 @@
-package configs
+package config
 
 type EnvironmentConfig struct {
 	Type string `mapstructure:"ENVIRONMENT"`

@@ -3,7 +3,7 @@ package tenant
 import (
 	"database/sql"
 	"github.com/google/uuid"
-	"github.com/solunion/way/internal/pkg/common/database"
+	"github.com/solunion/way/internal/pkg/database"
 )
 
 type Tenant struct {
