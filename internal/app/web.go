@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/gofiber/fiber/v3"
 	"github.com/solunion/way/internal/pkg/config"
 	"github.com/solunion/way/internal/pkg/web"
@@ -22,15 +23,20 @@ func main() {
 	app.Run()
 }
 
-func runWebApp(lc fx.Lifecycle, log *zap.SugaredLogger, web *fiber.App) {
+func runWebApp(lc fx.Lifecycle, log *zap.SugaredLogger, config *config.Config, app *fiber.App) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-			log.Info("starting web server...")
-			return nil
+			var err error = nil
+			go func() {
+				log.Info("starting web server...")
+				err = app.Listen(fmt.Sprintf("%s:%d", config.Web.Host, config.Web.Port)) //fiber.ListenConfig{EnablePrefork: true},
+
+			}()
+			return err
 		},
 		OnStop: func(ctx context.Context) error {
 			log.Info("stopping web server...")
-			return nil
+			return app.Shutdown()
 		},
 	})
 }
