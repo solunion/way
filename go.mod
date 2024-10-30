@@ -1,16 +1,14 @@
 module github.com/solunion/way
 
-go 1.22.0
-
-toolchain go1.23.1
+go 1.23.1
 
 require (
 	github.com/gofiber/fiber/v3 v3.0.0-beta.3
 	github.com/google/uuid v1.6.0
 	github.com/spf13/viper v1.19.0
-	github.com/uptrace/bun v1.2.3
-	github.com/uptrace/bun/dialect/pgdialect v1.2.3
-	github.com/uptrace/bun/driver/pgdriver v1.2.3
+	github.com/uptrace/bun v1.2.5
+	github.com/uptrace/bun/dialect/pgdialect v1.2.5
+	github.com/uptrace/bun/driver/pgdriver v1.2.5
 	go.uber.org/fx v1.23.0
 	go.uber.org/zap v1.27.0
 )
