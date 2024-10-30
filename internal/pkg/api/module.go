@@ -1,11 +1,11 @@
-package web
+package api
 
 import (
 	"github.com/gofiber/fiber/v3"
 	"go.uber.org/fx"
 )
 
-var Module = fx.Module("web",
+var Module = fx.Module("api",
 	fx.Provide(registerFiber),
 )
 
