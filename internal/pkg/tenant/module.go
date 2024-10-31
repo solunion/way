@@ -1,9 +1,15 @@
 package tenant
 
-import "go.uber.org/fx"
+import (
+	"go.uber.org/fx"
+)
 
 var Module = fx.Module("tenant",
 	fx.Provide(
 		newTenantRepository,
+		newTenantHttp,
+	),
+	fx.Invoke(
+		registerRoutes,
 	),
 )

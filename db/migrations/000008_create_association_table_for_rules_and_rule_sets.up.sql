@@ -8,7 +8,7 @@ create table way.rule_sets_rules
                 constraint rule_sets_rules_rules_fk references way.rules,
     valid_from  timestamp not null,
     valid_to    timestamp,
-    created_at  timestamp not null,
-    updated_at  timestamp not null,
-    deleted_at  timestamp not null
+    created_at  timestamptz default current_timestamp not null,
+    updated_at  timestamptz default current_timestamp not null,
+    deleted_at  timestamptz
 );

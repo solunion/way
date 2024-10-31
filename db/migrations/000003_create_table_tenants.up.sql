@@ -4,7 +4,7 @@ create table if not exists way.tenants
                 constraint tenants_pk primary key,
     name        text not null,
     description text,
-    created_at  timestamp not null,
-    updated_at  timestamp not null,
-    deleted_at  timestamp
+    created_at  timestamptz default current_timestamp not null,
+    updated_at  timestamptz default current_timestamp not null,
+    deleted_at  timestamptz
 );

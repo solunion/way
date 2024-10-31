@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 	"github.com/gofiber/fiber/v3"
-	"github.com/solunion/way/internal/pkg/api"
 	"github.com/solunion/way/internal/pkg/config"
+	"github.com/solunion/way/internal/pkg/http"
+	"github.com/solunion/way/internal/pkg/tenant"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"
@@ -14,7 +15,8 @@ import (
 func main() {
 	app := fx.New(
 		config.Module,
-		api.Module,
+		http.Module,
+		tenant.Module,
 		fx.Invoke(runWebApp),
 		fx.WithLogger(func(log *zap.Logger) fxevent.Logger {
 			return &fxevent.ZapLogger{Logger: log}
