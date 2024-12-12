@@ -7,9 +7,8 @@ import (
 var Module = fx.Module("tenant",
 	fx.Provide(
 		newTenantRepository,
-		newTenantHttp,
 	),
 	fx.Invoke(
-		registerRoutes,
+		registerTenantHttp,
 	),
 )

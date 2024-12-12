@@ -1,29 +1,21 @@
 package tenant
 
 import (
-	"database/sql"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/log"
+	"github.com/jinzhu/copier"
 	"go.uber.org/zap"
 )
-
-type CreateTenantRequest struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-}
-
-type CreateTenantResponse struct {
-	//CreateTenantRequest
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	ID          string `json:"id"`
-}
 
 //goland:noinspection GoNameStartsWithPackageName
 type TenantHttp struct {
 	Http       *fiber.App
 	Repository TenantRepository
 	Log        *zap.SugaredLogger
+}
+
+func (t *TenantHttp) registerRoutes() {
+	t.Create()
 }
 
 func (t *TenantHttp) Create() {
@@ -34,39 +26,38 @@ func (t *TenantHttp) Create() {
 
 		if err := ctx.Bind().Body(request); err != nil {
 			log.Error("Failed to bind body request:", err)
+			return err
 		}
 
-		tenant := Tenant{
-			Name:        request.Name,
-			Description: sql.NullString{String: request.Description},
+		tenant := new(Tenant)
+
+		if err := copier.Copy(&tenant, &request); err != nil {
+			log.Error("Failed to convert tenant DTO:", err)
+			return err
 		}
 
-		_, err := t.Repository.Create(&tenant)
-
-		if err != nil {
+		if _, err := t.Repository.Create(tenant); err != nil {
 			log.Error("Failed to create tenant:", err)
+			return err
 		}
 
-		response := CreateTenantResponse{
-			Name:        tenant.Name,
-			Description: tenant.Description.String,
-			ID:          tenant.ID.String(),
+		response := new(CreateTenantResponse)
+
+		if err := copier.Copy(&response, tenant); err != nil {
+			log.Error("Failed to build response:", err)
+			return err
 		}
 
-		err = ctx.JSON(response)
-
-		if err != nil {
+		if err := ctx.JSON(response); err != nil {
 			log.Error("Failed to send response:", err)
 		}
 
-		return err
+		return nil
 	})
 }
 
-func newTenantHttp(app *fiber.App, repository TenantRepository, logger *zap.SugaredLogger) *TenantHttp {
-	return &TenantHttp{Http: app, Repository: repository, Log: logger}
-}
-
-func registerRoutes(http *TenantHttp) {
-	http.Create()
+func registerTenantHttp(app *fiber.App, repository TenantRepository, logger *zap.SugaredLogger) *TenantHttp {
+	api := &TenantHttp{Http: app, Repository: repository, Log: logger}
+	api.registerRoutes()
+	return api
 }
