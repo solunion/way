@@ -9,7 +9,7 @@ create table way.rules
     type        text not null
                 constraint rules_types CHECK ( type in ('API') ),
     data        jsonb not null,
-    deleted_at  timestamp,
-    created_at  timestamp not null,
-    updated_at  timestamp not null
+    created_at  timestamptz default current_timestamp not null,
+    updated_at  timestamptz default current_timestamp not null,
+    deleted_at  timestamptz
 );
