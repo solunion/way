@@ -1,7 +1,7 @@
 {
-  "name": "way",
+  "name": "backend",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/way/src",
+  "sourceRoot": "apps/backend/src",
   "projectType": "application",
   "tags": [],
   "targets": {
@@ -9,42 +9,34 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "webpack-cli build",
-        "args": [
-          "node-env=production"
-        ]
+        "args": ["node-env=production"]
       },
       "configurations": {
         "development": {
-          "args": [
-            "node-env=development"
-          ]
+          "args": ["node-env=development"]
         }
       }
     },
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
-      "dependsOn": [
-        "build"
-      ],
+      "dependsOn": ["build"],
       "options": {
-        "buildTarget": "way:build",
+        "buildTarget": "backend:build",
         "runBuildTargetDependencies": false
       },
       "configurations": {
         "development": {
-          "buildTarget": "way:build:development"
+          "buildTarget": "backend:build:development"
         },
         "production": {
-          "buildTarget": "way:build:production"
+          "buildTarget": "backend:build:production"
         }
       }
     },
     "docker-build": {
-      "dependsOn": [
-        "build"
-      ],
-      "command": "docker build -f apps/way/Dockerfile . -t way"
+      "dependsOn": ["build"],
+      "command": "docker build -f apps/backend/Dockerfile . -t way"
     }
   }
 }
