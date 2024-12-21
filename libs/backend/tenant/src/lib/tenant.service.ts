@@ -29,4 +29,21 @@ export class TenantService {
         )
     );
   }
+
+  getOne(id: string): Observable<TenantDto> {
+    return from(
+      this.db.tenant.findUnique({
+        where: {
+          id: id,
+        },
+      }).then(
+        (entity: Tenant | null) =>
+          <TenantDto>{
+            id: entity?.id,
+            name: entity?.name,
+            description: entity?.description,
+          }
+      )
+    );
+  }
 }

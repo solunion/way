@@ -1,0 +1,13 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Query {
+  tenant(id: String!): TenantDto!
+}
+
+type TenantDto {
+  description: String
+  id: String
+  name: String!
+}
