@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@way/backend-database';
 import { from, Observable } from 'rxjs';
 import { TenantDto } from './dto/tenant-dto.model';
+import { Tenant } from '@prisma/client';
 
 @Injectable()
 export class TenantService {
@@ -19,7 +20,7 @@ export class TenantService {
           data: newTenant,
         })
         .then(
-          (entity) =>
+          (entity: Tenant) =>
             <TenantDto>{
               id: entity.id,
               name: entity.name,
