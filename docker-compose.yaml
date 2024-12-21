@@ -1,0 +1,19 @@
+services:
+  postgresql:
+    image: postgres:17
+    restart: unless-stopped
+    shm_size: 256mb
+    environment:
+      POSTGRES_USER: way
+      POSTGRES_PASSWORD: way
+      POSTGRES_DB:
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ./extra/postgresql/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - way-net
+
+networks:
+  way-net:
