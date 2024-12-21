@@ -45,7 +45,7 @@ module.exports = [
         ],
         // Override or add rules here
         rules: {
-          "@typescript-eslint/no-inferrable-types": "ignoreProperties"
+          "@typescript-eslint/no-inferrable-types": "off",
         }
     },
 ];
