@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { TenantDto } from './dto/tenant-dto.model';
+import { Tenant } from './tenant.model';
 import { TenantService } from './tenant.service';
 
 @Controller('tenants')
@@ -9,12 +9,12 @@ export class TenantController {
   }
 
   @Post()
-  create(@Body() request: TenantDto): Observable<TenantDto> {
+  create(@Body() request: Tenant): Observable<Tenant> {
     return this.service.create(request);
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string): Observable<TenantDto> {
+  getOne(@Param('id') id: string): Observable<Tenant> {
     return this.service.getOne(id);
   }
 }

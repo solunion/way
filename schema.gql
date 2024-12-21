@@ -3,10 +3,10 @@
 # ------------------------------------------------------
 
 type Query {
-  tenant(id: String!): TenantDto!
+  tenant(id: String!): Tenant!
 }
 
-type TenantDto {
+type Tenant {
   description: String
   id: String
   name: String!

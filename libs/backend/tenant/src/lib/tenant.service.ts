@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@way/backend-database';
 import { from, Observable } from 'rxjs';
-import { TenantDto } from './dto/tenant-dto.model';
-import { Tenant } from '@prisma/client';
+import { Tenant } from './tenant.model';
+import { TenantEntity } from '@prisma/client';
 
 @Injectable()
 export class TenantService {
   constructor(private db: DatabaseService) {}
 
-  create(newTenant: TenantDto): Observable<TenantDto> {
+  create(newTenant: Tenant): Observable<Tenant> {
     return from(
-      this.db.tenant
+      this.db.tenantEntity
         .create({
           select: {
             id: true,
@@ -20,25 +20,25 @@ export class TenantService {
           data: newTenant,
         })
         .then(
-          (entity: Tenant) =>
-            <TenantDto>{
-              id: entity.id,
-              name: entity.name,
-              description: entity.description,
+          (entity: TenantEntity | null) =>
+            <Tenant>{
+              id: entity?.id,
+              name: entity?.name,
+              description: entity?.description,
             }
         )
     );
   }
 
-  getOne(id: string): Observable<TenantDto> {
+  getOne(id: string): Observable<Tenant> {
     return from(
-      this.db.tenant.findUnique({
+      this.db.tenantEntity.findUnique({
         where: {
           id: id,
         },
       }).then(
-        (entity: Tenant | null) =>
-          <TenantDto>{
+        (entity: TenantEntity | null) =>
+          <Tenant>{
             id: entity?.id,
             name: entity?.name,
             description: entity?.description,

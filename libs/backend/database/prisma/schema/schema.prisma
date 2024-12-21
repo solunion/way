@@ -1,16 +1,16 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["prismaSchemaFolder"]
 }
 
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
-model Tenant {
-  id String @id @default(uuid())
-  name String
+model TenantEntity {
+  id          String  @id @default(uuid())
+  name        String
   description String?
 
   @@map("tenants")
