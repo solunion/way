@@ -4,17 +4,5 @@
   "sourceRoot": "libs/backend/tenant/src",
   "projectType": "library",
   "tags": [],
-  "targets": {
-    "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/backend/tenant",
-        "tsConfig": "libs/backend/tenant/tsconfig.lib.json",
-        "packageJson": "libs/backend/tenant/package.json",
-        "main": "libs/backend/tenant/src/index.ts",
-        "assets": ["libs/backend/tenant/*.md"]
-      }
-    }
-  }
+  "targets": {}
 }
