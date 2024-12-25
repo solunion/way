@@ -1,10 +1,10 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-
+import { from, Observable } from 'rxjs';
 
 @Injectable()
 export class DatabaseService extends PrismaClient implements OnModuleInit {
-  async onModuleInit() {
-    await this.$connect();
-  }
+  onModuleInit = (): Observable<void> => {
+    return from(this.$connect());
+  };
 }

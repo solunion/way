@@ -1,20 +1,24 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { Tenant } from './tenant.model';
+import { TenantCreateInput } from './tenant-create.input.model';
+import { TenantOutput } from './tenant.output.model';
 import { TenantService } from './tenant.service';
 
 @Controller('tenants')
 export class TenantController {
-  constructor(private readonly service: TenantService) {
+  #service: TenantService;
+
+  constructor(service: TenantService) {
+    this.#service = service;
   }
 
   @Post()
-  create(@Body() request: Tenant): Observable<Tenant> {
-    return this.service.create(request);
+  create$(@Body() request: TenantCreateInput): Observable<TenantOutput> {
+    return this.#service.create$(request);
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string): Observable<Tenant> {
-    return this.service.getOne(id);
+  getOne$(@Param('id') id: string): Observable<TenantOutput> {
+    return this.#service.getOne$(id);
   }
 }

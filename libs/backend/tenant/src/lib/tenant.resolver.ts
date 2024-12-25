@@ -1,14 +1,24 @@
-import { Args, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Observable } from 'rxjs';
-import { Tenant } from './tenant.model';
+import { TenantCreateInput } from './tenant-create.input.model';
+import { TenantOutput } from './tenant.output.model';
 import { TenantService } from './tenant.service';
 
-@Resolver(() => Tenant)
+@Resolver(() => TenantOutput)
 export class TenantResolver {
-  constructor(private readonly service: TenantService) {}
+  #service: TenantService;
 
-  @Query(() => Tenant)
-  tenant(@Args('id') id: string): Observable<Tenant> {
-    return this.service.getOne(id);
+  constructor(service: TenantService) {
+    this.#service = service;
+  }
+
+  @Query(() => TenantOutput)
+  tenant(@Args('id') id: string): Observable<TenantOutput> {
+    return this.#service.getOne$(id);
+  }
+
+  @Mutation(() => TenantOutput)
+  createTenant(@Args('tenant') tenant: TenantCreateInput): Observable<TenantOutput> {
+    return this.#service.create$(tenant);
   }
 }

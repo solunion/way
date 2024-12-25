@@ -1,48 +1,56 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@way/backend-database';
-import { from, Observable } from 'rxjs';
-import { Tenant } from './tenant.model';
+import { filter, from, map, Observable } from 'rxjs';
+import { TenantOutput } from './tenant.output.model';
 import { TenantEntity } from '@prisma/client';
 
 @Injectable()
 export class TenantService {
-  constructor(private db: DatabaseService) {}
+  #db: DatabaseService;
 
-  create(newTenant: Tenant): Observable<Tenant> {
+  constructor(db: DatabaseService) {
+    this.#db = db;
+  }
+
+  create$(newTenant: TenantOutput): Observable<TenantOutput> {
     return from(
-      this.db.tenantEntity
-        .create({
-          select: {
-            id: true,
-            name: true,
-            description: true,
-          },
-          data: newTenant,
-        })
-        .then(
-          (entity: TenantEntity | null) =>
-            <Tenant>{
-              id: entity?.id,
-              name: entity?.name,
-              description: entity?.description,
-            }
-        )
+      this.#db.tenantEntity.create({
+        select: {
+          id: true,
+          name: true,
+          description: true,
+        },
+        data: newTenant,
+      })
+    ).pipe(
+      filter((entity) => !!entity),
+      map(
+        (entity: TenantEntity) =>
+          new TenantOutput({
+            id: entity.id,
+            name: entity.name,
+            description: entity.description ? entity.description : undefined,
+          })
+      )
     );
   }
 
-  getOne(id: string): Observable<Tenant> {
+  getOne$(id: string): Observable<TenantOutput> {
     return from(
-      this.db.tenantEntity.findUnique({
+      this.#db.tenantEntity.findUnique({
         where: {
           id: id,
         },
-      }).then(
-        (entity: TenantEntity | null) =>
-          <Tenant>{
-            id: entity?.id,
-            name: entity?.name,
-            description: entity?.description,
-          }
+      })
+    ).pipe(
+      filter((entity) => !!entity),
+      map(
+        (entity: TenantEntity) =>
+          new TenantOutput({
+            id: entity.id,
+            name: entity.name,
+            description: entity.description ? entity.description : undefined,
+          })
       )
     );
   }
