@@ -2,21 +2,21 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Mutation {
-  createTenant(tenant: TenantCreateInput!): TenantOutput!
-}
-
-type Query {
-  tenant(id: String!): TenantOutput!
-}
-
-input TenantCreateInput {
+input CreateTenantDto {
   description: String
   name: String!
 }
 
-type TenantOutput {
+type Mutation {
+  createTenant(tenant: CreateTenantDto!): Tenant!
+}
+
+type Query {
+  tenant(id: String!): Tenant!
+}
+
+type Tenant {
   description: String
-  id: String
+  id: String!
   name: String!
 }

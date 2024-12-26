@@ -1,17 +1,17 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
-@ObjectType()
-export class TenantOutput {
-  @Field({ nullable: true })
-  id?: string;
+@ObjectType('Tenant')
+export class TenantDto {
+  @Field()
+  id: string;
 
   @Field()
-  name: string = '';
+  name: string;
 
   @Field({ nullable: true })
   description?: string;
 
-  constructor({ id, name, description }: TenantOutput) {
+  constructor(id: string, name: string, description: string) {
     this.id = id;
     this.name = name;
     this.description = description;

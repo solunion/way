@@ -1,11 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UsePipes, ValidationPipe } from '@nestjs/common';
 import { TenantEntity } from '@prisma/client';
+import { plainToInstance } from 'class-transformer';
 import { catchError, filter, map, Observable, throwError } from 'rxjs';
-import { TenantCreateInput } from './tenant-create.input.model';
-import { TenantOutput } from './tenant.output.model';
+import { TenantDto } from './dto/tenant.dto';
+import { NewTenant, Tenant } from './tenant.model';
 import { TenantRepository } from './tenant.repository';
 
 @Injectable()
+@UsePipes(new ValidationPipe({transform: true}))
 export class TenantService {
   #repository: TenantRepository;
 
@@ -13,11 +15,9 @@ export class TenantService {
     this.#repository = repository;
   }
 
-  create$(
-    newTenant: Pick<TenantCreateInput, 'name' | 'description'>
-  ): Observable<TenantOutput> {
-    return this.#repository.create(this.#mapToEntity(newTenant)).pipe(
-      map((entity: TenantEntity) => this.#mapToDto(entity)),
+  create$(newTenant: NewTenant): Observable<Tenant> {
+    return this.#repository.create(this.#transformToEntity(newTenant)).pipe(
+      map((entity: TenantEntity) => this.#transformToDto(entity)),
       catchError((error) => {
         console.error('Error creating tenant:', error);
         return throwError(() => new Error('Unable to create tenant'));
@@ -25,27 +25,19 @@ export class TenantService {
     );
   }
 
-  findById$(id: string): Observable<TenantOutput> {
+  findById$(id: string): Observable<TenantDto> {
     return this.#repository.findById(id).pipe(
       filter((entity) => !!entity),
-      map((entity: TenantEntity) => this.#mapToDto(entity)),
+      map((entity: TenantEntity) => this.#transformToDto(entity))
     );
   }
 
-  #mapToEntity(
-    dto: TenantCreateInput
-  ): Pick<TenantEntity, 'name' | 'description'> {
-    return {
-      name: dto.name,
-      description: dto.description ? dto.description : null,
-    };
+  #transformToEntity(dto: Partial<Tenant>): Pick<TenantEntity, 'name' | 'description'> {
+    // @ts-expect-error Generated type by Prisma
+    return plainToInstance(TenantEntity, dto);
   }
 
-  #mapToDto(entity: TenantEntity): TenantOutput {
-    return new TenantOutput({
-      id: entity.id,
-      name: entity.name,
-      description: entity.description ?? undefined,
-    });
+  #transformToDto(entity: TenantEntity): Tenant {
+    return plainToInstance(Tenant, entity);
   }
 }
