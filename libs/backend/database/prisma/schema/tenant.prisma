@@ -1,0 +1,7 @@
+model TenantEntity {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+
+  @@map("tenants")
+}

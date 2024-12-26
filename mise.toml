@@ -15,10 +15,10 @@ run = "nx run-many -t build"
 [tasks.test]
 run = "nx test"
 
-[tasks.db-migrate]
+[tasks.database-migrate]
 run = "nx run backend-database:prisma-migrate"
 
-[tasks.db-generate]
+[tasks.database-generate]
 run = "nx run backend-database:prisma-generate"
 
 [tasks.docker-start]
