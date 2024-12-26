@@ -14,7 +14,7 @@ export class TenantResolver {
 
   @Query(() => TenantOutput)
   tenant(@Args('id') id: string): Observable<TenantOutput> {
-    return this.#service.getOne$(id);
+    return this.#service.findById$(id);
   }
 
   @Mutation(() => TenantOutput)

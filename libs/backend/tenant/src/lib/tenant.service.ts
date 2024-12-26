@@ -1,57 +1,51 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '@way/backend-database';
-import { filter, from, map, Observable } from 'rxjs';
-import { TenantOutput } from './tenant.output.model';
 import { TenantEntity } from '@prisma/client';
+import { catchError, filter, map, Observable, throwError } from 'rxjs';
+import { TenantCreateInput } from './tenant-create.input.model';
+import { TenantOutput } from './tenant.output.model';
+import { TenantRepository } from './tenant.repository';
 
 @Injectable()
 export class TenantService {
-  #db: DatabaseService;
+  #repository: TenantRepository;
 
-  constructor(db: DatabaseService) {
-    this.#db = db;
+  constructor(repository: TenantRepository) {
+    this.#repository = repository;
   }
 
-  create$(newTenant: TenantOutput): Observable<TenantOutput> {
-    return from(
-      this.#db.tenantEntity.create({
-        select: {
-          id: true,
-          name: true,
-          description: true,
-        },
-        data: newTenant,
+  create$(
+    newTenant: Pick<TenantCreateInput, 'name' | 'description'>
+  ): Observable<TenantOutput> {
+    return this.#repository.create(this.#mapToEntity(newTenant)).pipe(
+      map((entity: TenantEntity) => this.#mapToDto(entity)),
+      catchError((error) => {
+        console.error('Error creating tenant:', error);
+        return throwError(() => new Error('Unable to create tenant'));
       })
-    ).pipe(
-      filter((entity) => !!entity),
-      map(
-        (entity: TenantEntity) =>
-          new TenantOutput({
-            id: entity.id,
-            name: entity.name,
-            description: entity.description ? entity.description : undefined,
-          })
-      )
     );
   }
 
-  getOne$(id: string): Observable<TenantOutput> {
-    return from(
-      this.#db.tenantEntity.findUnique({
-        where: {
-          id: id,
-        },
-      })
-    ).pipe(
+  findById$(id: string): Observable<TenantOutput> {
+    return this.#repository.findById(id).pipe(
       filter((entity) => !!entity),
-      map(
-        (entity: TenantEntity) =>
-          new TenantOutput({
-            id: entity.id,
-            name: entity.name,
-            description: entity.description ? entity.description : undefined,
-          })
-      )
+      map((entity: TenantEntity) => this.#mapToDto(entity)),
     );
+  }
+
+  #mapToEntity(
+    dto: TenantCreateInput
+  ): Pick<TenantEntity, 'name' | 'description'> {
+    return {
+      name: dto.name,
+      description: dto.description ? dto.description : null,
+    };
+  }
+
+  #mapToDto(entity: TenantEntity): TenantOutput {
+    return new TenantOutput({
+      id: entity.id,
+      name: entity.name,
+      description: entity.description ?? undefined,
+    });
   }
 }

@@ -11,7 +11,7 @@ type Query {
 }
 
 input TenantCreateInput {
-  description: String!
+  description: String
   name: String!
 }
 

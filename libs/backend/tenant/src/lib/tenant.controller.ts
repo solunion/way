@@ -19,6 +19,6 @@ export class TenantController {
 
   @Get(':id')
   getOne$(@Param('id') id: string): Observable<TenantOutput> {
-    return this.#service.getOne$(id);
+    return this.#service.findById$(id);
   }
 }
