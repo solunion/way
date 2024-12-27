@@ -35,8 +35,8 @@ export class TenantController {
   }
 
   @Delete(':id')
-  softDelete$(@Param('id') id: string): Observable<TenantDto> {
-    return this.#service.softDelete$(id).pipe(
+  delete$(@Param('id') id: string): Observable<TenantDto> {
+    return this.#service.delete$(id).pipe(
       map((data: TenantDto) => plainToInstance(TenantDto, data))
     );
   }

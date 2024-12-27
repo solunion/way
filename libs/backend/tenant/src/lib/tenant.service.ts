@@ -16,7 +16,7 @@ export class TenantService {
   }
 
   create$(newTenant: NewTenant): Observable<Tenant> {
-    return this.#repository.create(this.#transformToEntity(newTenant)).pipe(
+    return this.#repository.create$(this.#transformToEntity(newTenant)).pipe(
       map((entity: TenantEntity) => this.#transformToDto(entity)),
       catchError((error) => {
         console.error('Error creating tenant:', error);
@@ -26,14 +26,14 @@ export class TenantService {
   }
 
   findById$(id: string): Observable<TenantDto> {
-    return this.#repository.findById(id).pipe(
+    return this.#repository.findById$(id).pipe(
       filter((entity) => !!entity),
       map((entity: TenantEntity) => this.#transformToDto(entity))
     );
   }
 
   update$(id: string, updateTenant: Partial<Tenant>): Observable<Tenant> {
-    return this.#repository.update(id, this.#transformToEntity(updateTenant)).pipe(
+    return this.#repository.update$(id, this.#transformToEntity(updateTenant)).pipe(
       map((entity: TenantEntity) => this.#transformToDto(entity)),
       catchError((error) => {
         console.error('Error updating tenant:', error);
@@ -42,12 +42,12 @@ export class TenantService {
     );
   }
 
-  softDelete$(id: string): Observable<Tenant> {
-    return this.#repository.softDelete(id).pipe(
+  delete$(id: string): Observable<Tenant> {
+    return this.#repository.softDelete$(id).pipe(
       map((entity: TenantEntity) => this.#transformToDto(entity)),
       catchError((error) => {
-        console.error('Error soft deleting tenant:', error);
-        return throwError(() => new Error('Unable to soft delete tenant'));
+        console.error('Error deleting tenant:', error);
+        return throwError(() => new Error('Unable to delete tenant'));
       })
     );
   }

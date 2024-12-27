@@ -39,8 +39,8 @@ export class TenantResolver {
   }
 
   @Mutation(() => TenantDto)
-  softDeleteTenant(@Args('id') id: string): Observable<TenantDto> {
-    return this.#service.softDelete$(id).pipe(
+  deleteTenant(@Args('id') id: string): Observable<TenantDto> {
+    return this.#service.delete$(id).pipe(
       map((data: TenantDto) => plainToInstance(TenantDto, data))
     );
   }

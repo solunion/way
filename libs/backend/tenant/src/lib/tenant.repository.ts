@@ -7,11 +7,11 @@ import { Observable, from } from 'rxjs';
 export class TenantRepository {
   constructor(private readonly db: DatabaseService) {}
 
-  create(data: Pick<TenantEntity, 'name' | 'description'>): Observable<TenantEntity> {
+  create$(data: Pick<TenantEntity, 'name' | 'description'>): Observable<TenantEntity> {
     return from(this.db.tenantEntity.create({ data }));
   }
 
-  findById(id: string): Observable<TenantEntity | null> {
+  findById$(id: string): Observable<TenantEntity | null> {
     return from(
       this.db.tenantEntity.findFirst({
         where: { id, deletedAt: null },
@@ -19,7 +19,7 @@ export class TenantRepository {
     );
   }
 
-  update(id: string, data: Partial<Pick<TenantEntity, 'name' | 'description'>>): Observable<TenantEntity> {
+  update$(id: string, data: Partial<Pick<TenantEntity, 'name' | 'description'>>): Observable<TenantEntity> {
     return from(
       this.db.tenantEntity.update({
         where: { id },
@@ -28,7 +28,7 @@ export class TenantRepository {
     );
   }
 
-  softDelete(id: string): Observable<TenantEntity> {
+  softDelete$(id: string): Observable<TenantEntity> {
     return from(
       this.db.tenantEntity.update({
         where: { id },
@@ -37,7 +37,7 @@ export class TenantRepository {
     );
   }
 
-  findAll(): Observable<TenantEntity[]> {
+  findAll$(): Observable<TenantEntity[]> {
     return from(
       this.db.tenantEntity.findMany({
         where: { deletedAt: null },
