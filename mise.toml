@@ -14,7 +14,7 @@ run = "nx serve backend"
 run = "nx run-many -t build"
 
 [tasks.test]
-run = "nx test"
+run = "nx run-many -t test"
 
 [tasks.lint]
 run = "nx run-many -t lint"
