@@ -1,7 +1,7 @@
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { plainToInstance } from 'class-transformer';
-import { map, Observable } from 'rxjs';
+import { map, Observable, catchError, of } from 'rxjs';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { TenantDto } from './dto/tenant.dto';
 import { NewTenant } from './tenant.model';
@@ -38,10 +38,11 @@ export class TenantResolver {
     return tenant.pipe(map((data: TenantDto) => plainToInstance(TenantDto, data)));
   }
 
-  @Mutation(() => TenantDto)
-  deleteTenant(@Args('id') id: string): Observable<TenantDto> {
+  @Mutation(() => Boolean)
+  deleteTenant(@Args('id') id: string): Observable<boolean> {
     return this.#service.delete$(id).pipe(
-      map((data: TenantDto) => plainToInstance(TenantDto, data))
+      map(() => true),
+      catchError(() => of(false))
     );
   }
 }

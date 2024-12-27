@@ -1,7 +1,7 @@
 import { Injectable, UsePipes, ValidationPipe } from '@nestjs/common';
 import { TenantEntity } from '@prisma/client';
 import { plainToInstance } from 'class-transformer';
-import { catchError, filter, map, Observable, throwError } from 'rxjs';
+import { catchError, filter, map, mapTo, Observable, throwError } from 'rxjs';
 import { TenantDto } from './dto/tenant.dto';
 import { NewTenant, Tenant } from './tenant.model';
 import { TenantRepository } from './tenant.repository';
@@ -42,9 +42,9 @@ export class TenantService {
     );
   }
 
-  delete$(id: string): Observable<Tenant> {
+  delete$(id: string): Observable<void> {
     return this.#repository.softDelete$(id).pipe(
-      map((entity: TenantEntity) => this.#transformToDto(entity)),
+      mapTo(void 0),
       catchError((error) => {
         console.error('Error deleting tenant:', error);
         return throwError(() => new Error('Unable to delete tenant'));

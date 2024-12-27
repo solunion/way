@@ -35,9 +35,7 @@ export class TenantController {
   }
 
   @Delete(':id')
-  delete$(@Param('id') id: string): Observable<TenantDto> {
-    return this.#service.delete$(id).pipe(
-      map((data: TenantDto) => plainToInstance(TenantDto, data))
-    );
+  delete$(@Param('id') id: string): Observable<void> {
+    return this.#service.delete$(id);
   }
 }
