@@ -9,6 +9,7 @@ input CreateTenantDto {
 
 type Mutation {
   createTenant(tenant: CreateTenantDto!): Tenant!
+  updateTenant(id: String!, tenant: UpdateTenantDto!): Tenant!
 }
 
 type Query {
@@ -19,4 +20,15 @@ type Tenant {
   description: String
   id: String!
   name: String!
+}
+
+input TenantDto {
+  description: String
+  id: String!
+  name: String!
+}
+
+input UpdateTenantDto {
+  description: String
+  name: String
 }

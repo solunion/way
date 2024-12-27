@@ -32,6 +32,16 @@ export class TenantService {
     );
   }
 
+  update$(id: string, updateTenant: Partial<Tenant>): Observable<Tenant> {
+    return this.#repository.update(id, this.#transformToEntity(updateTenant)).pipe(
+      map((entity: TenantEntity) => this.#transformToDto(entity)),
+      catchError((error) => {
+        console.error('Error updating tenant:', error);
+        return throwError(() => new Error('Unable to update tenant'));
+      })
+    );
+  }
+
   #transformToEntity(dto: Partial<Tenant>): Pick<TenantEntity, 'name' | 'description'> {
     // @ts-expect-error Generated type by Prisma
     return plainToInstance(TenantEntity, dto);

@@ -28,4 +28,18 @@ export class TenantRepository {
     );
   }
 
+  update(id: string, data: Partial<Pick<TenantEntity, 'name' | 'description'>>): Observable<TenantEntity> {
+    return from(
+      this.db.tenantEntity.update({
+        where: { id },
+        data,
+        select: {
+          id: true,
+          name: true,
+          description: true,
+        },
+      })
+    );
+  }
+
 }
