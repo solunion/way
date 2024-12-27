@@ -42,6 +42,16 @@ export class TenantService {
     );
   }
 
+  softDelete$(id: string): Observable<Tenant> {
+    return this.#repository.softDelete(id).pipe(
+      map((entity: TenantEntity) => this.#transformToDto(entity)),
+      catchError((error) => {
+        console.error('Error soft deleting tenant:', error);
+        return throwError(() => new Error('Unable to soft delete tenant'));
+      })
+    );
+  }
+
   #transformToEntity(dto: Partial<Tenant>): Pick<TenantEntity, 'name' | 'description'> {
     // @ts-expect-error Generated type by Prisma
     return plainToInstance(TenantEntity, dto);

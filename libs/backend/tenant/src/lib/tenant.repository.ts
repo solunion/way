@@ -8,22 +8,13 @@ export class TenantRepository {
   constructor(private readonly db: DatabaseService) {}
 
   create(data: Pick<TenantEntity, 'name' | 'description'>): Observable<TenantEntity> {
-    return from(
-      this.db.tenantEntity.create({
-        data,
-        select: {
-          id: true,
-          name: true,
-          description: true,
-        },
-      })
-    );
+    return from(this.db.tenantEntity.create({ data }));
   }
 
   findById(id: string): Observable<TenantEntity | null> {
     return from(
-      this.db.tenantEntity.findUnique({
-        where: { id },
+      this.db.tenantEntity.findFirst({
+        where: { id, deletedAt: null },
       })
     );
   }
@@ -33,13 +24,24 @@ export class TenantRepository {
       this.db.tenantEntity.update({
         where: { id },
         data,
-        select: {
-          id: true,
-          name: true,
-          description: true,
-        },
       })
     );
   }
 
+  softDelete(id: string): Observable<TenantEntity> {
+    return from(
+      this.db.tenantEntity.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+      })
+    );
+  }
+
+  findAll(): Observable<TenantEntity[]> {
+    return from(
+      this.db.tenantEntity.findMany({
+        where: { deletedAt: null },
+      })
+    );
+  }
 }

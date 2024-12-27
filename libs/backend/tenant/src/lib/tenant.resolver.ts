@@ -37,4 +37,11 @@ export class TenantResolver {
     const tenant = this.#service.update$(id, plainToInstance(Tenant, request));
     return tenant.pipe(map((data: TenantDto) => plainToInstance(TenantDto, data)));
   }
+
+  @Mutation(() => TenantDto)
+  softDeleteTenant(@Args('id') id: string): Observable<TenantDto> {
+    return this.#service.softDelete$(id).pipe(
+      map((data: TenantDto) => plainToInstance(TenantDto, data))
+    );
+  }
 }
