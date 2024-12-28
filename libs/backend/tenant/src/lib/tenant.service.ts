@@ -1,18 +1,21 @@
 import { Injectable, UsePipes, ValidationPipe } from '@nestjs/common';
 import { TenantEntity } from '@prisma/client';
+import { DatabaseService } from '@way/backend-database';
 import { plainToInstance } from 'class-transformer';
-import { catchError, filter, map, mapTo, Observable, throwError } from 'rxjs';
+import { catchError, filter, map, Observable, throwError } from 'rxjs';
 import { TenantDto } from './dto/tenant.dto';
 import { NewTenant, Tenant } from './tenant.model';
 import { TenantRepository } from './tenant.repository';
 
 @Injectable()
-@UsePipes(new ValidationPipe({transform: true}))
+@UsePipes(new ValidationPipe({ transform: true }))
 export class TenantService {
   #repository: TenantRepository;
+  #db: DatabaseService;
 
-  constructor(repository: TenantRepository) {
+  constructor(repository: TenantRepository, db: DatabaseService) {
     this.#repository = repository;
+    this.#db = db;
   }
 
   create$(newTenant: NewTenant): Observable<Tenant> {
@@ -44,7 +47,7 @@ export class TenantService {
 
   delete$(id: string): Observable<void> {
     return this.#repository.softDelete$(id).pipe(
-      mapTo(void 0),
+      map(() => undefined),
       catchError((error) => {
         console.error('Error deleting tenant:', error);
         return throwError(() => new Error('Unable to delete tenant'));
@@ -54,7 +57,7 @@ export class TenantService {
 
   #transformToEntity(dto: Partial<Tenant>): Pick<TenantEntity, 'name' | 'description'> {
     // @ts-expect-error Generated type by Prisma
-    return plainToInstance(TenantEntity, dto);
+    return plainToInstance(this.#db.tenantEntity, dto);
   }
 
   #transformToDto(entity: TenantEntity): Tenant {
