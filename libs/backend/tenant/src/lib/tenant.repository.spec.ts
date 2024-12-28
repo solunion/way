@@ -3,6 +3,7 @@ import { PrismaClient, Tenant } from '@prisma/client';
 import { DatabaseService } from '@way/backend-database';
 import { DeepMockProxy, mock, mockDeep, MockProxy } from 'jest-mock-extended';
 import { lastValueFrom } from 'rxjs';
+import { v4 as uuid } from 'uuid';
 import { TenantRepository } from './tenant.repository';
 
 describe('TenantRepository', () => {
@@ -11,7 +12,7 @@ describe('TenantRepository', () => {
   let databaseService: MockProxy<DatabaseService>;
 
   const mockTenant: Tenant = {
-    id: '1',
+    id: uuid(),
     name: 'Test Tenant',
     description: 'Test Description',
     createdAt: new Date(),
@@ -75,18 +76,18 @@ describe('TenantRepository', () => {
     it('should find an existing tenant', async () => {
       prisma.tenant.findFirst.mockResolvedValue(mockTenant);
 
-      const result = await lastValueFrom(repository.findById$('1'));
+      const result = await lastValueFrom(repository.findById$(mockTenant.id));
 
       expect(result).toEqual(mockTenant);
       expect(prisma.tenant.findFirst).toHaveBeenCalledWith({
-        where: { id: '1', deletedAt: null },
+        where: { id: mockTenant.id, deletedAt: null },
       });
     });
 
     it('should return null if tenant does not exist', async () => {
       prisma.tenant.findFirst.mockResolvedValue(null);
 
-      const result = await lastValueFrom(repository.findById$('999'));
+      const result = await lastValueFrom(repository.findById$(uuid()));
 
       expect(result).toBeNull();
     });
@@ -105,11 +106,11 @@ describe('TenantRepository', () => {
 
       prisma.tenant.update.mockResolvedValue(updatedTenant);
 
-      const result = await lastValueFrom(repository.update$('1', updateData));
+      const result = await lastValueFrom(repository.update$(mockTenant.id, updateData));
 
       expect(result).toEqual(updatedTenant);
       expect(prisma.tenant.update).toHaveBeenCalledWith({
-        where: { id: '1' },
+        where: { id: mockTenant.id },
         data: updateData,
       });
     });
@@ -118,7 +119,7 @@ describe('TenantRepository', () => {
       const error = new Error('Database error');
       prisma.tenant.update.mockRejectedValue(error);
 
-      await expect(lastValueFrom(repository.update$('1', { name: 'Updated Name' }))).rejects.toThrow(error);
+      await expect(lastValueFrom(repository.update$(mockTenant.id, { name: 'Updated Name' }))).rejects.toThrow(error);
     });
   });
 
@@ -131,11 +132,11 @@ describe('TenantRepository', () => {
 
       prisma.tenant.update.mockResolvedValue(deletedTenant);
 
-      const result = await lastValueFrom(repository.softDelete$('1'));
+      const result = await lastValueFrom(repository.softDelete$(mockTenant.id));
 
       expect(result.deletedAt).not.toBeNull();
       expect(prisma.tenant.update).toHaveBeenCalledWith({
-        where: { id: '1' },
+        where: { id: mockTenant.id },
         data: { deletedAt: expect.any(Date) },
       });
     });
@@ -143,7 +144,7 @@ describe('TenantRepository', () => {
 
   describe('findAll$', () => {
     it('should find all non-deleted tenants', async () => {
-      const tenants = [mockTenant, { ...mockTenant, id: '2' }];
+      const tenants = [mockTenant, { ...mockTenant, id: uuid() }];
       prisma.tenant.findMany.mockResolvedValue(tenants);
 
       const result = await lastValueFrom(repository.findAll$());
