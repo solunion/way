@@ -1,2 +1,35 @@
 [tools]
-pnpm = "9.15.0"
+pnpm = "9.15.1"
+
+[env]
+DATABASE_URL = 'postgres://way:way@postgres-127.0.0.1.nip.io:5432/way?schema=way'
+NODE_ENV = "development"
+LOG_LEVEL = "debug"
+_.path = ['./node_modules/.bin']
+
+[tasks.serve-backend]
+run = "nx serve backend"
+
+[tasks.build]
+run = "nx run-many -t build"
+
+[tasks.test]
+run = "nx run-many -t test"
+
+[tasks.lint]
+run = "nx run-many -t lint"
+
+[tasks.database-migrate]
+run = "nx run backend-database:prisma-migrate"
+
+[tasks.database-generate]
+run = "nx run backend-database:prisma-generate"
+
+[tasks.docker-start]
+run = "docker-compose up -d"
+
+[tasks.docker-stop]
+run = "docker-compose down"
+
+[tasks.docker-logs]
+run = "docker-compose logs -f"
