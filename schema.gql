@@ -9,7 +9,7 @@ input CreateTenantDto {
 
 type Mutation {
   createTenant(tenant: CreateTenantDto!): Tenant!
-  softDeleteTenant(id: String!): Tenant!
+  deleteTenant(id: String!): Boolean!
   updateTenant(id: String!, tenant: UpdateTenantDto!): Tenant!
 }
 

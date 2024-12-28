@@ -1,19 +1,20 @@
 import { Injectable } from '@nestjs/common';
+
 import { DatabaseService } from '@way/backend-database';
-import { TenantEntity } from '@prisma/client';
-import { Observable, from } from 'rxjs';
+import { from, Observable } from 'rxjs';
+import { TenantEntity } from './tenant.entity';
 
 @Injectable()
 export class TenantRepository {
   constructor(private readonly db: DatabaseService) {}
 
   create$(data: Pick<TenantEntity, 'name' | 'description'>): Observable<TenantEntity> {
-    return from(this.db.tenantEntity.create({ data }));
+    return from(this.db.tenant.create({ data }));
   }
 
   findById$(id: string): Observable<TenantEntity | null> {
     return from(
-      this.db.tenantEntity.findFirst({
+      this.db.tenant.findFirst({
         where: { id, deletedAt: null },
       })
     );
@@ -21,7 +22,7 @@ export class TenantRepository {
 
   update$(id: string, data: Partial<Pick<TenantEntity, 'name' | 'description'>>): Observable<TenantEntity> {
     return from(
-      this.db.tenantEntity.update({
+      this.db.tenant.update({
         where: { id },
         data,
       })
@@ -30,7 +31,7 @@ export class TenantRepository {
 
   softDelete$(id: string): Observable<TenantEntity> {
     return from(
-      this.db.tenantEntity.update({
+      this.db.tenant.update({
         where: { id },
         data: { deletedAt: new Date() },
       })
@@ -39,7 +40,7 @@ export class TenantRepository {
 
   findAll$(): Observable<TenantEntity[]> {
     return from(
-      this.db.tenantEntity.findMany({
+      this.db.tenant.findMany({
         where: { deletedAt: null },
       })
     );

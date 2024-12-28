@@ -1,4 +1,4 @@
-model TenantEntity {
+model Tenant {
   id          String  @id @default(uuid())
   name        String
   description String?

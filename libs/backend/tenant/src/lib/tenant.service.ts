@@ -1,9 +1,8 @@
 import { Injectable, UsePipes, ValidationPipe } from '@nestjs/common';
-import { TenantEntity } from '@prisma/client';
-import { DatabaseService } from '@way/backend-database';
 import { plainToInstance } from 'class-transformer';
 import { catchError, filter, map, Observable, throwError } from 'rxjs';
 import { TenantDto } from './dto/tenant.dto';
+import { TenantEntity } from './tenant.entity';
 import { NewTenant, Tenant } from './tenant.model';
 import { TenantRepository } from './tenant.repository';
 
@@ -11,11 +10,9 @@ import { TenantRepository } from './tenant.repository';
 @UsePipes(new ValidationPipe({ transform: true }))
 export class TenantService {
   #repository: TenantRepository;
-  #db: DatabaseService;
 
-  constructor(repository: TenantRepository, db: DatabaseService) {
+  constructor(repository: TenantRepository) {
     this.#repository = repository;
-    this.#db = db;
   }
 
   create$(newTenant: NewTenant): Observable<Tenant> {
@@ -56,8 +53,7 @@ export class TenantService {
   }
 
   #transformToEntity(dto: Partial<Tenant>): Pick<TenantEntity, 'name' | 'description'> {
-    // @ts-expect-error Generated type by Prisma
-    return plainToInstance(this.#db.tenantEntity, dto);
+    return plainToInstance(TenantEntity, dto);
   }
 
   #transformToDto(entity: TenantEntity): Tenant {
