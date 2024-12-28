@@ -1,20 +1,17 @@
 import { Test } from '@nestjs/testing';
-import { PrismaClient, TenantEntity } from '@prisma/client';
-import { DatabaseService } from '@way/backend-database';
-import { DeepMockProxy, mock, mockDeep, MockProxy } from 'jest-mock-extended';
+import { Tenant } from '@prisma/client';
+import { mock, MockProxy } from 'jest-mock-extended';
 import { lastValueFrom, of, throwError } from 'rxjs';
 import { v4 as uuid } from 'uuid';
-import { Tenant } from './tenant.model';
+import { Tenant as TenantModel } from './tenant.model';
 import { TenantRepository } from './tenant.repository';
 import { TenantService } from './tenant.service';
 
 describe('TenantService', () => {
   let service: TenantService;
   let repository: MockProxy<TenantRepository>;
-  let prisma: DeepMockProxy<PrismaClient>;
-  let databaseService: MockProxy<DatabaseService>;
 
-  const mockTenant: TenantEntity = {
+  const mockTenant: Tenant = {
     id: uuid(),
     name: 'Test Tenant',
     description: 'Test Description',
@@ -26,10 +23,6 @@ describe('TenantService', () => {
   const mockTenantId = mockTenant.id;
 
   beforeEach(async () => {
-    prisma = mockDeep<PrismaClient>({ funcPropSupport: true });
-    databaseService = mock<DatabaseService>({
-      tenantEntity: prisma.tenantEntity
-    });
     repository = mock<TenantRepository>();
 
     const module = await Test.createTestingModule({
@@ -38,10 +31,6 @@ describe('TenantService', () => {
         {
           provide: TenantRepository,
           useValue: repository,
-        },
-        {
-          provide: DatabaseService,
-          useValue: databaseService,
         },
       ],
     }).compile();
@@ -96,7 +85,7 @@ describe('TenantService', () => {
 
   describe('update$', () => {
     it('should update a tenant successfully', async () => {
-      const updateData: Partial<Tenant> = {
+      const updateData: Partial<TenantModel> = {
         name: 'Updated Name',
       };
 
@@ -114,7 +103,7 @@ describe('TenantService', () => {
     });
 
     it('should throw an error if tenant update fails', async () => {
-      const updateData: Partial<Tenant> = {
+      const updateData: Partial<TenantModel> = {
         name: 'Updated Name',
       };
 
