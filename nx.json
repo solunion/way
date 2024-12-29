@@ -35,7 +35,7 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/way-e2e/**/*"]
+      "exclude": ["apps/backend-e2e/**/*"]
     },
     {
       "plugin": "@nx/playwright/plugin",
