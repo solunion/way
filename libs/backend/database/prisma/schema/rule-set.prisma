@@ -1,0 +1,16 @@
+model RuleSet {
+  id        String   @id @default(uuid())
+  name      String
+  tenantId  String?
+  parentId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  rules     Rule[]   @relation("RuleToRuleSet")
+  parent    RuleSet? @relation("RuleSetToRuleSet", fields: [parentId], references: [id])
+  children  RuleSet[] @relation("RuleSetToRuleSet")
+  tenant    Tenant?   @relation(fields: [tenantId], references: [id])
+
+  @@map("rule_sets")
+}
