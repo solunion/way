@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { Tenant } from '@way/backend-tenant';
 import { Observable } from 'rxjs';
 import { RuleRepository } from './rule.repository';
 import { NewRule, Rule } from './rule.model';
-import { plainToInstance } from 'class-transformer';
 import { RuleEntity } from './rule.entity';
+import { plainToInstance } from 'class-transformer';
 import { map } from 'rxjs/operators';
 
 @Injectable()
@@ -22,7 +23,7 @@ export class RuleService {
     );
   }
 
-  update$(id: string, updateRule: Partial<Rule>): Observable<Rule> {
+  update$(id: string, updateRule: Rule): Observable<Rule> {
     return this.ruleRepository.update$(id, this.#transformToEntity(updateRule)).pipe(
       map(entity => this.#transformToDto(entity)),
     );
@@ -46,11 +47,11 @@ export class RuleService {
     );
   }
 
-  #transformToEntity(dto: Partial<Rule>): Pick<RuleEntity, 'name' | 'type' | 'value' | 'tenantId'> {
-    return plainToInstance(RuleEntity, dto);
+  #transformToEntity(rule: Partial<Rule>): Pick<RuleEntity, 'name' | 'type' | 'value' | 'tenantId'> {
+    return plainToInstance(RuleEntity, rule);
   }
 
   #transformToDto(entity: RuleEntity): Rule {
     return plainToInstance(Rule, entity);
   }
-} 
+}

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { RuleSetEntity } from './rule-set.entity';
-import { NewRuleSet, RuleSet } from './rule-set.model';
 import { RuleSetRepository } from './rule-set.repository';
+import { NewRuleSet, RuleSet } from './rule-set.model';
+import { RuleSetEntity } from './rule-set.entity';
+import { plainToInstance } from 'class-transformer';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class RuleSetService {
@@ -34,15 +34,8 @@ export class RuleSetService {
     return this.ruleSetRepository.findByTenantId$(tenantId).pipe(map((entities) => entities.map((entity) => this.#transformToDto(entity))));
   }
 
-  findByParentId$(parentId: string): Observable<RuleSet[]> {
-    return this.ruleSetRepository.findByParentId$(parentId).pipe(map((entities) => entities.map((entity) => this.#transformToDto(entity))));
-  }
-
-  #transformToEntity(dto: Partial<RuleSet>): RuleSetEntity {
-    return {
-      ...plainToInstance(RuleSetEntity, dto),
-      parentId: dto.parent?.id || null,
-    };
+  #transformToEntity(ruleSet: Partial<RuleSet>): RuleSetEntity {
+    return plainToInstance(RuleSetEntity, ruleSet);
   }
 
   #transformToDto(entity: RuleSetEntity): RuleSet {
