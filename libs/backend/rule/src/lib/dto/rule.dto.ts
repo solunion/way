@@ -24,14 +24,14 @@ export class RuleDto {
 
   @Field()
   @IsNotEmpty()
-  value: Prisma.JsonValue;
+  value: string;
 
   @Field({ nullable: true })
   @IsOptional()
   @IsUUID()
   tenantId?: string;
 
-  constructor(id: string, name: string, type: string, value: Prisma.JsonValue, tenantId?: string) {
+  constructor(id: string, name: string, type: string, value: string, tenantId?: string) {
     this.id = id;
     this.name = name;
     this.type = type;
@@ -57,14 +57,14 @@ export class CreateRuleDto {
 
   @Field()
   @IsNotEmpty()
-  value: Prisma.JsonValue;
+  value: string;
 
   @Field({ nullable: true })
   @IsOptional()
   @IsUUID()
   tenantId?: string;
 
-  constructor(name: string, type: string, value: Prisma.JsonValue, tenantId?: string) {
+  constructor(name: string, type: string, value: string, tenantId?: string) {
     this.name = name;
     this.type = type;
     this.value = value;
@@ -89,10 +89,10 @@ export class UpdateRuleDto {
 
   @Field({ nullable: true })
   @IsOptional()
-  value?: Prisma.JsonValue;
+  value?: string;
 
   @Field({ nullable: true })
   @IsOptional()
   @IsUUID()
   tenantId?: string;
-} 
+}

@@ -1,6 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { IsNotEmpty, IsUUID, MaxLength, MinLength } from 'class-validator';
-import { Prisma } from '@prisma/client';
 
 @ObjectType()
 export class NewRule {
@@ -17,12 +16,12 @@ export class NewRule {
 
   @Field()
   @IsNotEmpty()
-  value: Prisma.JsonValue;
+  value: string;
 
   @Field({ nullable: true })
   tenantId?: string;
 
-  constructor(name: string, type: string, value: Prisma.JsonValue, tenantId?: string) {
+  constructor(name: string, type: string, value: string, tenantId?: string) {
     this.name = name;
     this.type = type;
     this.value = value;
@@ -36,8 +35,8 @@ export class Rule extends NewRule {
   @IsUUID()
   id: string;
 
-  constructor(id: string, name: string, type: string, value: Prisma.JsonValue, tenantId?: string) {
+  constructor(id: string, name: string, type: string, value: string, tenantId?: string) {
     super(name, type, value, tenantId);
     this.id = id;
   }
-} 
+}

@@ -11,4 +11,5 @@ export * from './lib/dto/rule-set.dto';
 export * from './lib/rule.controller';
 export * from './lib/rule-set.controller';
 export * from './lib/rule.resolver';
-export * from './lib/rule-set.resolver'; 
+export * from './lib/rule-set.resolver';
+export * from './lib/rule.module';

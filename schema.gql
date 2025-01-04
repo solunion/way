@@ -2,19 +2,71 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateRuleDto {
+  name: String!
+  tenantId: String
+  type: String!
+  value: String!
+}
+
+input CreateRuleSetDto {
+  name: String!
+  tenantId: String
+}
+
 input CreateTenantDto {
   description: String
   name: String!
 }
 
 type Mutation {
+  createRule(createRuleDto: CreateRuleDto!): Rule!
+  createRuleSet(createRuleSetDto: CreateRuleSetDto!): RuleSet!
   createTenant(tenant: CreateTenantDto!): Tenant!
   deleteTenant(id: String!): Boolean!
+  removeRule(id: String!): Rule!
+  removeRuleSet(id: String!): RuleSet!
+  updateRule(id: String!, updateRuleDto: UpdateRuleDto!): Rule!
+  updateRuleSet(id: String!, updateRuleSetDto: UpdateRuleSetDto!): RuleSet!
   updateTenant(id: String!, tenant: UpdateTenantDto!): Tenant!
 }
 
 type Query {
+  rule(id: String!): Rule
+  ruleSet(id: String!): RuleSet
+  ruleSets: [RuleSet!]!
+  ruleSetsByTenantId(tenantId: String!): [RuleSet!]!
+  rules: [Rule!]!
+  rulesByTenantId(tenantId: String!): [Rule!]!
   tenant(id: String!): Tenant!
+}
+
+type Rule {
+  id: String!
+  name: String!
+  tenantId: String
+  type: String!
+  value: String!
+}
+
+input RuleInput {
+  id: String!
+  name: String!
+  tenantId: String
+  type: String!
+  value: String!
+}
+
+type RuleSet {
+  id: String!
+  name: String!
+  tenantId: String
+}
+
+input RuleSetInput {
+  id: String!
+  name: String!
+  tenantId: String
 }
 
 type Tenant {
@@ -27,6 +79,18 @@ input TenantDto {
   description: String
   id: String!
   name: String!
+}
+
+input UpdateRuleDto {
+  name: String
+  tenantId: String
+  type: String
+  value: String
+}
+
+input UpdateRuleSetDto {
+  name: String
+  tenantId: String
 }
 
 input UpdateTenantDto {
