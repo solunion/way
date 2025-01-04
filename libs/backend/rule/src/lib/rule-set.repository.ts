@@ -8,7 +8,7 @@ export class RuleSetRepository {
   constructor(private readonly db: DatabaseService) {}
 
   create$(data: RuleSetEntity): Observable<RuleSetEntity> {
-    return from(this.db.ruleSet.create({ data }));
+    return from(this.db.ruleSet.create({ data: data }));
   }
 
   findById$(id: string): Observable<RuleSetEntity | null> {

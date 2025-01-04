@@ -8,8 +8,4 @@ export class RuleSetEntity implements RuleSet {
   createdAt!: Date;
   updatedAt!: Date;
   deletedAt!: Date | null;
-
-  constructor(data: Partial<RuleSet>) {
-    Object.assign(this, data);
-  }
-} 
+}
