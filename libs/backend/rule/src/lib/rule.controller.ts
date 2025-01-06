@@ -5,9 +5,6 @@ import { map } from 'rxjs/operators';
 import { CreateRuleDto } from './dto/create-rule.dto';
 import { RuleDto } from './dto/rule.dto';
 import { UpdateRuleDto } from './dto/update-rule.dto';
-import { HttpMethod } from './model/rule/http/http-method.model';
-import { HttpStatus } from './model/rule/http/http-status.model';
-import { RuleType } from './rule-type.model';
 import { NewRule, Rule } from './rule.model';
 import { RuleService } from './rule.service';
 

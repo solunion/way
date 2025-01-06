@@ -5,7 +5,6 @@ import { map } from 'rxjs/operators';
 import { RuleEntity } from './rule.entity';
 import { NewRule, Rule } from './rule.model';
 import { RuleRepository } from './rule.repository';
-import { RuleType } from './rule-type.model';
 
 @Injectable()
 export class RuleService {

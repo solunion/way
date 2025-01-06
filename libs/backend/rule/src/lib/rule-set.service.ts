@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { RuleSetRepository } from './rule-set.repository';
-import { NewRuleSet, RuleSet } from './rule-set.model';
-import { RuleSetEntity } from './rule-set.entity';
 import { plainToInstance } from 'class-transformer';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { RuleSetEntity } from './rule-set.entity';
+import { NewRuleSet, RuleSet } from './rule-set.model';
+import { RuleSetRepository } from './rule-set.repository';
 
 @Injectable()
 export class RuleSetService {

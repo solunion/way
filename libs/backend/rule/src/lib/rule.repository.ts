@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from '@way/backend-database';
 import { from, Observable } from 'rxjs';
-import { TenantEntity } from '../../../tenant/src/lib/tenant.entity';
 import { RuleEntity } from './rule.entity';
 
 @Injectable()

@@ -2,7 +2,6 @@ import { Prisma, Rule } from '@prisma/client';
 import { Exclude, Expose } from 'class-transformer';
 
 export class RuleEntity implements Rule {
-
   @Expose()
   id: string;
   @Expose()
@@ -17,7 +16,6 @@ export class RuleEntity implements Rule {
   updatedAt: Date;
   @Exclude()
   deletedAt: Date | null;
-
 
   constructor(id: string, name: string, value: Prisma.JsonValue, tenantId: string | null, createdAt: Date, updatedAt: Date, deletedAt: Date | null) {
     this.id = id;
