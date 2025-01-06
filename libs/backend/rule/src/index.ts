@@ -7,6 +7,8 @@ export * from './lib/rule-set.service';
 export * from './lib/rule.model';
 export * from './lib/rule-set.model';
 export * from './lib/dto/rule.dto';
+export * from './lib/dto/create-rule.dto';
+export * from './lib/dto/update-rule.dto';
 export * from './lib/dto/rule-set.dto';
 export * from './lib/rule.controller';
 export * from './lib/rule-set.controller';

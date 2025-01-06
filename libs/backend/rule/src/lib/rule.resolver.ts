@@ -2,7 +2,9 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { plainToInstance } from 'class-transformer';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CreateRuleDto, RuleDto, UpdateRuleDto } from './dto/rule.dto';
+import { RuleDto } from './dto/rule.dto';
+import { CreateRuleDto } from './dto/create-rule.dto';
+import { UpdateRuleDto } from './dto/update-rule.dto';
 import { Rule } from './rule.model';
 import { RuleService } from './rule.service';
 

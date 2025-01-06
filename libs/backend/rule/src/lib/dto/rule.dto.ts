@@ -1,15 +1,21 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { IsNotEmpty, IsOptional, IsString, IsUUID, MaxLength, MinLength } from 'class-validator';
-import { Prisma } from '@prisma/client';
+import { Expose, Transform, Type } from 'class-transformer';
+import { IsEnum, IsNotEmpty, IsNotEmptyObject, IsOptional, IsString, IsUUID, MaxLength, MinLength, ValidateNested } from 'class-validator';
+import { GraphQLJSON } from 'graphql-type-json';
+import { HttpRuleValue } from '../model/rule/http/http-rule-value.model';
+import { RuleType } from '../rule-type.model';
+import { RuleValue } from '../rule-value.model';
 
-@InputType('RuleInput')
+@InputType()
 @ObjectType('Rule')
 export class RuleDto {
   @Field()
   @IsUUID()
+  @Expose()
   id: string;
 
   @Field()
+  @Expose()
   @IsNotEmpty()
   @IsString()
   @MinLength(3)
@@ -17,82 +23,39 @@ export class RuleDto {
   name: string;
 
   @Field()
-  @IsNotEmpty()
-  @IsString()
-  @MaxLength(50)
+  @Expose()
+  @IsEnum(RuleType)
   type: string;
 
-  @Field()
-  @IsNotEmpty()
-  value: string;
+  @Field(() => GraphQLJSON)
+  @Expose()
+  // @IsNotEmptyObject()
+  @Transform(({value, obj}) => {
+    // value = obj.value;
+    // console.log("Response: ", value);
+    value.type = obj.type;
+    return value;
+  }, {toPlainOnly: true})
+  @Type(() => RuleValue, {
+    discriminator: {
+      property: 'type',
+      subTypes: [{ value: HttpRuleValue, name: RuleType.HTTP }],
+    },
+    keepDiscriminatorProperty: true,
+  })
+  value: HttpRuleValue | RuleValue;
 
-  @Field({ nullable: true })
-  @IsOptional()
   @IsUUID()
+  @Expose()
+  @IsOptional()
+  @Field({ nullable: true })
   tenantId?: string;
 
-  constructor(id: string, name: string, type: string, value: string, tenantId?: string) {
+  constructor(id: string, name: string, type: string, value: HttpRuleValue | RuleValue, tenantId?: string) {
     this.id = id;
     this.name = name;
     this.type = type;
     this.value = value;
     this.tenantId = tenantId;
   }
-}
-
-@InputType()
-export class CreateRuleDto {
-  @Field()
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(3)
-  @MaxLength(50)
-  name: string;
-
-  @Field()
-  @IsNotEmpty()
-  @IsString()
-  @MaxLength(50)
-  type: string;
-
-  @Field()
-  @IsNotEmpty()
-  value: string;
-
-  @Field({ nullable: true })
-  @IsOptional()
-  @IsUUID()
-  tenantId?: string;
-
-  constructor(name: string, type: string, value: string, tenantId?: string) {
-    this.name = name;
-    this.type = type;
-    this.value = value;
-    this.tenantId = tenantId;
-  }
-}
-
-@InputType()
-export class UpdateRuleDto {
-  @Field({ nullable: true })
-  @IsOptional()
-  @IsString()
-  @MinLength(3)
-  @MaxLength(50)
-  name?: string;
-
-  @Field({ nullable: true })
-  @IsOptional()
-  @IsString()
-  @MaxLength(50)
-  type?: string;
-
-  @Field({ nullable: true })
-  @IsOptional()
-  value?: string;
-
-  @Field({ nullable: true })
-  @IsOptional()
-  @IsUUID()
-  tenantId?: string;
 }

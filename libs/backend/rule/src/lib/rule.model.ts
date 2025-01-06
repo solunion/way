@@ -1,27 +1,28 @@
-import { Field, ObjectType } from '@nestjs/graphql';
-import { IsNotEmpty, IsUUID, MaxLength, MinLength } from 'class-validator';
+import { Expose, Type } from 'class-transformer';
+import { IsEnum, IsNotEmpty, IsUUID, MaxLength, MinLength, ValidateNested } from 'class-validator';
+import { HttpRuleValue } from './model/rule/http/http-rule-value.model';
+import { RuleType } from './rule-type.model';
+import { RuleValue } from './rule-value.model';
 
-@ObjectType()
 export class NewRule {
-  @Field()
+  @Expose()
   @IsNotEmpty()
   @MinLength(3, { message: 'Name must be at least 3 characters long' })
   @MaxLength(50, { message: 'Name must not exceed 50 characters' })
   name: string;
 
-  @Field()
-  @IsNotEmpty()
-  @MaxLength(50, { message: 'Type must not exceed 50 characters' })
-  type: string;
+  @Expose()
+  @IsEnum(RuleType)
+  type: RuleType;
 
-  @Field()
-  @IsNotEmpty()
-  value: string;
+  @Expose()
+  @ValidateNested({each: true})
+  value: HttpRuleValue | RuleValue;
 
-  @Field({ nullable: true })
+  @Expose()
   tenantId?: string;
 
-  constructor(name: string, type: string, value: string, tenantId?: string) {
+  constructor(name: string, type: RuleType, value: RuleValue, tenantId?: string) {
     this.name = name;
     this.type = type;
     this.value = value;
@@ -29,13 +30,12 @@ export class NewRule {
   }
 }
 
-@ObjectType()
 export class Rule extends NewRule {
-  @Field()
+  @Expose()
   @IsUUID()
   id: string;
 
-  constructor(id: string, name: string, type: string, value: string, tenantId?: string) {
+  constructor(id: string, name: string, type: RuleType, value: RuleValue, tenantId?: string) {
     super(name, type, value, tenantId);
     this.id = id;
   }

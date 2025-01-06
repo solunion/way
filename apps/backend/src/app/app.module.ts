@@ -4,6 +4,7 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { RuleModule } from '@way/backend-rule';
 import { TenantModule } from '@way/backend-tenant';
+import GraphQLJSON from 'graphql-type-json';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { join } from 'path';
@@ -12,6 +13,7 @@ import { join } from 'path';
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
+      resolvers: { JSON: GraphQLJSON },
       autoSchemaFile: join(process.cwd(), 'schema.gql'),
       sortSchema: true,
       playground: false,
