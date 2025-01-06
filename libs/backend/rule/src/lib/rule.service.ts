@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { Rule as PrismaRule } from '@prisma/client';
 import { plainToInstance } from 'class-transformer';
-import { catchError, Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RuleEntity } from './rule.entity';
 import { NewRule, Rule } from './rule.model';
@@ -19,7 +20,7 @@ export class RuleService {
   }
 
   update$(id: string, updateRule: Rule): Observable<Rule> {
-    return this.ruleRepository.update$(id, this.#transformToEntity(updateRule)).pipe(map((entity) => this.#transformToDto(entity)));
+    return this.ruleRepository.update$(id, this.#transformToPrismaEntity(updateRule)).pipe(map((entity) => this.#transformToDto(entity)));
   }
 
   delete$(id: string): Observable<void> {
@@ -32,6 +33,11 @@ export class RuleService {
 
   findByTenantId$(tenantId: string): Observable<Rule[]> {
     return this.ruleRepository.findByTenantId$(tenantId).pipe(map((entities) => entities.map((entity) => this.#transformToDto(entity))));
+  }
+
+  #transformToPrismaEntity(rule: Rule): PrismaRule {
+    // @ts-expect-error Prisma types
+    return plainToInstance(PrismaRule, rule, { excludeExtraneousValues: true });
   }
 
   #transformToEntity(rule: Partial<Rule>): Pick<RuleEntity, 'name' | 'value' | 'tenantId'> {

@@ -14,22 +14,19 @@ export class RuleRepository {
   }
 
   create$(data: Pick<RuleEntity, 'name' | 'value' | 'tenantId'>): Observable<RuleEntity> {
-    return from(this.#db.rule.create({ data: this.#transformData(data) }));
+    return from(this.#db.rule.create({ data: this.#transformDataForCreate(data) }));
   }
 
   findById$(id: string): Observable<RuleEntity | null> {
     return from(this.#db.rule.findUnique({ where: { id, deletedAt: null } }));
   }
 
-  update$(id: string, data: Pick<RuleEntity, 'name' | 'value' | 'tenantId'>): Observable<RuleEntity> {
-    return from(this.#db.rule.update({ where: { id, deletedAt: null }, data: this.#transformData(data) }));
+  update$(id: string, data: RuleEntity): Observable<RuleEntity> {
+    return from(this.#db.rule.update({ where: { id, deletedAt: null }, data: this.#transformDataForUpdate(data) }));
   }
 
   delete$(id: string): Observable<void> {
-    return from(this.#db.rule.delete({ where: { id, deletedAt: null } }))
-      .pipe(
-        map(() => undefined),
-      );
+    return from(this.#db.rule.delete({ where: { id, deletedAt: null } })).pipe(map(() => undefined));
   }
 
   softDelete$(id: string): Observable<void> {
@@ -38,9 +35,7 @@ export class RuleRepository {
         where: { id },
         data: { deletedAt: new Date() },
       })
-    ).pipe(
-      map(() => undefined),
-    );
+    ).pipe(map(() => undefined));
   }
 
   findAll$(): Observable<RuleEntity[]> {
@@ -51,10 +46,17 @@ export class RuleRepository {
     return from(this.#db.rule.findMany({ where: { tenantId, deletedAt: null } }));
   }
 
-  #transformData(data: Pick<RuleEntity, 'name' | 'value' | 'tenantId'>) {
+  #transformDataForCreate(data: Pick<RuleEntity, 'name' | 'value' | 'tenantId'>) {
     return {
       ...data,
       value: !data.value ? Prisma.JsonNull : data.value,
+    };
+  }
+
+  #transformDataForUpdate(data: Pick<RuleEntity, 'name' | 'value' | 'tenantId'>) {
+    return {
+      ...data,
+      value: !data.value ? undefined : data.value,
     };
   }
 }
