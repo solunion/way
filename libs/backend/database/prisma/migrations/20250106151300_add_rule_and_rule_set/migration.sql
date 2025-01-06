@@ -15,7 +15,6 @@ CREATE TABLE "rule_sets" (
 CREATE TABLE "rules" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "type" TEXT NOT NULL,
     "value" JSONB NOT NULL,
     "tenantId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -37,10 +36,10 @@ CREATE TABLE "_RuleToRuleSet" (
 CREATE INDEX "_RuleToRuleSet_B_index" ON "_RuleToRuleSet"("B");
 
 -- AddForeignKey
-ALTER TABLE "rule_sets" ADD CONSTRAINT "rule_sets_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "rule_sets"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "rule_sets" ADD CONSTRAINT "rule_sets_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "tenants"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "rule_sets" ADD CONSTRAINT "rule_sets_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "tenants"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "rule_sets" ADD CONSTRAINT "rule_sets_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "rule_sets"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "rules" ADD CONSTRAINT "rules_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "tenants"("id") ON DELETE SET NULL ON UPDATE CASCADE;

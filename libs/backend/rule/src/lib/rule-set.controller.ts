@@ -8,37 +8,37 @@ import { RuleSetService } from './rule-set.service';
 
 @Controller('rule-sets')
 export class RuleSetController {
-  constructor(private readonly ruleSetService: RuleSetService) {}
+  constructor(private readonly service: RuleSetService) {}
 
   @Post()
   create(@Body() createRuleSetDto: CreateRuleSetDto): Observable<RuleSetDto> {
     const ruleSet = plainToInstance(RuleSet, createRuleSetDto);
-    return this.ruleSetService.create$(ruleSet).pipe(map((createdRuleSet) => plainToInstance(RuleSetDto, createdRuleSet)));
+    return this.service.create$(ruleSet).pipe(map((createdRuleSet) => plainToInstance(RuleSetDto, createdRuleSet)));
   }
 
   @Get(':id')
   findOne(@Param('id') id: string): Observable<RuleSetDto | null> {
-    return this.ruleSetService.findById$(id).pipe(map((ruleSet) => (ruleSet ? plainToInstance(RuleSetDto, ruleSet) : null)));
+    return this.service.findById$(id).pipe(map((ruleSet) => (ruleSet ? plainToInstance(RuleSetDto, ruleSet) : null)));
   }
 
   @Put(':id')
   update(@Param('id') id: string, @Body() updateRuleSetDto: UpdateRuleSetDto): Observable<RuleSetDto> {
     const ruleSet = plainToInstance(RuleSet, updateRuleSetDto);
-    return this.ruleSetService.update$(id, ruleSet).pipe(map((updatedRuleSet) => plainToInstance(RuleSetDto, updatedRuleSet)));
+    return this.service.update$(id, ruleSet).pipe(map((updatedRuleSet) => plainToInstance(RuleSetDto, updatedRuleSet)));
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Observable<RuleSetDto> {
-    return this.ruleSetService.delete$(id).pipe(map((deletedRuleSet) => plainToInstance(RuleSetDto, deletedRuleSet)));
+  remove(@Param('id') id: string): Observable<void> {
+    return this.service.delete$(id);
   }
 
   @Get()
   findAll(): Observable<RuleSetDto[]> {
-    return this.ruleSetService.findAll$().pipe(map((ruleSets) => ruleSets.map((ruleSet) => plainToInstance(RuleSetDto, ruleSet))));
+    return this.service.findAll$().pipe(map((ruleSets) => ruleSets.map((ruleSet) => plainToInstance(RuleSetDto, ruleSet))));
   }
 
   @Get('tenant/:tenantId')
   findByTenantId(@Param('tenantId') tenantId: string): Observable<RuleSetDto[]> {
-    return this.ruleSetService.findByTenantId$(tenantId).pipe(map((ruleSets) => ruleSets.map((ruleSet) => plainToInstance(RuleSetDto, ruleSet))));
+    return this.service.findByTenantId$(tenantId).pipe(map((ruleSets) => ruleSets.map((ruleSet) => plainToInstance(RuleSetDto, ruleSet))));
   }
 }

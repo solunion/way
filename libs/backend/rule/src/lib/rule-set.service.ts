@@ -8,30 +8,30 @@ import { RuleSetRepository } from './rule-set.repository';
 
 @Injectable()
 export class RuleSetService {
-  constructor(private readonly ruleSetRepository: RuleSetRepository) {}
+  constructor(private readonly repository: RuleSetRepository) {}
 
   create$(newRuleSet: NewRuleSet): Observable<RuleSet> {
-    return this.ruleSetRepository.create$(this.#transformToEntity(newRuleSet)).pipe(map((entity) => this.#transformToDto(entity)));
+    return this.repository.create$(this.#transformToEntity(newRuleSet)).pipe(map((entity) => this.#transformToDto(entity)));
   }
 
   findById$(id: string): Observable<RuleSet | null> {
-    return this.ruleSetRepository.findById$(id).pipe(map((entity) => (entity ? this.#transformToDto(entity) : null)));
+    return this.repository.findById$(id).pipe(map((entity) => (entity ? this.#transformToDto(entity) : null)));
   }
 
   update$(id: string, updateRuleSet: Partial<RuleSet>): Observable<RuleSet> {
-    return this.ruleSetRepository.update$(id, this.#transformToEntity(updateRuleSet)).pipe(map((entity) => this.#transformToDto(entity)));
+    return this.repository.update$(id, this.#transformToEntity(updateRuleSet)).pipe(map((entity) => this.#transformToDto(entity)));
   }
 
-  delete$(id: string): Observable<RuleSet> {
-    return this.ruleSetRepository.delete$(id).pipe(map((entity) => this.#transformToDto(entity)));
+  delete$(id: string): Observable<void> {
+    return this.repository.softDelete$(id);
   }
 
   findAll$(): Observable<RuleSet[]> {
-    return this.ruleSetRepository.findAll$().pipe(map((entities) => entities.map((entity) => this.#transformToDto(entity))));
+    return this.repository.findAll$().pipe(map((entities) => entities.map((entity) => this.#transformToDto(entity))));
   }
 
   findByTenantId$(tenantId: string): Observable<RuleSet[]> {
-    return this.ruleSetRepository.findByTenantId$(tenantId).pipe(map((entities) => entities.map((entity) => this.#transformToDto(entity))));
+    return this.repository.findByTenantId$(tenantId).pipe(map((entities) => entities.map((entity) => this.#transformToDto(entity))));
   }
 
   #transformToEntity(ruleSet: Partial<RuleSet>): RuleSetEntity {

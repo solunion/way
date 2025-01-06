@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@way/backend-database';
 import { from, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { RuleSetEntity } from './rule-set.entity';
 
 @Injectable()
@@ -19,8 +20,12 @@ export class RuleSetRepository {
     return from(this.db.ruleSet.update({ where: { id }, data }));
   }
 
-  delete$(id: string): Observable<RuleSetEntity> {
-    return from(this.db.ruleSet.delete({ where: { id } }));
+  delete$(id: string): Observable<void> {
+    return from(this.db.ruleSet.delete({ where: { id } })).pipe(map(() => undefined));
+  }
+
+  softDelete$(id: string): Observable<void> {
+    return from(this.db.ruleSet.delete({ where: { id, deletedAt: null } })).pipe(map(() => undefined));
   }
 
   findAll$(): Observable<RuleSetEntity[]> {
