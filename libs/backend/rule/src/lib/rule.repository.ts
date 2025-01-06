@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from '@way/backend-database';
 import { from, Observable } from 'rxjs';
+import { TenantEntity } from '../../../tenant/src/lib/tenant.entity';
 import { RuleEntity } from './rule.entity';
 
 @Injectable()
@@ -26,6 +27,15 @@ export class RuleRepository {
 
   delete$(id: string): Observable<RuleEntity> {
     return from(this.#db.rule.delete({ where: { id, deletedAt: null } }));
+  }
+
+  softDelete$(id: string): Observable<RuleEntity> {
+    return from(
+      this.db.rule.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+      })
+    );
   }
 
   findAll$(): Observable<RuleEntity[]> {

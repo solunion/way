@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RuleEntity } from './rule.entity';
 import { NewRule, Rule } from './rule.model';
 import { RuleRepository } from './rule.repository';
+import { RuleType } from './rule-type.model';
 
 @Injectable()
 export class RuleService {
@@ -22,8 +23,14 @@ export class RuleService {
     return this.ruleRepository.update$(id, this.#transformToEntity(updateRule)).pipe(map((entity) => this.#transformToDto(entity)));
   }
 
-  delete$(id: string): Observable<Rule> {
-    return this.ruleRepository.delete$(id).pipe(map((entity) => this.#transformToDto(entity)));
+  delete$(id: string): Observable<void> {
+    return this.ruleRepository.softDelete$(id).pipe(
+      map(() => undefined),
+      catchError((error) => {
+        console.error('Error deleting tenant:', error);
+        return throwError(() => new Error('Unable to delete tenant'));
+      })
+    );
   }
 
   findAll$(): Observable<Rule[]> {
@@ -35,12 +42,10 @@ export class RuleService {
   }
 
   #transformToEntity(rule: Partial<Rule>): Pick<RuleEntity, 'name' | 'value' | 'tenantId'> {
-    const entity = plainToInstance(RuleEntity, rule, { excludeExtraneousValues: true });
-    return entity;
+    return plainToInstance(RuleEntity, rule, { excludeExtraneousValues: true });
   }
 
   #transformToDto(entity: RuleEntity): Rule {
-    const dto = plainToInstance(Rule, entity, { excludeExtraneousValues: true });
-    return dto;
+    return plainToInstance(Rule, entity, { excludeExtraneousValues: true });
   }
 }

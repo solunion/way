@@ -5,6 +5,9 @@ import { map } from 'rxjs/operators';
 import { CreateRuleDto } from './dto/create-rule.dto';
 import { RuleDto } from './dto/rule.dto';
 import { UpdateRuleDto } from './dto/update-rule.dto';
+import { HttpMethod } from './model/rule/http/http-method.model';
+import { HttpStatus } from './model/rule/http/http-status.model';
+import { RuleType } from './rule-type.model';
 import { NewRule, Rule } from './rule.model';
 import { RuleService } from './rule.service';
 
@@ -15,12 +18,7 @@ export class RuleController {
   @Post()
   create(@Body() createRuleDto: CreateRuleDto): Observable<RuleDto> {
     const rule = plainToInstance(NewRule, createRuleDto, { excludeExtraneousValues: true });
-    return this.ruleService.create$(rule).pipe(
-      map((createdRule) => {
-        const ruleDto = plainToInstance(RuleDto, createdRule, { excludeExtraneousValues: true });
-        return ruleDto;
-      })
-    );
+    return this.ruleService.create$(rule).pipe(map((createdRule) => plainToInstance(RuleDto, createdRule, { excludeExtraneousValues: true })));
   }
 
   @Get(':id')
@@ -35,8 +33,8 @@ export class RuleController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Observable<RuleDto> {
-    return this.ruleService.delete$(id).pipe(map((deletedRule) => plainToInstance(RuleDto, deletedRule)));
+  remove(@Param('id') id: string): Observable<void> {
+    return this.ruleService.delete$(id);
   }
 
   @Get()

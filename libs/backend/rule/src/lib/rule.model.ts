@@ -1,5 +1,5 @@
 import { Expose, Type } from 'class-transformer';
-import { IsNotEmpty, IsNotEmptyObject, IsUUID, MaxLength, MinLength, ValidateNested } from 'class-validator';
+import { IsNotEmpty, IsUUID, MaxLength, MinLength, ValidateNested } from 'class-validator';
 import { HttpRuleValue } from './model/rule/http/http-rule-value.model';
 import { RuleType } from './rule-type.model';
 import { RuleValue } from './rule-value.model';
@@ -13,7 +13,6 @@ export class NewRule {
 
   @Expose()
   @ValidateNested({ each: true })
-  @IsNotEmptyObject()
   @Type(() => RuleValue, {
     discriminator: {
       property: 'type',
@@ -21,12 +20,12 @@ export class NewRule {
     },
     keepDiscriminatorProperty: true,
   })
-  value: HttpRuleValue | RuleValue;
+  value: HttpRuleValue;
 
   @Expose()
   tenantId?: string;
 
-  constructor(name: string, value: HttpRuleValue | RuleValue, tenantId?: string) {
+  constructor(name: string, value: HttpRuleValue, tenantId?: string) {
     this.name = name;
     this.value = value;
     this.tenantId = tenantId;
@@ -38,7 +37,7 @@ export class Rule extends NewRule {
   @IsUUID()
   id: string;
 
-  constructor(id: string, name: string, value: RuleValue, tenantId?: string) {
+  constructor(id: string, name: string, value: HttpRuleValue, tenantId?: string) {
     super(name, value, tenantId);
     this.id = id;
   }
