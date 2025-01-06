@@ -15,7 +15,12 @@ export class RuleController {
   @Post()
   create(@Body() createRuleDto: CreateRuleDto): Observable<RuleDto> {
     const rule = plainToInstance(NewRule, createRuleDto, { excludeExtraneousValues: true });
-    return this.ruleService.create$(rule).pipe(map((createdRule) => plainToInstance(RuleDto, createdRule, { excludeExtraneousValues: true })));
+    return this.ruleService.create$(rule).pipe(
+      map((createdRule) => {
+        const ruleDto = plainToInstance(RuleDto, createdRule, { excludeExtraneousValues: true });
+        return ruleDto;
+      })
+    );
   }
 
   @Get(':id')

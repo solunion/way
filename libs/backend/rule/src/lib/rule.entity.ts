@@ -8,8 +8,6 @@ export class RuleEntity implements Rule {
   @Expose()
   name: string;
   @Expose()
-  type: string;
-  @Expose()
   value: Prisma.JsonValue;
   @Expose()
   tenantId: string | null;
@@ -21,10 +19,9 @@ export class RuleEntity implements Rule {
   deletedAt: Date | null;
 
 
-  constructor(id: string, name: string, type: string, value: Prisma.JsonValue, tenantId: string | null, createdAt: Date, updatedAt: Date, deletedAt: Date | null) {
+  constructor(id: string, name: string, value: Prisma.JsonValue, tenantId: string | null, createdAt: Date, updatedAt: Date, deletedAt: Date | null) {
     this.id = id;
     this.name = name;
-    this.type = type;
     this.value = value;
     this.tenantId = tenantId;
     this.createdAt = createdAt;

@@ -1,7 +1,6 @@
 model Rule {
   id        String   @id @default(uuid())
   name      String
-  type      String
   value     Json
   tenantId  String?
   createdAt DateTime @default(now())
@@ -12,4 +11,4 @@ model Rule {
   tenant    Tenant?   @relation(fields: [tenantId], references: [id])
 
   @@map("rules")
-} 
+}

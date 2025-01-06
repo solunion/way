@@ -12,7 +12,7 @@ export class RuleRepository {
     this.#db = db;
   }
 
-  create$(data: Pick<RuleEntity, 'name' | 'type' | 'value' | 'tenantId'>): Observable<RuleEntity> {
+  create$(data: Pick<RuleEntity, 'name' | 'value' | 'tenantId'>): Observable<RuleEntity> {
     return from(this.#db.rule.create({ data: this.#transformData(data) }));
   }
 
@@ -20,7 +20,7 @@ export class RuleRepository {
     return from(this.#db.rule.findUnique({ where: { id, deletedAt: null } }));
   }
 
-  update$(id: string, data: Pick<RuleEntity, 'name' | 'type' | 'value' | 'tenantId'>): Observable<RuleEntity> {
+  update$(id: string, data: Pick<RuleEntity, 'name' | 'value' | 'tenantId'>): Observable<RuleEntity> {
     return from(this.#db.rule.update({ where: { id, deletedAt: null }, data: this.#transformData(data) }));
   }
 
@@ -36,7 +36,7 @@ export class RuleRepository {
     return from(this.#db.rule.findMany({ where: { tenantId, deletedAt: null } }));
   }
 
-  #transformData(data: Pick<RuleEntity, 'name' | 'type' | 'value' | 'tenantId'>) {
+  #transformData(data: Pick<RuleEntity, 'name' | 'value' | 'tenantId'>) {
     return {
       ...data,
       value: !data.value ? Prisma.JsonNull : data.value,

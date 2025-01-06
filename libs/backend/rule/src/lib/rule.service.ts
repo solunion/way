@@ -34,12 +34,13 @@ export class RuleService {
     return this.ruleRepository.findByTenantId$(tenantId).pipe(map((entities) => entities.map((entity) => this.#transformToDto(entity))));
   }
 
-  #transformToEntity(rule: Partial<Rule>): Pick<RuleEntity, 'name' | 'type' | 'value' | 'tenantId'> {
+  #transformToEntity(rule: Partial<Rule>): Pick<RuleEntity, 'name' | 'value' | 'tenantId'> {
     const entity = plainToInstance(RuleEntity, rule, { excludeExtraneousValues: true });
     return entity;
   }
 
   #transformToDto(entity: RuleEntity): Rule {
-    return plainToInstance(Rule, entity, { excludeExtraneousValues: true });
+    const dto = plainToInstance(Rule, entity, { excludeExtraneousValues: true });
+    return dto;
   }
 }
