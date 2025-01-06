@@ -23,13 +23,7 @@ export class RuleService {
   }
 
   delete$(id: string): Observable<void> {
-    return this.ruleRepository.softDelete$(id).pipe(
-      map(() => undefined),
-      catchError((error) => {
-        console.error('Error deleting tenant:', error);
-        return throwError(() => new Error('Unable to delete tenant'));
-      })
-    );
+    return this.ruleRepository.softDelete$(id);
   }
 
   findAll$(): Observable<Rule[]> {

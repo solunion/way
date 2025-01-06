@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from '@way/backend-database';
 import { from, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { RuleEntity } from './rule.entity';
 
 @Injectable()
@@ -24,16 +25,21 @@ export class RuleRepository {
     return from(this.#db.rule.update({ where: { id, deletedAt: null }, data: this.#transformData(data) }));
   }
 
-  delete$(id: string): Observable<RuleEntity> {
-    return from(this.#db.rule.delete({ where: { id, deletedAt: null } }));
+  delete$(id: string): Observable<void> {
+    return from(this.#db.rule.delete({ where: { id, deletedAt: null } }))
+      .pipe(
+        map(() => undefined),
+      );
   }
 
-  softDelete$(id: string): Observable<RuleEntity> {
+  softDelete$(id: string): Observable<void> {
     return from(
       this.db.rule.update({
         where: { id },
         data: { deletedAt: new Date() },
       })
+    ).pipe(
+      map(() => undefined),
     );
   }
 
