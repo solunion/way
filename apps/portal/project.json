@@ -22,7 +22,7 @@
             "input": "apps/portal/public"
           }
         ],
-        "styles": ["apps/portal/src/styles.scss"],
+        "styles": ["apps/portal/src/app/styles/styles.scss"],
         "scripts": []
       },
       "configurations": {

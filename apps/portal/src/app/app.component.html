@@ -1,2 +1,27 @@
-<way-nx-welcome></way-nx-welcome>
-<router-outlet></router-outlet>
+<div
+  class="way-container"
+  [ngClass]="{ 'dark-theme' : darkModeOn(), 'light-theme' : !darkModeOn() }">
+
+  <!--
+  -- Toolbar
+  -->
+  <way-toolbar></way-toolbar>
+
+  <!--
+  -- Navbar
+  -->
+  <way-navbar></way-navbar>
+
+  <!--
+  -- Action Menu
+  -->
+  <way-action-menu></way-action-menu>
+
+  <!--
+  --  Router
+  -->
+  <div class="way-container__router">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
