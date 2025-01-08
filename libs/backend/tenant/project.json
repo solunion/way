@@ -1,0 +1,8 @@
+{
+  "name": "backend-tenant",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/backend/tenant/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {}
+}

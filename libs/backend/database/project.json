@@ -1,0 +1,81 @@
+{
+  "name": "backend-database",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/backend/database/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "prisma-deploy": {
+      "executor": "@nx-tools/nx-prisma:deploy",
+      "options": {
+        "schema": "libs/backend/database/prisma/schema"
+      }
+    },
+    "prisma-format": {
+      "executor": "@nx-tools/nx-prisma:format",
+      "options": {
+        "schema": "libs/backend/database/prisma/schema"
+      }
+    },
+    "prisma-generate": {
+      "executor": "@nx-tools/nx-prisma:generate",
+      "options": {
+        "schema": "libs/backend/database/prisma/schema"
+      }
+    },
+    "prisma-migrate": {
+      "executor": "@nx-tools/nx-prisma:migrate",
+      "options": {
+        "schema": "libs/backend/database/prisma/schema"
+      }
+    },
+    "prisma-pull": {
+      "executor": "@nx-tools/nx-prisma:pull",
+      "options": {
+        "schema": "libs/backend/database/prisma/schema"
+      }
+    },
+    "prisma-push": {
+      "executor": "@nx-tools/nx-prisma:push",
+      "options": {
+        "schema": "libs/backend/database/prisma/schema"
+      }
+    },
+    "prisma-reset": {
+      "executor": "@nx-tools/nx-prisma:reset",
+      "options": {
+        "schema": "libs/backend/database/prisma/schema"
+      }
+    },
+    "prisma-resolve": {
+      "executor": "@nx-tools/nx-prisma:resolve",
+      "options": {
+        "schema": "libs/backend/database/prisma/schema"
+      }
+    },
+    "prisma-seed": {
+      "executor": "@nx-tools/nx-prisma:seed",
+      "options": {
+        "schema": "libs/backend/database/prisma/schema"
+      }
+    },
+    "prisma-status": {
+      "executor": "@nx-tools/nx-prisma:status",
+      "options": {
+        "schema": "libs/backend/database/prisma/schema"
+      }
+    },
+    "prisma-studio": {
+      "executor": "@nx-tools/nx-prisma:studio",
+      "options": {
+        "schema": "libs/backend/database/prisma/schema"
+      }
+    },
+    "prisma-validate": {
+      "executor": "@nx-tools/nx-prisma:validate",
+      "options": {
+        "schema": "libs/backend/database/prisma/schema"
+      }
+    }
+  }
+}

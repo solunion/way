@@ -1,0 +1,35 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateTenantDto {
+  description: String
+  name: String!
+}
+
+type Mutation {
+  createTenant(tenant: CreateTenantDto!): Tenant!
+  deleteTenant(id: String!): Boolean!
+  updateTenant(id: String!, tenant: UpdateTenantDto!): Tenant!
+}
+
+type Query {
+  tenant(id: String!): Tenant!
+}
+
+type Tenant {
+  description: String
+  id: String!
+  name: String!
+}
+
+input TenantDto {
+  description: String
+  id: String!
+  name: String!
+}
+
+input UpdateTenantDto {
+  description: String
+  name: String
+}
