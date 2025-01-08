@@ -1,0 +1,54 @@
+.way-action-menu {
+  position: fixed;
+  bottom: 0rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--primary-color, #3f51b5);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 600px;
+  animation: slide-up 0.5s linear forwards;
+  z-index: 99;
+}
+
+.way-action-menu button {
+  margin: 0 0.5rem;
+  color: white;
+}
+
+.way-action-menu button.mat-icon-button {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.way-action-menu button:focus {
+  outline: 3px solid #ffd740; /* Accessible focus outline */
+}
+
+.curved-corner {
+  --r: 2.2em; /* control the curvature */
+  border-inline: var(--r) solid #0000;
+  border-radius: calc(2*var(--r)) calc(2*var(--r)) 0 0/var(--r);
+  mask:
+    radial-gradient(var(--r) at var(--r) 0,#0000 98%,#000 101%)
+    calc(-1*var(--r)) 100%/100% var(--r) repeat-x,
+    conic-gradient(#000 0 0) padding-box;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateX(-50%) translateY(100%);
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+  }
+}

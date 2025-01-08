@@ -1,0 +1,66 @@
+
+@use 'themes/themes.scss' as themes;
+@use '@angular/material' as mat;
+/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+
+/*
+* Components
+*/
+@import './components/toolbar';
+@import './components/nav-menu';
+@import './components/action-menu';
+
+/*
+* Templates
+*/
+
+
+
+
+html, body {
+  height: 100vh;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+
+
+
+
+.dark-theme{
+  @include mat.core();
+  @include mat.all-component-themes(themes.$dark-theme);
+  @include mat.icon-theme(themes.$dark-theme);
+  @include mat.button-theme(themes.$dark-theme);
+  background-color: #333; // Default to dark theme background
+}
+
+.light-theme{
+  @include mat.core();
+  @include mat.all-component-colors(themes.$light-theme);
+  @include mat.icon-theme(themes.$light-theme);
+  @include mat.button-theme(themes.$light-theme);
+  background-color: #f4f4f4; // Light theme background
+}
+
+
+.way-container{
+  height: 100vh;
+
+  &__router {
+    height: calc(100vh - 64px);
+    overflow: auto;
+  }
+}
+
+
+//@media (prefers-color-scheme: light) {
+//  :root {
+//    @include mat.all-component-colors(themes.$light-theme);
+//  }
+//  body {
+//    background-color: #f4f4f4; // Light theme background
+//  }
+//}

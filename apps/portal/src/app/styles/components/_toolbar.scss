@@ -1,0 +1,13 @@
+.way-toolbar{
+  display: flex;
+  justify-content: space-between;
+
+  mat-form-field{
+    width: 100%;
+    max-width: 500px;
+
+    .mat-mdc-form-field-subscript-wrapper{
+      display: none;
+    }
+  }
+}
