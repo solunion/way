@@ -11,6 +11,7 @@ import { ActionMenuComponent } from './shared/components/structural/action-menu/
 import { ToolbarComponent } from './shared/components/structural/toolbar/toolbar.component';
 import { UtilityService } from './shared/services/utility.service';
 import { NgClass } from '@angular/common';
+import { BreadcrumbComponent } from './shared/components/structural/breadcrumb/breadcrumb.component';
 
 @Component({
   imports: [
@@ -24,7 +25,8 @@ import { NgClass } from '@angular/common';
     NavbarComponent,
     ActionMenuComponent,
     ToolbarComponent,
-    NgClass
+    NgClass,
+    BreadcrumbComponent
   ],
   selector: 'way-root',
   templateUrl: './app.component.html',
