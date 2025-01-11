@@ -7,22 +7,7 @@ import { MatIconButton } from '@angular/material/button';
     MatIconButton
   ],
   standalone: true,
-  template: `
-    <nav aria-label="Dock menu" class="way-action-menu curved-corner ">
-      <button mat-icon-button color="primary" aria-label="Go to Home">
-        <span class="material-icons">home</span>
-      </button>
-      <button mat-icon-button color="primary" aria-label="Learn more About us">
-        <span class="material-icons">info</span>
-      </button>
-      <button mat-icon-button color="primary" aria-label="Explore our Services">
-        <span class="material-icons">build</span>
-      </button>
-      <button mat-icon-button color="primary" aria-label="Get in touch with us">
-        <span class="material-icons">contact_mail</span>
-      </button>
-    </nav>
-  `,
+  templateUrl: './action-menu.component.html',
 })
 export class ActionMenuComponent {
 
