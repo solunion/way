@@ -31,6 +31,12 @@ run = "nx run @way/backend-database:prisma-status"
 [tasks.database-deploy]
 run = "nx run @way/backend-database:prisma-deploy"
 
+[tasks.database-status]
+run = "nx run backend-database:prisma-status"
+
+[tasks.database-deploy]
+run = "nx run backend-database:prisma-deploy"
+
 [tasks.docker-start]
 run = "docker-compose up -d"
 
