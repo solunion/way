@@ -11,23 +11,7 @@ import { MatTooltip } from '@angular/material/tooltip';
     MatTooltip
   ],
   standalone: true,
-  template: `
-    <nav aria-label="Main menu" class="way-menu">
-      <button mat-icon-button color="primary" aria-label="Go to Home"
-              matTooltip="Example" matTooltipPosition="right"
-              matTooltipClass="way-menu-tooltip"><mat-icon>view_comfy_alt</mat-icon></button>
-
-      <button mat-icon-button color="primary" aria-label="Go to Home"
-              matTooltip="Example" matTooltipPosition="right"
-              matTooltipClass="way-menu-tooltip"><mat-icon>view_comfy_alt</mat-icon></button>
-
-
-      <div class="way-menu__divisor"></div>
-      <button mat-icon-button color="primary" aria-label="Go to Home"
-              matTooltip="Example" matTooltipPosition="right"
-              matTooltipClass="way-menu-tooltip"><mat-icon>view_comfy_alt</mat-icon></button>
-    </nav>
-  `
+  templateUrl: './navbar.component.html',
 })
 export class NavbarComponent {
 

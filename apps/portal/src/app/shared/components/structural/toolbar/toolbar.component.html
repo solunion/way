@@ -1,0 +1,53 @@
+<mat-toolbar color="primary" class="way-toolbar">
+
+  <!-- Menu button -->
+  <div>
+    <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+      <mat-icon>menu</mat-icon>
+    </button>
+  </div>
+
+  <!-- Search Bar -->
+  <mat-form-field appearance="outline">
+    <mat-label>Cerca</mat-label>
+    <input matInput placeholder="Inserisci una parola chiave">
+  </mat-form-field>
+
+
+  <!-- User Opt-->
+  <div>
+    <button mat-icon-button
+            class="example-icon favorite-icon"
+            aria-label="Example icon-button with heart icon"
+            [matMenuTriggerFor]="menu"
+    >
+      <mat-icon>person</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu">
+
+      <mat-list role="list">
+
+        <mat-list-item role="listitem">
+          <mat-slide-toggle
+            labelPosition="before"
+            [checked]="darkModeOn()"
+            (change)="setDarkMode( $event )"
+          >
+            <span style="padding-right: 10px">Dark Mode</span>
+          </mat-slide-toggle>
+        </mat-list-item>
+
+        <mat-list-item role="listitem">
+          <button mat-button>
+            <mat-icon>logout</mat-icon>
+            Logout
+          </button>
+        </mat-list-item>
+
+      </mat-list>
+    </mat-menu>
+
+
+  </div>
+</mat-toolbar>

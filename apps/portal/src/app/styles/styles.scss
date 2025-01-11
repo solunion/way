@@ -15,7 +15,12 @@
 /*
 * Templates
 */
+@import './templates/page';
 
+
+:root{
+  --color-primary: #005cbb;
+}
 
 
 
@@ -24,8 +29,6 @@ html, body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-
-
 
 
 
@@ -50,8 +53,10 @@ html, body {
   height: 100vh;
 
   &__router {
-    height: calc(100vh - 64px);
+    height: calc(100vh - 64px - 60px - 200px); /* - Toolbar - Breadcrumb*/
     overflow: auto;
+    margin: 0;
+    padding: 100px;
   }
 }
 
