@@ -2,6 +2,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
+import { ApplicationModule } from '@way/backend-application';
 import { RuleModule } from '@way/backend-rule';
 import { TenantModule } from '@way/backend-tenant';
 import GraphQLJSON from 'graphql-type-json';
@@ -22,6 +23,7 @@ import { join } from 'path';
     }),
     TenantModule,
     RuleModule,
+    ApplicationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
