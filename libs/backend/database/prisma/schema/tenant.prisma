@@ -7,6 +7,7 @@ model Tenant {
   deletedAt   DateTime?
   Rule Rule[]
   RuleSet RuleSet[]
+  Application Application[]
 
   @@map("tenants")
 }
