@@ -13,6 +13,7 @@
     "@angular/platform-browser": "~19.0.6",
     "@angular/platform-browser-dynamic": "~19.0.6",
     "@angular/router": "~19.0.6",
+    "@angular/material": "^19.0.5",
     "@apollo/server": "^4.11.3",
     "@nestjs/apollo": "^12.2.2",
     "@nestjs/common": "^10.4.15",
