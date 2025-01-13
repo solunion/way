@@ -53,10 +53,10 @@ html, body {
   height: 100vh;
 
   &__router {
-    height: calc(100vh - 64px - 60px - 200px); /* - Toolbar - Breadcrumb*/
+    height: calc(100vh - 64px - 128px); /* - Toolbar - Breadcrumb*/
     overflow: auto;
     margin: 0;
-    padding: 100px;
+    padding: 0px 100px 64px 100px;
   }
 }
 
