@@ -2,6 +2,26 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Application {
+  description: String
+  id: String!
+  name: String!
+  tenantId: String
+}
+
+input ApplicationDto {
+  description: String
+  id: String!
+  name: String!
+  tenantId: String
+}
+
+input CreateApplicationDto {
+  description: String
+  name: String!
+  tenantId: String
+}
+
 input CreateRuleDto {
   name: String!
   tenantId: String
@@ -24,18 +44,23 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 scalar JSON
 
 type Mutation {
+  createApplication(createApplicationInput: CreateApplicationDto!): Application!
   createRule(createRuleDto: CreateRuleDto!): Rule!
   createRuleSet(createRuleSetDto: CreateRuleSetDto!): RuleSet!
   createTenant(tenant: CreateTenantDto!): Tenant!
   deleteTenant(id: String!): Boolean!
+  removeApplication(id: String!): Boolean!
   removeRule(id: String!): Rule!
   removeRuleSet(id: String!): RuleSet!
+  updateApplication(id: String!, updateApplicationInput: UpdateApplicationDto!): Application!
   updateRule(id: String!, updateRuleDto: UpdateRuleDto!): Rule!
   updateRuleSet(id: String!, updateRuleSetDto: UpdateRuleSetDto!): RuleSet!
   updateTenant(id: String!, tenant: UpdateTenantDto!): Tenant!
 }
 
 type Query {
+  findAllApplications: [Application!]!
+  findApplication(id: String!): Application
   rule(id: String!): Rule
   ruleSet(id: String!): RuleSet
   ruleSets: [RuleSet!]!
@@ -81,6 +106,13 @@ input TenantDto {
   description: String
   id: String!
   name: String!
+}
+
+input UpdateApplicationDto {
+  description: String
+  id: String
+  name: String
+  tenantId: String
 }
 
 input UpdateRuleDto {
