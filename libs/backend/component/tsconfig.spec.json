@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "../../../dist/out-tsc",
     "module": "commonjs",
+    "moduleResolution": "node10",
     "types": ["jest", "node"]
   },
   "include": [
@@ -11,4 +12,4 @@
     "src/**/*.spec.ts",
     "src/**/*.d.ts"
   ]
-} 
+}

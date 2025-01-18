@@ -1,8 +1,20 @@
 {
-  "name": "backend-application",
+  "name": "@way/backend-application",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/backend/application/src",
   "projectType": "library",
   "tags": [],
-  "targets": {}
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/backend/application",
+        "tsConfig": "libs/backend/application/tsconfig.lib.json",
+        "main": "libs/backend/application/src/index.ts",
+        "assets": ["libs/backend/application/*.md"],
+        "generatePackageJson": true
+      }
+    }
+  }
 }
