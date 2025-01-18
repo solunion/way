@@ -8,5 +8,7 @@ model Application {
   updatedAt   DateTime @updatedAt
   deletedAt   DateTime?
 
+  components Component[]
+
   @@map("applications")
-} 
+}

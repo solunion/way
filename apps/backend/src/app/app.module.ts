@@ -3,6 +3,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApplicationModule } from '@way/backend-application';
+import { ComponentModule } from '@way/backend-component';
 import { RuleModule } from '@way/backend-rule';
 import { TenantModule } from '@way/backend-tenant';
 import GraphQLJSON from 'graphql-type-json';
@@ -24,6 +25,7 @@ import { join } from 'path';
     TenantModule,
     RuleModule,
     ApplicationModule,
+    ComponentModule
   ],
   controllers: [AppController],
   providers: [AppService],

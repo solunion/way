@@ -1,4 +1,4 @@
-import { Prisma, Rule } from '@prisma/client';
+import type { Prisma, Rule } from '@prisma/client';
 import { Exclude, Expose } from 'class-transformer';
 
 export class RuleEntity implements Rule {

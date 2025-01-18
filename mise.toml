@@ -8,7 +8,7 @@ LOG_LEVEL = "debug"
 _.path = ['./node_modules/.bin']
 
 [tasks.serve-backend]
-run = "nx serve backend"
+run = "nx serve @way/backend"
 
 [tasks.build]
 run = "nx run-many -t build"
@@ -20,16 +20,16 @@ run = "nx run-many -t test"
 run = "nx run-many -t lint"
 
 [tasks.database-migrate]
-run = "nx run backend-database:prisma-migrate"
+run = "nx run @way/backend-database:prisma-migrate"
 
 [tasks.database-generate]
-run = "nx run backend-database:prisma-generate"
+run = "nx run @way/backend-database:prisma-generate"
 
 [tasks.database-status]
-run = "nx run backend-database:prisma-status"
+run = "nx run @way/backend-database:prisma-status"
 
 [tasks.database-deploy]
-run = "nx run backend-database:prisma-deploy"
+run = "nx run @way/backend-database:prisma-deploy"
 
 [tasks.docker-start]
 run = "docker-compose up -d"

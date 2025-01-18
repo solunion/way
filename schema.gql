@@ -16,7 +16,30 @@ input ApplicationDto {
   tenantId: String
 }
 
+type Component {
+  applicationId: String!
+  description: String
+  id: String!
+  name: String!
+  tenantId: String
+}
+
+input ComponentDto {
+  applicationId: String!
+  description: String
+  id: String!
+  name: String!
+  tenantId: String
+}
+
 input CreateApplicationDto {
+  description: String
+  name: String!
+  tenantId: String
+}
+
+input CreateComponentDto {
+  applicationId: String!
   description: String
   name: String!
   tenantId: String
@@ -45,20 +68,25 @@ scalar JSON
 
 type Mutation {
   createApplication(createApplicationInput: CreateApplicationDto!): Application!
+  createComponent(createComponent: CreateComponentDto!): Component!
   createRule(createRuleDto: CreateRuleDto!): Rule!
   createRuleSet(createRuleSetDto: CreateRuleSetDto!): RuleSet!
   createTenant(tenant: CreateTenantDto!): Tenant!
+  deleteComponent(id: String!): Boolean!
   deleteTenant(id: String!): Boolean!
   removeApplication(id: String!): Boolean!
   removeRule(id: String!): Rule!
   removeRuleSet(id: String!): RuleSet!
   updateApplication(id: String!, updateApplicationInput: UpdateApplicationDto!): Application!
+  updateComponent(id: String!, updateComponent: UpdateComponentDto!): Component!
   updateRule(id: String!, updateRuleDto: UpdateRuleDto!): Rule!
   updateRuleSet(id: String!, updateRuleSetDto: UpdateRuleSetDto!): RuleSet!
   updateTenant(id: String!, tenant: UpdateTenantDto!): Tenant!
 }
 
 type Query {
+  component(id: String!): Component
+  components: [Component!]!
   findAllApplications: [Application!]!
   findApplication(id: String!): Application
   rule(id: String!): Rule
@@ -109,6 +137,14 @@ input TenantDto {
 }
 
 input UpdateApplicationDto {
+  description: String
+  id: String
+  name: String
+  tenantId: String
+}
+
+input UpdateComponentDto {
+  applicationId: String
   description: String
   id: String
   name: String
