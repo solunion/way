@@ -1,4 +1,4 @@
-import { Application } from '@prisma/client';
+import type { Application } from '@prisma/client';
 
 export class ApplicationEntity implements Application {
   id: string;

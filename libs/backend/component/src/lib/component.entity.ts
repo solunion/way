@@ -29,4 +29,4 @@ export class ComponentEntity implements Component {
     this.updatedAt = updatedAt;
     this.deletedAt = deletedAt;
   }
-} 
+}
