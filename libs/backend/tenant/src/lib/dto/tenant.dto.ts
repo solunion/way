@@ -3,7 +3,7 @@ import { Expose } from 'class-transformer';
 import { IsNotEmpty, IsUUID, MaxLength, MinLength } from 'class-validator';
 
 @InputType()
-@ObjectType('Tenant')
+@ObjectType('TenantOutput')
 export class TenantDto {
   @Field()
   @IsUUID()
