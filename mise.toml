@@ -8,7 +8,7 @@ LOG_LEVEL = "debug"
 _.path = ['./node_modules/.bin']
 
 [tasks.serve-backend]
-run = "nx serve backend"
+run = "nx serve @way/backend"
 
 [tasks.build]
 run = "nx run-many -t build"
