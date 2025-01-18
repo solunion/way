@@ -19,7 +19,7 @@ export class RuleResolver {
   }
 
   @Query(() => RuleDto, { nullable: true })
-  rule(@Args('id') id: string): Observable<RuleDto | null> {
+  getRuleById(@Args('id') id: string): Observable<RuleDto | null> {
     return this.ruleService.findById$(id).pipe(map((rule) => (rule ? plainToInstance(RuleDto, rule) : null)));
   }
 
@@ -30,17 +30,17 @@ export class RuleResolver {
   }
 
   @Mutation(() => RuleDto)
-  removeRule(@Args('id') id: string): Observable<RuleDto> {
+  deleteRule(@Args('id') id: string): Observable<RuleDto> {
     return this.ruleService.delete$(id).pipe(map((deletedRule) => plainToInstance(RuleDto, deletedRule)));
   }
 
   @Query(() => [RuleDto])
-  rules(): Observable<RuleDto[]> {
+  getRules(): Observable<RuleDto[]> {
     return this.ruleService.findAll$().pipe(map((rules) => rules.map((rule) => plainToInstance(RuleDto, rule))));
   }
 
   @Query(() => [RuleDto])
-  rulesByTenantId(@Args('tenantId') tenantId: string): Observable<RuleDto[]> {
+  getRulesByTenantId(@Args('tenantId') tenantId: string): Observable<RuleDto[]> {
     return this.ruleService.findByTenantId$(tenantId).pipe(map((rules) => rules.map((rule) => plainToInstance(RuleDto, rule))));
   }
 }

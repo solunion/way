@@ -1,8 +1,8 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { IsNotEmpty, IsOptional, IsString, IsUUID, MaxLength, MinLength } from 'class-validator';
 
-@InputType('RuleSetInput')
-@ObjectType('RuleSet')
+@InputType()
+@ObjectType('RuleSetOutput')
 export class RuleSetDto {
   @Field()
   @IsUUID()
@@ -27,7 +27,7 @@ export class RuleSetDto {
   }
 }
 
-@InputType()
+@InputType('CreateRuleSetInput')
 export class CreateRuleSetDto {
   @Field()
   @IsNotEmpty()
@@ -47,7 +47,7 @@ export class CreateRuleSetDto {
   }
 }
 
-@InputType()
+@InputType('UpdateRuleSetInput')
 export class UpdateRuleSetDto {
   @Field({ nullable: true })
   @IsOptional()

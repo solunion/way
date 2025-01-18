@@ -2,7 +2,7 @@ import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { IsNotEmpty, IsOptional, IsUUID, MaxLength, MinLength } from 'class-validator';
 
 @InputType()
-@ObjectType('Component')
+@ObjectType('ComponentOutput')
 export class ComponentDto {
   @Field()
   @IsUUID()

@@ -17,7 +17,7 @@ export class RuleSetResolver {
   }
 
   @Query(() => RuleSetDto, { nullable: true })
-  ruleSet(@Args('id') id: string): Observable<RuleSetDto | null> {
+  getRuleSetById(@Args('id') id: string): Observable<RuleSetDto | null> {
     return this.service.findById$(id).pipe(map((ruleSet) => (ruleSet ? plainToInstance(RuleSetDto, ruleSet) : null)));
   }
 
@@ -28,17 +28,17 @@ export class RuleSetResolver {
   }
 
   @Mutation(() => RuleSetDto)
-  removeRuleSet(@Args('id') id: string): Observable<RuleSetDto> {
+  deleteRuleSet(@Args('id') id: string): Observable<RuleSetDto> {
     return this.service.delete$(id).pipe(map((deletedRuleSet) => plainToInstance(RuleSetDto, deletedRuleSet)));
   }
 
   @Query(() => [RuleSetDto])
-  ruleSets(): Observable<RuleSetDto[]> {
+  getRuleSets(): Observable<RuleSetDto[]> {
     return this.service.findAll$().pipe(map((ruleSets) => ruleSets.map((ruleSet) => plainToInstance(RuleSetDto, ruleSet))));
   }
 
   @Query(() => [RuleSetDto])
-  ruleSetsByTenantId(@Args('tenantId') tenantId: string): Observable<RuleSetDto[]> {
+  getRuleSetsByTenantId(@Args('tenantId') tenantId: string): Observable<RuleSetDto[]> {
     return this.service.findByTenantId$(tenantId).pipe(map((ruleSets) => ruleSets.map((ruleSet) => plainToInstance(RuleSetDto, ruleSet))));
   }
 }

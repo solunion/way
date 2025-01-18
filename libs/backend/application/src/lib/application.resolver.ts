@@ -22,14 +22,14 @@ export class ApplicationResolver {
   }
 
   @Query(() => [ApplicationDto])
-  findAllApplications(): Observable<ApplicationDto[]> {
+  getApplications(): Observable<ApplicationDto[]> {
     return this.#service.findAll$().pipe(
       map(models => models.map(model => this.#transformToDto(model))),
     );
   }
 
   @Query(() => ApplicationDto, { nullable: true })
-  findApplication(@Args('id') id: string): Observable<ApplicationDto | null> {
+  getApplicationById(@Args('id') id: string): Observable<ApplicationDto | null> {
     return this.#service.findById$(id).pipe(
       filter(model => !!model),
       map(model => this.#transformToDto(model)),
@@ -47,7 +47,7 @@ export class ApplicationResolver {
   }
 
   @Mutation(() => Boolean)
-  removeApplication(@Args('id') id: string): Observable<boolean> {
+  deleteApplication(@Args('id') id: string): Observable<boolean> {
     return this.#service.delete$(id).pipe(
       map(() => true),
       catchError(() => of(false))

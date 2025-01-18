@@ -2,13 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Application {
-  description: String
-  id: String!
-  name: String!
-  tenantId: String
-}
-
 input ApplicationDto {
   description: String
   id: String!
@@ -16,8 +9,7 @@ input ApplicationDto {
   tenantId: String
 }
 
-type Component {
-  applicationId: String!
+type ApplicationOutput {
   description: String
   id: String!
   name: String!
@@ -32,31 +24,39 @@ input ComponentDto {
   tenantId: String
 }
 
-input CreateApplicationDto {
+type ComponentOutput {
+  applicationId: String!
+  description: String
+  id: String!
+  name: String!
+  tenantId: String
+}
+
+input CreateApplicationInput {
   description: String
   name: String!
   tenantId: String
 }
 
-input CreateComponentDto {
+input CreateComponentInput {
   applicationId: String!
   description: String
   name: String!
   tenantId: String
 }
 
-input CreateRuleDto {
+input CreateRuleInput {
   name: String!
   tenantId: String
   value: JSON!
 }
 
-input CreateRuleSetDto {
+input CreateRuleSetInput {
   name: String!
   tenantId: String
 }
 
-input CreateTenantDto {
+input CreateTenantInput {
   description: String
   name: String!
 }
@@ -67,42 +67,35 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 scalar JSON
 
 type Mutation {
-  createApplication(createApplicationInput: CreateApplicationDto!): Application!
-  createComponent(createComponent: CreateComponentDto!): Component!
-  createRule(createRuleDto: CreateRuleDto!): Rule!
-  createRuleSet(createRuleSetDto: CreateRuleSetDto!): RuleSet!
-  createTenant(tenant: CreateTenantDto!): Tenant!
+  createApplication(createApplicationInput: CreateApplicationInput!): ApplicationOutput!
+  createComponent(createComponent: CreateComponentInput!): ComponentOutput!
+  createRule(createRuleDto: CreateRuleInput!): RuleOutput!
+  createRuleSet(createRuleSetDto: CreateRuleSetInput!): RuleSetOutput!
+  createTenant(tenant: CreateTenantInput!): TenantOutput!
+  deleteApplication(id: String!): Boolean!
   deleteComponent(id: String!): Boolean!
+  deleteRule(id: String!): RuleOutput!
+  deleteRuleSet(id: String!): RuleSetOutput!
   deleteTenant(id: String!): Boolean!
-  removeApplication(id: String!): Boolean!
-  removeRule(id: String!): Rule!
-  removeRuleSet(id: String!): RuleSet!
-  updateApplication(id: String!, updateApplicationInput: UpdateApplicationDto!): Application!
-  updateComponent(id: String!, updateComponent: UpdateComponentDto!): Component!
-  updateRule(id: String!, updateRuleDto: UpdateRuleDto!): Rule!
-  updateRuleSet(id: String!, updateRuleSetDto: UpdateRuleSetDto!): RuleSet!
-  updateTenant(id: String!, tenant: UpdateTenantDto!): Tenant!
+  updateApplication(id: String!, updateApplicationInput: UpdateApplicationInput!): ApplicationOutput!
+  updateComponent(id: String!, updateComponent: UpdateComponentInput!): ComponentOutput!
+  updateRule(id: String!, updateRuleDto: UpdateRuleInput!): RuleOutput!
+  updateRuleSet(id: String!, updateRuleSetDto: UpdateRuleSetInput!): RuleSetOutput!
+  updateTenant(id: String!, tenant: UpdateTenantInput!): TenantOutput!
 }
 
 type Query {
-  component(id: String!): Component
-  components: [Component!]!
-  findAllApplications: [Application!]!
-  findApplication(id: String!): Application
-  rule(id: String!): Rule
-  ruleSet(id: String!): RuleSet
-  ruleSets: [RuleSet!]!
-  ruleSetsByTenantId(tenantId: String!): [RuleSet!]!
-  rules: [Rule!]!
-  rulesByTenantId(tenantId: String!): [Rule!]!
-  tenant(id: String!): Tenant!
-}
-
-type Rule {
-  id: String!
-  name: String!
-  tenantId: String
-  value: JSON!
+  getApplicationById(id: String!): ApplicationOutput
+  getApplications: [ApplicationOutput!]!
+  getComponentById(id: String!): ComponentOutput
+  getComponents: [ComponentOutput!]!
+  getRuleById(id: String!): RuleOutput
+  getRuleSetById(id: String!): RuleSetOutput
+  getRuleSets: [RuleSetOutput!]!
+  getRuleSetsByTenantId(tenantId: String!): [RuleSetOutput!]!
+  getRules: [RuleOutput!]!
+  getRulesByTenantId(tenantId: String!): [RuleOutput!]!
+  getTenantById(id: String!): TenantOutput!
 }
 
 input RuleDto {
@@ -112,22 +105,23 @@ input RuleDto {
   value: JSON!
 }
 
-type RuleSet {
+type RuleOutput {
+  id: String!
+  name: String!
+  tenantId: String
+  value: JSON!
+}
+
+input RuleSetDto {
   id: String!
   name: String!
   tenantId: String
 }
 
-input RuleSetInput {
+type RuleSetOutput {
   id: String!
   name: String!
   tenantId: String
-}
-
-type Tenant {
-  description: String
-  id: String!
-  name: String!
 }
 
 input TenantDto {
@@ -136,14 +130,20 @@ input TenantDto {
   name: String!
 }
 
-input UpdateApplicationDto {
+type TenantOutput {
+  description: String
+  id: String!
+  name: String!
+}
+
+input UpdateApplicationInput {
   description: String
   id: String
   name: String
   tenantId: String
 }
 
-input UpdateComponentDto {
+input UpdateComponentInput {
   applicationId: String
   description: String
   id: String
@@ -151,18 +151,18 @@ input UpdateComponentDto {
   tenantId: String
 }
 
-input UpdateRuleDto {
+input UpdateRuleInput {
   name: String
   tenantId: String
   value: JSON
 }
 
-input UpdateRuleSetDto {
+input UpdateRuleSetInput {
   name: String
   tenantId: String
 }
 
-input UpdateTenantDto {
+input UpdateTenantInput {
   description: String
   name: String
 }

@@ -4,7 +4,7 @@ import { IsNotEmpty, IsOptional, IsString, IsUUID, MaxLength, MinLength } from '
 import { GraphQLJSON } from 'graphql-type-json';
 
 @InputType()
-@ObjectType('Rule')
+@ObjectType('RuleOutput')
 export class RuleDto {
   @Field()
   @IsUUID()
