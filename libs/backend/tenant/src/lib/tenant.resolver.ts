@@ -19,7 +19,7 @@ export class TenantResolver {
   }
 
   @Query(() => TenantDto)
-  tenant(@Args('id') id: string): Observable<TenantDto> {
+  getTenantById(@Args('id') id: string): Observable<TenantDto> {
     return this.#service.findById$(id);
   }
 

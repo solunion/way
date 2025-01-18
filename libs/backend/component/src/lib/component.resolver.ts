@@ -18,14 +18,14 @@ export class ComponentResolver {
   }
 
   @Query(() => ComponentDto, { nullable: true })
-  component(@Args('id') id: string): Observable<ComponentDto | null> {
+  getComponentById(@Args('id') id: string): Observable<ComponentDto | null> {
     return this.#service
       .findById$(id)
       .pipe(map((model) => (model ? this.#transformToDto(model) : null)));
   }
 
   @Query(() => [ComponentDto])
-  components(): Observable<ComponentDto[]> {
+  getComponents(): Observable<ComponentDto[]> {
     return this.#service
       .findAll$()
       .pipe(map((models) => models.map((m) => this.#transformToDto(m))));
