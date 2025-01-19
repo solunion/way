@@ -7,7 +7,7 @@ Library for managing application resources in the Way system. A resource represe
 - CRUD operations for resources
 - Multi-tenancy support
 - Soft delete
-- GraphQL API
+- GraphQL and REST APIs
 
 ## Installation
 This library is part of the Way monorepo and is installed automatically.
@@ -38,22 +38,30 @@ this.resourceService.create$({
 ### Types
 ```typescript
 enum ResourceType {
-  HTTP,
-  ROUTE,
-  FORM,
-  MODEL
+  HTTP = 'HTTP',
+  ROUTE = 'ROUTE',
+  FORM = 'FORM',
+  MODEL = 'MODEL'
 }
 ```
 
-### GraphQL Operations
+### GraphQL API
 #### Queries
-- `resource(id: ID!): Resource` - Get a resource by ID
-- `resources: [Resource!]!` - Get all resources
+- `getResourceById(id: String!): Resource` - Get a resource by ID
+- `getResources: [Resource!]!` - Get all resources
 
 #### Mutations
-- `createResource(input: CreateResourceInput!): Resource!` - Create a new resource
-- `updateResource(id: ID!, input: UpdateResourceInput!): Resource!` - Update a resource
-- `deleteResource(id: ID!): Boolean!` - Delete a resource
+- `createResource(resource: CreateResourceInput!): Resource!` - Create a new resource
+- `updateResource(id: String!, resource: UpdateResourceInput!): Resource!` - Update a resource
+- `deleteResource(id: String!): Boolean!` - Delete a resource (returns false if fails)
+
+### REST API
+#### Endpoints
+- `GET /resources/:id` - Get a resource by ID
+- `GET /resources` - Get all resources
+- `POST /resources` - Create a new resource
+- `PUT /resources/:id` - Update a resource
+- `DELETE /resources/:id` - Delete a resource
 
 ## Development
 - Run tests: `nx test backend-resource`
