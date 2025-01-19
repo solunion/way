@@ -1,0 +1,27 @@
+{
+  "name": "@way/backend-resource",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/backend/resource/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/backend/resource",
+        "tsConfig": "libs/backend/resource/tsconfig.lib.json",
+        "main": "libs/backend/resource/src/index.ts",
+        "assets": ["libs/backend/resource/*.md"],
+        "generatePackageJson": true
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/backend/resource/**/*.ts"]
+      }
+    }
+  }
+} 
