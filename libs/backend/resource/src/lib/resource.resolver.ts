@@ -1,13 +1,15 @@
+import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { plainToInstance } from 'class-transformer';
-import { Observable, map } from 'rxjs';
+import { Observable, map, catchError, of } from 'rxjs';
 import { CreateResourceDto } from './dto/create-resource.dto';
 import { ResourceDto } from './dto/resource.dto';
 import { UpdateResourceDto } from './dto/update-resource.dto';
-import { Resource } from './resource.model';
+import { Resource, NewResource } from './resource.model';
 import { ResourceService } from './resource.service';
 
 @Resolver(() => ResourceDto)
+@UsePipes(new ValidationPipe({ transform: true }))
 export class ResourceResolver {
   #service: ResourceService;
 
@@ -15,36 +17,40 @@ export class ResourceResolver {
     this.#service = service;
   }
 
-  @Query(() => ResourceDto, { nullable: true })
-  resource(@Args('id', { type: () => ID }) id: string): Observable<ResourceDto | null> {
+  @Query(() => ResourceDto)
+  getResourceById(@Args('id') id: string): Observable<ResourceDto> {
     return this.#service
       .findById$(id)
-      .pipe(map((resource) => (resource ? plainToInstance(ResourceDto, resource, { excludeExtraneousValues: true }) : null)));
+      .pipe(map((resource) => plainToInstance(ResourceDto, resource, { excludeExtraneousValues: true })));
   }
 
   @Query(() => [ResourceDto])
-  resources(): Observable<ResourceDto[]> {
+  getResources(): Observable<ResourceDto[]> {
     return this.#service
       .findAll$()
       .pipe(map((resources) => resources.map((r) => plainToInstance(ResourceDto, r, { excludeExtraneousValues: true }))));
   }
 
   @Mutation(() => ResourceDto)
-  createResource(@Args('input') input: CreateResourceDto): Observable<ResourceDto> {
-    return this.#service
-      .create$(plainToInstance(Resource, input, { excludeExtraneousValues: true }))
-      .pipe(map((resource) => plainToInstance(ResourceDto, resource, { excludeExtraneousValues: true })));
+  createResource(@Args('resource') request: CreateResourceDto): Observable<ResourceDto> {
+    const resource = this.#service.create$(plainToInstance(NewResource, request));
+    return resource.pipe(map((data: ResourceDto) => plainToInstance(ResourceDto, data)));
   }
 
   @Mutation(() => ResourceDto)
-  updateResource(@Args('id', { type: () => ID }) id: string, @Args('input') input: UpdateResourceDto): Observable<ResourceDto> {
-    return this.#service
-      .update$(id, plainToInstance(Resource, input, { excludeExtraneousValues: true }))
-      .pipe(map((resource) => plainToInstance(ResourceDto, resource, { excludeExtraneousValues: true })));
+  updateResource(
+    @Args('id') id: string,
+    @Args('resource') request: UpdateResourceDto
+  ): Observable<ResourceDto> {
+    const resource = this.#service.update$(id, plainToInstance(Resource, request));
+    return resource.pipe(map((data: ResourceDto) => plainToInstance(ResourceDto, data)));
   }
 
   @Mutation(() => Boolean)
-  deleteResource(@Args('id', { type: () => ID }) id: string): Observable<boolean> {
-    return this.#service.delete$(id).pipe(map(() => true));
+  deleteResource(@Args('id') id: string): Observable<boolean> {
+    return this.#service.delete$(id).pipe(
+      map(() => true),
+      catchError(() => of(false))
+    );
   }
 } 

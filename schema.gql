@@ -45,6 +45,13 @@ input CreateComponentInput {
   tenantId: String
 }
 
+input CreateResourceInput {
+  componentId: String!
+  name: String!
+  tenantId: String
+  type: ResourceType!
+}
+
 input CreateRuleInput {
   name: String!
   tenantId: String
@@ -69,16 +76,19 @@ scalar JSON
 type Mutation {
   createApplication(createApplicationInput: CreateApplicationInput!): ApplicationOutput!
   createComponent(createComponent: CreateComponentInput!): ComponentOutput!
+  createResource(resource: CreateResourceInput!): ResourceOutput!
   createRule(createRuleDto: CreateRuleInput!): RuleOutput!
   createRuleSet(createRuleSetDto: CreateRuleSetInput!): RuleSetOutput!
   createTenant(tenant: CreateTenantInput!): TenantOutput!
   deleteApplication(id: String!): Boolean!
   deleteComponent(id: String!): Boolean!
+  deleteResource(id: String!): Boolean!
   deleteRule(id: String!): RuleOutput!
   deleteRuleSet(id: String!): RuleSetOutput!
   deleteTenant(id: String!): Boolean!
   updateApplication(id: String!, updateApplicationInput: UpdateApplicationInput!): ApplicationOutput!
   updateComponent(id: String!, updateComponent: UpdateComponentInput!): ComponentOutput!
+  updateResource(id: String!, resource: UpdateResourceInput!): ResourceOutput!
   updateRule(id: String!, updateRuleDto: UpdateRuleInput!): RuleOutput!
   updateRuleSet(id: String!, updateRuleSetDto: UpdateRuleSetInput!): RuleSetOutput!
   updateTenant(id: String!, tenant: UpdateTenantInput!): TenantOutput!
@@ -89,6 +99,8 @@ type Query {
   getApplications: [ApplicationOutput!]!
   getComponentById(id: String!): ComponentOutput
   getComponents: [ComponentOutput!]!
+  getResourceById(id: String!): ResourceOutput!
+  getResources: [ResourceOutput!]!
   getRuleById(id: String!): RuleOutput
   getRuleSetById(id: String!): RuleSetOutput
   getRuleSets: [RuleSetOutput!]!
@@ -96,6 +108,29 @@ type Query {
   getRules: [RuleOutput!]!
   getRulesByTenantId(tenantId: String!): [RuleOutput!]!
   getTenantById(id: String!): TenantOutput!
+}
+
+input ResourceDto {
+  componentId: String!
+  id: String!
+  name: String!
+  tenantId: String
+  type: ResourceType!
+}
+
+type ResourceOutput {
+  componentId: String!
+  id: String!
+  name: String!
+  tenantId: String
+  type: ResourceType!
+}
+
+enum ResourceType {
+  FORM
+  HTTP
+  MODEL
+  ROUTE
 }
 
 input RuleDto {
@@ -149,6 +184,13 @@ input UpdateComponentInput {
   id: String
   name: String
   tenantId: String
+}
+
+input UpdateResourceInput {
+  componentId: String
+  name: String
+  tenantId: String
+  type: ResourceType
 }
 
 input UpdateRuleInput {

@@ -1,4 +1,4 @@
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Expose } from 'class-transformer';
 import { IsNotEmpty, IsUUID, MaxLength, MinLength, IsEnum } from 'class-validator';
 import { ResourceType } from '../resource.model';
@@ -39,4 +39,8 @@ export class ResourceDto {
     this.componentId = componentId;
     this.tenantId = tenantId;
   }
-} 
+}
+
+registerEnumType(ResourceType, {
+  name: 'ResourceType',
+});
