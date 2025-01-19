@@ -1,0 +1,22 @@
+enum ResourceType {
+  HTTP
+  ROUTE
+  FORM
+  MODEL
+}
+
+model Resource {
+  id          String       @id @default(uuid())
+  name        String
+  type        ResourceType
+  componentId String
+  tenantId    String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  deletedAt   DateTime?
+
+  component   Component    @relation(fields: [componentId], references: [id])
+  tenant      Tenant?      @relation(fields: [tenantId], references: [id])
+
+  @@map("resources")
+} 
