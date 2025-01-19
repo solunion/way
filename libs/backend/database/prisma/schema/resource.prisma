@@ -19,4 +19,4 @@ model Resource {
   tenant      Tenant?      @relation(fields: [tenantId], references: [id])
 
   @@map("resources")
-} 
+}

@@ -10,6 +10,7 @@ model Tenant {
   ruleSets RuleSet[]
   applications Application[]
   components Component[]
+  resources Resource[]
 
   @@map("tenants")
 }

@@ -10,6 +10,7 @@ model Component {
 
   application   Application @relation(fields: [applicationId], references: [id])
   tenant        Tenant?     @relation(fields: [tenantId], references: [id])
+  resources Resource[]
 
   @@map("components")
 }
