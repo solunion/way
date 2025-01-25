@@ -3,6 +3,39 @@
     <h2>Tenants</h2>
   </div>
 
+
+  <div class="way-page__filters">
+    <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+      <mat-expansion-panel-header>
+        <mat-panel-title> Filtri </mat-panel-title>
+        <mat-panel-description>
+          <mat-chip-set>
+            <mat-chip-row>
+              {{'ciao'}}
+              <button matChipRemove aria-label="'remove ' + keyword">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+            <mat-chip-row>
+              {{'ciao'}}
+              <button matChipRemove aria-label="'remove ' + keyword">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+          </mat-chip-set>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+
+      <form>
+        <mat-form-field class="w-full" appearance="outline">
+          <mat-label>Cerca</mat-label>
+          <input matInput placeholder="Inserisci parola chiave">
+        </mat-form-field>
+      </form>
+    </mat-expansion-panel>
+  </div>
+
   <div class="way-page__content">
     <way-table [dataSource]="tenants()"></way-table>
   </div>

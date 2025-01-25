@@ -1,15 +1,22 @@
 <nav aria-label="Main menu" class="way-menu">
-  <button mat-icon-button color="primary" aria-label="Go to Home"
-          matTooltip="Example" matTooltipPosition="right"
-          matTooltipClass="way-menu-tooltip"><mat-icon>view_comfy_alt</mat-icon></button>
 
-  <button mat-icon-button color="primary" aria-label="Go to Home"
-          matTooltip="Example" matTooltipPosition="right"
-          matTooltipClass="way-menu-tooltip"><mat-icon>view_comfy_alt</mat-icon></button>
-
+  @for( link of links; track link.path ) {
+    <button mat-icon-button
+            color="primary"
+            [attr.aria-label]="'Go to ' + link.label"
+            [matTooltip]="link.label"
+            matTooltipPosition="right"
+            matTooltipClass="way-menu-tooltip"
+            [routerLink]="link.path">
+      <mat-icon>{{ link.icon }}</mat-icon>
+    </button>
+  }
 
   <div class="way-menu__divisor"></div>
+
   <button mat-icon-button color="primary" aria-label="Go to Home"
           matTooltip="Example" matTooltipPosition="right"
-          matTooltipClass="way-menu-tooltip"><mat-icon>view_comfy_alt</mat-icon></button>
+          matTooltipClass="way-menu-tooltip">
+    <mat-icon>view_comfy_alt</mat-icon>
+  </button>
 </nav>

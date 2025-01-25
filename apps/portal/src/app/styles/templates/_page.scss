@@ -1,11 +1,15 @@
 .way-page{
   &__title{
-    width: fit-content;
+    @apply w-fit pb-4;
     margin: 0 auto;
 
     h2{
       font-size: 2rem;
     }
+  }
+
+  &__filters{
+    @apply w-full mb-5;
   }
 
   &__content{
