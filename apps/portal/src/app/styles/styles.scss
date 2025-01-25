@@ -1,9 +1,13 @@
-
 @use 'themes/themes.scss' as themes;
 @use '@angular/material' as mat;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 /* You can add global styles to this file, and also import other style files */
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
-
 
 /*
 * Components
@@ -17,22 +21,18 @@
 */
 @import './templates/page';
 
-
-:root{
+:root {
   --color-primary: #005cbb;
 }
 
-
-
-html, body {
+html,
+body {
   height: 100vh;
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
-
-
-.dark-theme{
+.dark-theme {
   @include mat.core();
   @include mat.all-component-themes(themes.$dark-theme);
   @include mat.icon-theme(themes.$dark-theme);
@@ -40,7 +40,7 @@ html, body {
   background-color: #333; // Default to dark theme background
 }
 
-.light-theme{
+.light-theme {
   @include mat.core();
   @include mat.all-component-colors(themes.$light-theme);
   @include mat.icon-theme(themes.$light-theme);
@@ -48,8 +48,7 @@ html, body {
   background-color: #f4f4f4; // Light theme background
 }
 
-
-.way-container{
+.way-container {
   height: 100vh;
 
   &__router {
@@ -60,6 +59,9 @@ html, body {
   }
 }
 
+.mat-mdc-notch-piece.mdc-notched-outline__notch{
+  border-right: 0!important;
+}
 
 //@media (prefers-color-scheme: light) {
 //  :root {

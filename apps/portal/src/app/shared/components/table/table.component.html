@@ -1,4 +1,28 @@
 
+@if( allowImport() || allowExport() ||  allowEditColumns() ) {
+  <div class="flex justify-end pb-4 gap-2">
+    @if( allowEditColumns() ) {
+      <button mat-raised-button color="primary">
+        <mat-icon>edit</mat-icon>
+        Edit columns
+      </button>
+    }
+    @if( allowImport() ) {
+      <button mat-raised-button color="primary">
+        <mat-icon>upload</mat-icon>
+        Import
+      </button>
+    }
+    @if( allowExport() ) {
+      <button mat-raised-button color="primary">
+        <mat-icon>download</mat-icon>
+        Export
+      </button>
+    }
+  </div>
+}
+
+
 
 <table mat-table [dataSource]="dataSource()" class="mat-elevation-z8">
 
