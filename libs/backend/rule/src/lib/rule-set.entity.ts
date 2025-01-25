@@ -1,4 +1,4 @@
-import { RuleSet } from '@prisma/client';
+import type { RuleSet } from '@prisma/client';
 
 export class RuleSetEntity implements RuleSet {
   id: string;

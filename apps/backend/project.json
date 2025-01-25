@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "@way/backend",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/backend/src",
   "projectType": "application",
@@ -22,15 +22,15 @@
       "defaultConfiguration": "development",
       "dependsOn": ["build"],
       "options": {
-        "buildTarget": "backend:build",
+        "buildTarget": "@way/backend:build",
         "runBuildTargetDependencies": false
       },
       "configurations": {
         "development": {
-          "buildTarget": "backend:build:development"
+          "buildTarget": "@way/backend:build:development"
         },
         "production": {
-          "buildTarget": "backend:build:production"
+          "buildTarget": "@way/backend:build:production"
         }
       }
     },

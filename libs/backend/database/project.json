@@ -1,10 +1,21 @@
 {
-  "name": "backend-database",
+  "name": "@way/backend-database",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/backend/database/src",
   "projectType": "library",
   "tags": [],
   "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/backend/database",
+        "tsConfig": "libs/backend/database/tsconfig.lib.json",
+        "main": "libs/backend/database/src/index.ts",
+        "assets": ["libs/backend/database/*.md"],
+        "generatePackageJson": true
+      }
+    },
     "prisma-deploy": {
       "executor": "@nx-tools/nx-prisma:deploy",
       "options": {

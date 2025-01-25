@@ -5,8 +5,12 @@ model Tenant {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
-  Rule Rule[]
-  RuleSet RuleSet[]
+
+  rules Rule[]
+  ruleSets RuleSet[]
+  applications Application[]
+  components Component[]
+  resources Resource[]
 
   @@map("tenants")
 }

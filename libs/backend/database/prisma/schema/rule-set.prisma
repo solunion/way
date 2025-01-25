@@ -9,7 +9,6 @@ model RuleSet {
 
   rules     Rule[]   @relation("RuleToRuleSet")
   tenant    Tenant?   @relation(fields: [tenantId], references: [id])
-
   parent    RuleSet? @relation("RuleSetToRuleSet", fields: [parentId], references: [id])
   children  RuleSet[] @relation("RuleSetToRuleSet")
 

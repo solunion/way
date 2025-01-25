@@ -1,4 +1,4 @@
-import { Tenant } from '@prisma/client';
+import type { Tenant } from '@prisma/client';
 
 export class TenantEntity implements Tenant {
   name: string;

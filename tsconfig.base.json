@@ -15,7 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@way/backend-application": ["libs/backend/application/src/index.ts"],
+      "@way/backend-component": ["libs/backend/component/src/index.ts"],
       "@way/backend-database": ["libs/backend/database/src/index.ts"],
+      "@way/backend-resource": ["libs/backend/resource/src/index.ts"],
       "@way/backend-rule": ["libs/backend/rule/src/index.ts"],
       "@way/backend-tenant": ["libs/backend/tenant/src/index.ts"]
     }

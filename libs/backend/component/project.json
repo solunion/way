@@ -1,0 +1,20 @@
+{
+  "name": "@way/backend-component",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/backend/component/src",
+  "projectType": "library",
+  "tags": ["scope:backend", "type:feature"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/backend/component",
+        "tsConfig": "libs/backend/component/tsconfig.lib.json",
+        "main": "libs/backend/component/src/index.ts",
+        "assets": ["libs/backend/component/*.md"],
+        "generatePackageJson": true
+      }
+    }
+  }
+}

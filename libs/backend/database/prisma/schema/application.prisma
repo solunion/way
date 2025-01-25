@@ -1,0 +1,14 @@
+model Application {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  tenantId    String?
+  tenant      Tenant?  @relation(fields: [tenantId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  components Component[]
+
+  @@map("applications")
+}
