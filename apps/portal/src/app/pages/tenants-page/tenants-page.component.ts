@@ -1,10 +1,20 @@
 import { Component, signal } from '@angular/core';
 import { PeriodicElement, TableComponent } from '../../shared/components/table/table.component';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIcon } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'way-tenants-page',
   imports: [
-    TableComponent
+    TableComponent,
+    MatExpansionModule,
+    MatChipsModule,
+    MatIcon,
+    MatFormFieldModule,
+    MatInputModule
   ],
   templateUrl: './tenants-page.component.html',
   styleUrl: './tenants-page.component.scss',
@@ -12,7 +22,10 @@ import { PeriodicElement, TableComponent } from '../../shared/components/table/t
 })
 export class TenantsPageComponent {
 
+  readonly panelOpenState = signal(false);
+
   tenants = signal(ELEMENT_DATA);
+
 }
 
 
