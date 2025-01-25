@@ -1,3 +1,4 @@
+import { entityNameToValue } from '@angular/compiler-cli/src/ngtsc/reflection';
 import { Injectable, UsePipes, ValidationPipe } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { catchError, filter, map, Observable, throwError } from 'rxjs';
@@ -22,6 +23,12 @@ export class TenantService {
         console.error('Error creating tenant:', error);
         return throwError(() => new Error('Unable to create tenant'));
       })
+    );
+  }
+
+  findAll$(): Observable<Tenant[]> {
+    return this.#repository.findAll$().pipe(
+      map((entities) => entities.map(entity => this.#transformToDto(entity)))
     );
   }
 
@@ -53,10 +60,10 @@ export class TenantService {
   }
 
   #transformToEntity(dto: Partial<Tenant>): Pick<TenantEntity, 'name' | 'description'> {
-    return plainToInstance(TenantEntity, dto);
+    return plainToInstance(TenantEntity, dto, {excludeExtraneousValues: true});
   }
 
   #transformToDto(entity: TenantEntity): Tenant {
-    return plainToInstance(Tenant, entity);
+    return plainToInstance(Tenant, entity, {excludeExtraneousValues: true});
   }
 }

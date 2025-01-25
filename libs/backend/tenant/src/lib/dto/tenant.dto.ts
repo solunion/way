@@ -5,6 +5,7 @@ import { IsNotEmpty, IsUUID, MaxLength, MinLength } from 'class-validator';
 @InputType()
 @ObjectType('TenantOutput')
 export class TenantDto {
+  @Expose()
   @Field()
   @IsUUID()
   id: string;

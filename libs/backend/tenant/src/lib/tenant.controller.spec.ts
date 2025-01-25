@@ -54,7 +54,7 @@ describe('TenantController', () => {
         name: createTenantDto.name,
         description: createTenantDto.description,
       }));
-      
+
       expect(service.create$).toHaveBeenCalledWith(createTenantDto);
     });
 
@@ -75,7 +75,7 @@ describe('TenantController', () => {
     it('should return an existing tenant', async () => {
       service.findById$.mockReturnValue(of(mockTenant));
 
-      const result = await lastValueFrom(controller.getOne$(mockTenant.id));
+      const result = await lastValueFrom(controller.getById$(mockTenant.id));
 
       expect(result).toEqual(expect.objectContaining(mockTenant));
       expect(service.findById$).toHaveBeenCalledWith(mockTenant.id);
@@ -85,7 +85,7 @@ describe('TenantController', () => {
       const error = new Error('Tenant not found');
       service.findById$.mockReturnValue(throwError(() => error));
 
-      await expect(lastValueFrom(controller.getOne$('non-existent-id'))).rejects.toThrow(error);
+      await expect(lastValueFrom(controller.getById$('non-existent-id'))).rejects.toThrow(error);
     });
   });
 

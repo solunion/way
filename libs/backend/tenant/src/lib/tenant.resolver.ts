@@ -23,6 +23,13 @@ export class TenantResolver {
     return this.#service.findById$(id);
   }
 
+  @Query(() => [TenantDto])
+  getTenants(): Observable<TenantDto[]> {
+    return this.#service.findAll$().pipe(
+      map(tenants => tenants.map(tenant => plainToInstance(TenantDto, tenant, {excludeExtraneousValues: true}))),
+    );
+  }
+
   @Mutation(() => TenantDto)
   createTenant(@Args('tenant') request: CreateTenantDto): Observable<TenantDto> {
     const tenant = this.#service.create$(plainToInstance(NewTenant, request));
