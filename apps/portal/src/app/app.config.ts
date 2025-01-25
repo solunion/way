@@ -8,6 +8,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes),
+    provideAnimations()
     provideAnimations(),
     APOLLO_PROVIDER
   ],
