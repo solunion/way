@@ -1,5 +1,6 @@
 [tools]
 pnpm = "9.15.1"
+go = "1.23"
 
 [env]
 DATABASE_URL = 'postgres://way:way@postgres-127.0.0.1.nip.io:5432/way?schema=way'

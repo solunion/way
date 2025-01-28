@@ -12,7 +12,10 @@
       "!{projectRoot}/src/test-setup.[jt]s",
       "!{projectRoot}/test-setup.[jt]s"
     ],
-    "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
+    "sharedGlobals": [
+      "{workspaceRoot}/.github/workflows/ci.yml",
+      "{workspaceRoot}/go.work"
+    ]
   },
   "nxCloudId": "675ff775c720282d0e0642bd",
   "plugins": [
@@ -42,7 +45,8 @@
       "options": {
         "targetName": "e2e"
       }
-    }
+    },
+    "@nx-go/nx-go"
   ],
   "targetDefaults": {
     "@angular-devkit/build-angular:application": {

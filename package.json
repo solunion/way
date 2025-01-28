@@ -41,6 +41,7 @@
     "@eslint/js": "^9.18.0",
     "@nestjs/schematics": "^10.0.1",
     "@nestjs/testing": "^10.0.2",
+    "@nx-go/nx-go": "^3.3.1",
     "@nx-tools/nx-prisma": "^6.5.0",
     "@nx/angular": "20.3.1",
     "@nx/devkit": "20.3.1",
