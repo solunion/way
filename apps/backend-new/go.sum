@@ -1,0 +1,9 @@
+github.com/gofiber/fiber/v3 v3.0.0-beta.3/go.mod h1:kcMur0Dxqk91R7p4vxEpJfDWZ9u5IfvrtQc8Bvv/JmY=
+github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/jinzhu/copier v0.4.0/go.mod h1:DfbEm0FYsaqBcKcFuvmOZb218JkPGtvSHsKg8S8hyyg=
+github.com/spf13/viper v1.19.0/go.mod h1:GQUN9bilAbhU/jgc1bKs99f/suXKeUMct8Adx5+Ntkg=
+github.com/uptrace/bun v1.2.5/go.mod h1:vkQMS4NNs4VNZv92y53uBSHXRqYyJp4bGhMHgaNCQpY=
+github.com/uptrace/bun/dialect/pgdialect v1.2.5/go.mod h1:stwnlE8/6x8cuQ2aXcZqwDK/d+6jxgO3iQewflJT6C4=
+github.com/uptrace/bun/driver/pgdriver v1.2.5/go.mod h1:RsYV08Z72glum3swBhag7IBl1D+eztjWmodfcOZFHJ0=
+go.uber.org/fx v1.23.0/go.mod h1:o/D9n+2mLP6v1EG+qsdT1O8wKopYAsqZasju97SDFCU=
+go.uber.org/zap v1.27.0/go.mod h1:GB2qFLM7cTU87MWRP2mPIjqfIDnGu+VIO4V/SdhGo2E=
