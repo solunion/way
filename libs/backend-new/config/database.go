@@ -11,15 +11,21 @@ import (
 )
 
 func DatabaseConnection(lc fx.Lifecycle, config *Config) *bun.DB {
-	dsn := fmt.Sprintf("%s://%s:%s@%s:%d/%s?sslmode=%s",
-		config.Database().Type,
-		config.Database().User,
-		config.Database().Pass,
-		config.Database().Host,
-		config.Database().Port,
-		config.Database().Name,
-		config.Database().SSLMode,
-	)
+
+	dsn := config.Database().Uri
+
+	if dsn == "" {
+		dsn = fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s",
+			config.Database().User,
+			config.Database().Pass,
+			config.Database().Host,
+			config.Database().Port,
+			config.Database().Name,
+			config.Database().SSLMode,
+		)
+	}
+
+	fmt.Printf("Database connection string: %s\n", dsn)
 
 	conn := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 	db := bun.NewDB(conn, pgdialect.New())
