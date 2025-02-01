@@ -1,11 +1,10 @@
-module github.com/solunion/way/backend
+module github.com/solunion/way/backend/http
 
-go 1.23.3
+go 1.23
 
 require (
 	github.com/gofiber/fiber/v3 v3.0.0-beta.4
 	go.uber.org/fx v1.23.0
-	go.uber.org/zap v1.27.0
 )
 
 require (
@@ -27,6 +26,7 @@ require (
 	github.com/x448/float16 v0.8.4 // indirect
 	go.uber.org/dig v1.18.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
+	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/crypto v0.32.0 // indirect
 	golang.org/x/net v0.31.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect

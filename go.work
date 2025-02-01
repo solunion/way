@@ -1,3 +1,9 @@
-go 1.23.1
+go 1.23.3
 
-use ./apps/backend-new
+use (
+	./apps/backend-new
+	./libs/backend-new/config
+	./libs/backend-new/database
+	./libs/backend-new/http
+	./libs/backend-new/tenant
+)
