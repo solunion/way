@@ -19,6 +19,11 @@ export class NavbarComponent {
 
   links = [
     {
+      path: '/',
+      label: 'Home',
+      icon: 'home'
+    },
+    {
 
       path: '/tenants',
       label: 'Tenants',
