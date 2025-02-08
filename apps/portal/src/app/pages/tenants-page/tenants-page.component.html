@@ -37,7 +37,8 @@
   </div>
 
   <div class="way-page__content">
-    <way-table [dataSource]="tenants()" [columns]="tableColumns" [allowSelection]="true"
+    <way-table [dataSource]="tenants()" [columns]="tableColumns"
+               [allowSelection]="true"
       (elementSelectedChange)="selectionChange($event)"
     ></way-table>
   </div>
