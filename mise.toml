@@ -1,6 +1,7 @@
 [tools]
 pnpm = "9.15.1"
 go = "1.23.3"
+"go:github.com/golang-migrate/migrate/v4/cmd/migrate" = { version = "latest", build = "postgres" }
 
 [env]
 DATABASE_URI = "postgres://way:way@postgres-127.0.0.1.nip.io:5432/way?sslmode=disable"
@@ -49,3 +50,6 @@ run = "docker-compose down"
 
 [tasks.docker-logs]
 run = "docker-compose logs -f"
+
+[tasks.migrate-create]
+run = "migrate -database '$DATABASE_URI' create -dir=db/migrations -seq -ext=sql"
