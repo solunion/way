@@ -53,3 +53,6 @@ run = "docker-compose logs -f"
 
 [tasks.migrate-create]
 run = "migrate -database '$DATABASE_URI' create -dir=db/migrations -seq -ext=sql"
+
+[tasks.migrate-up]
+run = "migrate -database '$DATABASE_URI' -path db/migrations up"
