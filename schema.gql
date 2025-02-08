@@ -108,6 +108,7 @@ type Query {
   getRules: [RuleOutput!]!
   getRulesByTenantId(tenantId: String!): [RuleOutput!]!
   getTenantById(id: String!): TenantOutput!
+  getTenants: [TenantOutput!]!
 }
 
 input ResourceDto {

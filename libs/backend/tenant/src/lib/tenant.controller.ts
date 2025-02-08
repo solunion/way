@@ -24,8 +24,15 @@ export class TenantController {
   }
 
   @Get(':id')
-  getOne$(@Param('id') id: string): Observable<TenantDto> {
+  getById$(@Param('id') id: string): Observable<TenantDto> {
     return this.#service.findById$(id);
+  }
+
+  @Get()
+  getAll$(): Observable<TenantDto[]> {
+    return this.#service.findAll$().pipe(
+      map((tenants: Tenant[]) => tenants.map(tenant => plainToInstance(TenantDto, tenant))),
+    );
   }
 
   @Patch(':id')
