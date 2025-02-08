@@ -4,8 +4,9 @@ $height: 43px;
 .cd-breadcrumb, .cd-multi-steps {
   background-color: white;
   border-radius: .25em;
-  max-height: $height;
-  height: $height;
+  // max-height: $height;
+  margin-top: 0;
+  // height: $height;
 }
 .cd-breadcrumb::after, .cd-multi-steps::after {
   clear: both;
@@ -93,6 +94,7 @@ $height: 43px;
     padding: 0 1.2em;
   }
   .cd-breadcrumb li, .cd-multi-steps li {
+    margin: .8em 0;
   }
   .cd-breadcrumb li::after, .cd-multi-steps li::after {
     margin: 0 1em;
