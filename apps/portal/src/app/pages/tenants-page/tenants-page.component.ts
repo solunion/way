@@ -9,6 +9,7 @@ import { TenantService } from '../../shared/services/tenant.service';
 import { Tenant } from '../../shared/models/tenant.model';
 import { ApolloModule } from 'apollo-angular';
 import { TENANTS_COLUMS } from './utils/tenants-columns.const';
+import { UtilityService } from '../../shared/services/utility.service';
 
 @Component({
   selector: 'way-tenants-page',
@@ -27,16 +28,41 @@ import { TENANTS_COLUMS } from './utils/tenants-columns.const';
 export class TenantsPageComponent implements OnInit {
 
   #tenantService= inject(TenantService);
+  #utilityService = inject(UtilityService);
 
   readonly panelOpenState = signal(false);
 
   tenants = signal<Tenant[]>([]);
   tableColumns = TENANTS_COLUMS;
 
+  selectedItemsConfig = {
+    selectedElements: 0,
+    actions: [
+      {
+        id: 'delete',
+        label: 'Delete',
+        icon: 'delete',
+        action: () => {
+          console.log('Delete');
+        }
+      }
+    ]
+  }
+
+
   ngOnInit() {
     this.#tenantService.getAll$().subscribe(tenants => {
       this.tenants.set(tenants);
     })
+  }
+
+  selectionChange(event: PeriodicElement[]){
+
+    if( event.length > 0 ) {
+      this.#utilityService.showActionMenu( { ...this.selectedItemsConfig, selectedElements: event.length });
+    } else {
+      this.#utilityService.hideActionMenu();
+    }
   }
 
 }
