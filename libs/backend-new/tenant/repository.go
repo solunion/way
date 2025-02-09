@@ -14,36 +14,35 @@ type Repository interface {
 }
 
 type tenantRepository struct {
-	db  *bun.DB
-	ctx context.Context
+	db *bun.DB
 }
 
-func (r *tenantRepository) FindAll(tenants *[]Tenant) error {
-	return r.db.NewSelect().Model(tenants).Scan(r.ctx)
+func (r *tenantRepository) FindAll(ctx context.Context, tenants *[]Tenant) error {
+	return r.db.NewSelect().Model(tenants).Scan(ctx)
 }
 
-func (r *tenantRepository) FindOne(tenant *Tenant, id uuid.UUID) error {
-	return r.db.NewSelect().Model(tenant).Where("?Pks", id).Scan(r.ctx)
+func (r *tenantRepository) FindOne(ctx context.Context, tenant *Tenant, id uuid.UUID) error {
+	return r.db.NewSelect().Model(tenant).Where("?Pks", id).Scan(ctx)
 }
 
-func (r *tenantRepository) Create(tenant *Tenant) (sql.Result, error) {
-	return r.db.NewInsert().Model(tenant).Exec(r.ctx)
+func (r *tenantRepository) Create(ctx context.Context, tenant *Tenant) (sql.Result, error) {
+	return r.db.NewInsert().Model(tenant).Exec(ctx)
 }
 
-func (r *tenantRepository) Update(tenant *Tenant) (sql.Result, error) {
-	return r.db.NewUpdate().Model(tenant).Exec(r.ctx)
+func (r *tenantRepository) Update(ctx context.Context, tenant *Tenant) (sql.Result, error) {
+	return r.db.NewUpdate().Model(tenant).Exec(ctx)
 }
 
-func (r *tenantRepository) Save(tenant *Tenant) (sql.Result, error) {
-	return r.db.NewInsert().Model(tenant).On("CONFLICT (id) DO UPDATE").Exec(r.ctx)
+func (r *tenantRepository) Save(ctx context.Context, tenant *Tenant) (sql.Result, error) {
+	return r.db.NewInsert().Model(tenant).On("CONFLICT (id) DO UPDATE").Exec(ctx)
 }
 
-func (r *tenantRepository) Delete(id uuid.UUID) (sql.Result, error) {
-	return r.db.NewDelete().Model((*Tenant)(nil)).Where("?Pks", id).Exec(r.ctx)
+func (r *tenantRepository) Delete(ctx context.Context, id uuid.UUID) (sql.Result, error) {
+	return r.db.NewDelete().Model((*Tenant)(nil)).Where("?Pks", id).Exec(ctx)
 }
 
-func newRepository(ctx context.Context, db *bun.DB) Repository {
-	return &tenantRepository{db: db, ctx: ctx}
+func newRepository(db *bun.DB) Repository {
+	return &tenantRepository{db: db}
 }
 
 // Interface checks

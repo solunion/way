@@ -1,6 +1,8 @@
 package common
 
+import "context"
+
 type Service[T any] interface {
-	Create(newModel *T) error
-	FindAll(models *[]T) error
+	Create(ctx context.Context, newModel *T) error
+	FindAll(ctx context.Context, models *[]T) error
 }

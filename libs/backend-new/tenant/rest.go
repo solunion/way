@@ -36,7 +36,7 @@ func (t *Rest) Create() {
 			return err
 		}
 
-		if err := t.service.Create(tenant); err != nil {
+		if err := t.service.Create(ctx.Context(), tenant); err != nil {
 			log.Error("Failed to create tenant:", err)
 			return err
 		}

@@ -1,6 +1,7 @@
 package tenant
 
 import (
+	"context"
 	"github.com/solunion/way/backend/common"
 	"go.uber.org/zap"
 )
@@ -14,17 +15,17 @@ type tenantService struct {
 	log        *zap.SugaredLogger
 }
 
-func (s *tenantService) Create(tenant *Tenant) error {
-	if _, err := s.repository.Create(tenant); err != nil {
+func (s *tenantService) Create(ctx context.Context, tenant *Tenant) error {
+	if _, err := s.repository.Create(ctx, tenant); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (s *tenantService) FindAll(tenants *[]Tenant) error {
+func (s *tenantService) FindAll(ctx context.Context, tenants *[]Tenant) error {
 	// TODO: implement me
-	_ = tenants
+	_, _ = ctx, tenants
 	return nil
 }
 
