@@ -1,11 +1,11 @@
 package tenant
 
-type CreateTenantRequest struct {
+type CreateRequestDto struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
 
-type CreateTenantResponse struct {
-	CreateTenantRequest
+type ResponseDto struct {
+	CreateRequestDto
 	ID string `json:"id"`
 }

@@ -2,62 +2,67 @@ package tenant
 
 import (
 	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/fiber/v3/log"
 	"github.com/jinzhu/copier"
 	"go.uber.org/zap"
 )
 
-//goland:noinspection GoNameStartsWithPackageName
+func newRest(app *fiber.App, service Service, logger *zap.SugaredLogger) {
+	handlers := &Rest{service: service, log: logger}
+	app.Post("/tenants", handlers.Create)
+	app.Get("/tenants", handlers.FindAll)
+}
+
 type Rest struct {
-	Http    *fiber.App
 	service Service
 	log     *zap.SugaredLogger
 }
 
-func (t *Rest) registerRoutes() {
-	t.Create()
+func (r *Rest) Create(ctx fiber.Ctx) error {
+	r.log.Debug("Tenant - Create API called...")
+
+	request := new(CreateRequestDto)
+
+	if err := ctx.Bind().Body(request); err != nil {
+		r.log.Error("Failed to bind body request:", err)
+		return err
+	}
+
+	tenant := new(Tenant)
+
+	if err := copier.Copy(tenant, request); err != nil {
+		r.log.Error("Failed to convert tenant DTO:", err)
+		return err
+	}
+
+	if err := r.service.Create(ctx.Context(), tenant); err != nil {
+		r.log.Error("Failed to create tenant:", err)
+		return err
+	}
+
+	response := new(ResponseDto)
+
+	if err := copier.Copy(response, tenant); err != nil {
+		r.log.Error("Failed to build response:", err)
+		return err
+	}
+
+	return ctx.JSON(response)
 }
 
-func (t *Rest) Create() {
-	t.Http.Post("/tenants", func(ctx fiber.Ctx) error {
-		log.Debug("Tenant - Create API called...")
+func (r *Rest) FindAll(ctx fiber.Ctx) error {
+	r.log.Debug("Tenant - FindAll API called...")
 
-		request := new(CreateTenantRequest)
+	tenants := make([]Tenant, 0)
 
-		if err := ctx.Bind().Body(request); err != nil {
-			log.Error("Failed to bind body request:", err)
-			return err
-		}
+	if err := r.service.FindAll(ctx.Context(), &tenants); err != nil {
+		r.log.Error("Failed to find all tenants:", err)
+	}
 
-		tenant := new(Tenant)
+	response := make([]ResponseDto, 0)
 
-		if err := copier.Copy(&tenant, &request); err != nil {
-			log.Error("Failed to convert tenant DTO:", err)
-			return err
-		}
+	if err := copier.Copy(&response, tenants); err != nil {
+		r.log.Error("Failed to build response:", err)
+	}
 
-		if err := t.service.Create(ctx.Context(), tenant); err != nil {
-			log.Error("Failed to create tenant:", err)
-			return err
-		}
-
-		response := new(CreateTenantResponse)
-
-		if err := copier.Copy(&response, tenant); err != nil {
-			log.Error("Failed to build response:", err)
-			return err
-		}
-
-		if err := ctx.JSON(response); err != nil {
-			log.Error("Failed to send response:", err)
-		}
-
-		return nil
-	})
-}
-
-func newRest(app *fiber.App, service Service, logger *zap.SugaredLogger) *Rest {
-	api := &Rest{Http: app, service: service, log: logger}
-	api.registerRoutes()
-	return api
+	return ctx.JSON(response)
 }
