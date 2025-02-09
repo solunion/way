@@ -4,13 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"github.com/google/uuid"
-	"github.com/solunion/way/backend/database"
+	"github.com/solunion/way/backend/common"
 	"github.com/uptrace/bun"
 )
 
 //goland:noinspection GoNameStartsWithPackageName
-type TenantRepository interface {
-	database.CRUDRepository[Tenant, uuid.UUID]
+type Repository interface {
+	common.CRUDRepository[Tenant, uuid.UUID]
 }
 
 type tenantRepository struct {
@@ -42,11 +42,11 @@ func (r *tenantRepository) Delete(id uuid.UUID) (sql.Result, error) {
 	return r.db.NewDelete().Model((*Tenant)(nil)).Where("?Pks", id).Exec(r.ctx)
 }
 
-func newTenantRepository(ctx context.Context, db *bun.DB) TenantRepository {
+func newRepository(ctx context.Context, db *bun.DB) Repository {
 	return &tenantRepository{db: db, ctx: ctx}
 }
 
 // Interface checks
 var _ = interface {
-	database.CRUDRepository[Tenant, uuid.UUID]
+	common.CRUDRepository[Tenant, uuid.UUID]
 }(&tenantRepository{})

@@ -8,17 +8,17 @@ import (
 )
 
 //goland:noinspection GoNameStartsWithPackageName
-type TenantHttp struct {
-	Http       *fiber.App
-	Repository TenantRepository
-	Log        *zap.SugaredLogger
+type Rest struct {
+	Http    *fiber.App
+	service Service
+	log     *zap.SugaredLogger
 }
 
-func (t *TenantHttp) registerRoutes() {
+func (t *Rest) registerRoutes() {
 	t.Create()
 }
 
-func (t *TenantHttp) Create() {
+func (t *Rest) Create() {
 	t.Http.Post("/tenants", func(ctx fiber.Ctx) error {
 		log.Debug("Tenant - Create API called...")
 
@@ -36,7 +36,7 @@ func (t *TenantHttp) Create() {
 			return err
 		}
 
-		if _, err := t.Repository.Create(tenant); err != nil {
+		if err := t.service.Create(tenant); err != nil {
 			log.Error("Failed to create tenant:", err)
 			return err
 		}
@@ -56,8 +56,8 @@ func (t *TenantHttp) Create() {
 	})
 }
 
-func registerTenantHttp(app *fiber.App, repository TenantRepository, logger *zap.SugaredLogger) *TenantHttp {
-	api := &TenantHttp{Http: app, Repository: repository, Log: logger}
+func newRest(app *fiber.App, service Service, logger *zap.SugaredLogger) *Rest {
+	api := &Rest{Http: app, service: service, log: logger}
 	api.registerRoutes()
 	return api
 }

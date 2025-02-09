@@ -6,9 +6,10 @@ import (
 
 var Module = fx.Module("tenant",
 	fx.Provide(
-		newTenantRepository,
+		newRepository,
+		newService,
 	),
 	fx.Invoke(
-		registerTenantHttp,
+		newRest,
 	),
 )

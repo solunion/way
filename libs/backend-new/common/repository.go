@@ -1,11 +1,11 @@
-package database
+package common
 
 import (
 	"database/sql"
 	"github.com/google/uuid"
 )
 
-type CRUDRepository[T any, I string | uuid.UUID] interface {
+type CRUDRepository[T any, I uuid.UUID] interface {
 	FindAll(models *[]T) error
 	FindOne(model *T, id I) error
 	Create(model *T) (sql.Result, error)
