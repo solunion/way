@@ -1,10 +1,17 @@
 <div>
   <nav>
     <ol class="cd-breadcrumb">
-      <li><a href="#0">Home</a></li>
-      <li><a href="#0">Gallery</a></li>
-      <li><a href="#0">Web</a></li>
-      <li class="current"><em>Project</em></li>
+      <li><a [routerLink]="'/'">Home</a></li>
+
+      @for( link of breadcrumb(); track link.path ) {
+
+        @if( $last ) {
+          <li class="current"><em>{{ link.label }}</em></li>
+        } @else {
+          <li><a [routerLink]="link.path">{{ link.label }}</a></li>
+        }
+      }
+
     </ol>
   </nav>
 </div>

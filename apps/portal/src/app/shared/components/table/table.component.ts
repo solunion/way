@@ -1,16 +1,16 @@
-import { Component, computed, effect, EventEmitter, input, OnInit, Output, output } from '@angular/core';
+import { Component, computed, EventEmitter, input, OnInit, Output } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
 import { TableColumns, TableColumnType } from './table.models';
-import { DatePipe, JsonPipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { MatCheckbox } from '@angular/material/checkbox';
 import {SelectionModel} from '@angular/cdk/collections';
 
 @Component({
   selector: 'way-table',
-  imports: [MatTableModule, MatButtonModule, MatIconModule, MatPaginator, DatePipe, JsonPipe, MatCheckbox],
+  imports: [MatTableModule, MatButtonModule, MatIconModule, MatPaginator, DatePipe, MatCheckbox],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
   standalone: true

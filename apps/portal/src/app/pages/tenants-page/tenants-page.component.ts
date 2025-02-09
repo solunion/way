@@ -7,12 +7,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TenantService } from '../../shared/services/tenant.service';
 import { Tenant } from '../../shared/models/tenant.model';
-import { ApolloModule } from 'apollo-angular';
 import { TENANTS_COLUMS } from './utils/tenants-columns.const';
 import { UtilityService } from '../../shared/services/utility.service';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'way-tenants-page',
   imports: [
     TableComponent,
     MatExpansionModule,
@@ -22,13 +21,14 @@ import { UtilityService } from '../../shared/services/utility.service';
     MatInputModule
   ],
   templateUrl: './tenants-page.component.html',
-  styleUrl: './tenants-page.component.scss',
+  styleUrl: './tenants-page.component.html',
   standalone: true
 })
 export class TenantsPageComponent implements OnInit {
 
   #tenantService= inject(TenantService);
   #utilityService = inject(UtilityService);
+  #router = inject(Router);
 
   readonly panelOpenState = signal(false);
 
@@ -49,11 +49,26 @@ export class TenantsPageComponent implements OnInit {
     ]
   }
 
+  unselectedItemsConfig = {
+    actions: [
+      {
+        id: 'add',
+        label: 'Add',
+        icon: 'add',
+        action: () => {
+          this.#router.navigate(['tenants', 'detail'])
+        }
+      }
+    ]
+  }
+
 
   ngOnInit() {
     this.#tenantService.getAll$().subscribe(tenants => {
       this.tenants.set(tenants);
     })
+
+    this.#utilityService.showActionMenu( { ...this.unselectedItemsConfig, selectedElements: 0 });
   }
 
   selectionChange(event: PeriodicElement[]){
@@ -61,7 +76,7 @@ export class TenantsPageComponent implements OnInit {
     if( event.length > 0 ) {
       this.#utilityService.showActionMenu( { ...this.selectedItemsConfig, selectedElements: event.length });
     } else {
-      this.#utilityService.hideActionMenu();
+      this.#utilityService.showActionMenu( { ...this.unselectedItemsConfig, selectedElements: 0 });
     }
   }
 
