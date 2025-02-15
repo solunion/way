@@ -3,16 +3,16 @@ package tenant
 import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/jinzhu/copier"
+	"github.com/solunion/way/backend/common"
 	"go.uber.org/zap"
 )
 
-func newRest(app *fiber.App, service Service, logger *zap.SugaredLogger) {
-	handlers := &Rest{service: service, log: logger}
-	app.Post("/tenants", handlers.Create)
-	app.Get("/tenants", handlers.FindAll)
+func newRest(service Service, log *zap.SugaredLogger) *Rest {
+	return &Rest{service: service, log: log}
 }
 
 type Rest struct {
+	common.Rest[Tenant]
 	service Service
 	log     *zap.SugaredLogger
 }
@@ -49,12 +49,12 @@ func (r *Rest) Create(ctx fiber.Ctx) error {
 	return ctx.JSON(response)
 }
 
-func (r *Rest) FindAll(ctx fiber.Ctx) error {
-	r.log.Debug("Tenant - FindAll API called...")
+func (r *Rest) GetAll(ctx fiber.Ctx) error {
+	r.log.Debug("Tenant - GetAll API called...")
 
 	tenants := make([]Tenant, 0)
 
-	if err := r.service.FindAll(ctx.Context(), &tenants); err != nil {
+	if err := r.service.GetAll(ctx.Context(), &tenants); err != nil {
 		r.log.Error("Failed to find all tenants:", err)
 	}
 

@@ -1,8 +1,12 @@
 package common
 
-import "context"
+import (
+	"context"
+	"github.com/google/uuid"
+)
 
 type Service[T any] interface {
 	Create(ctx context.Context, newModel *T) error
-	FindAll(ctx context.Context, models *[]T) error
+	GetAll(ctx context.Context, models *[]T) error
+	GetById(ctx context.Context, model *T, id uuid.UUID) error
 }
