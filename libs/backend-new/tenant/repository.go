@@ -26,7 +26,7 @@ func (r *Repository) FindAll(ctx context.Context, tenants *[]Tenant) error {
 }
 
 func (r *Repository) FindOne(ctx context.Context, tenant *Tenant, id uuid.UUID) error {
-	return r.db.NewSelect().Model(tenant).Where("?Pks", id).Scan(ctx)
+	return r.db.NewSelect().Model(tenant).Where("id = ?", id).Scan(ctx)
 }
 
 func (r *Repository) Update(ctx context.Context, tenant *Tenant) (sql.Result, error) {
@@ -38,5 +38,5 @@ func (r *Repository) Save(ctx context.Context, tenant *Tenant) (sql.Result, erro
 }
 
 func (r *Repository) Delete(ctx context.Context, id uuid.UUID) (sql.Result, error) {
-	return r.db.NewDelete().Model((*Tenant)(nil)).Where("?Pks", id).Exec(ctx)
+	return r.db.NewDelete().Model((*Tenant)(nil)).Where("?PKs = ?", id).Exec(ctx)
 }

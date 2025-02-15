@@ -7,5 +7,5 @@ import (
 type Rest[T any] interface {
 	Create(ctx fiber.Ctx) error
 	GetAll(ctx fiber.Ctx) error
-	//GetById(ctx fiber.Ctx) error
+	GetById(ctx fiber.Ctx) error
 }
