@@ -7,13 +7,13 @@ import (
 	"go.uber.org/zap"
 )
 
-func newRest(service Service, log *zap.SugaredLogger) *Rest {
+func newRest(service *Service, log *zap.SugaredLogger) *Rest {
 	return &Rest{service: service, log: log}
 }
 
 type Rest struct {
 	common.Rest[Tenant]
-	service Service
+	service *Service
 	log     *zap.SugaredLogger
 }
 

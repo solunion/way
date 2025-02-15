@@ -7,34 +7,31 @@ import (
 	"go.uber.org/zap"
 )
 
-func newService(log *zap.SugaredLogger, repository Repository) Service {
-	return &service{repository: repository, log: log}
+func newService(log *zap.SugaredLogger, repository *Repository) *Service {
+	return &Service{repository: repository, log: log}
 }
 
-type Service interface {
+type Service struct {
 	common.Service[Tenant]
-}
-
-type service struct {
-	repository Repository
+	repository *Repository
 	log        *zap.SugaredLogger
 }
 
-func (s *service) Create(ctx context.Context, tenant *Tenant) error {
+func (s *Service) Create(ctx context.Context, tenant *Tenant) error {
 	if _, err := s.repository.Create(ctx, tenant); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *service) GetAll(ctx context.Context, tenants *[]Tenant) error {
+func (s *Service) GetAll(ctx context.Context, tenants *[]Tenant) error {
 	if err := s.repository.FindAll(ctx, tenants); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *service) GetById(ctx context.Context, model *Tenant, id uuid.UUID) error {
+func (s *Service) GetById(ctx context.Context, model *Tenant, id uuid.UUID) error {
 	if err := s.repository.FindOne(ctx, model, id); err != nil {
 		return err
 	}
