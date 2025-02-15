@@ -4,7 +4,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
-	"github.com/solunion/way/backend/common"
+	"github.com/solunion/way/backend/common/handlers"
 	"go.uber.org/zap"
 )
 
@@ -13,7 +13,7 @@ func newRest(service *Service, log *zap.SugaredLogger) *Rest {
 }
 
 type Rest struct {
-	common.Rest[Tenant]
+	handlers.Rest[Tenant]
 	service *Service
 	log     *zap.SugaredLogger
 }
