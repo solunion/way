@@ -1,8 +1,8 @@
 {
   "name": "github.com/solunion/way/backend",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "sourceRoot": "apps/backend-new",
+  "sourceRoot": "backend",
   "tags": [],
   "targets": {
     "build": {
@@ -14,7 +14,7 @@
     "serve": {
       "executor": "@nx-go/nx-go:serve",
       "options": {
-        "main": "{projectRoot}/main.go"
+        "main": "{projectRoot}/internal/app/main.go"
       }
     },
     "test": {

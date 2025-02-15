@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/google/uuid"
-	"github.com/solunion/way/backend/common"
+	"github.com/solunion/way/backend/internal/pkg/common"
 	"github.com/uptrace/bun"
 )
 

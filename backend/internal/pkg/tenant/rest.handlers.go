@@ -4,7 +4,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
-	"github.com/solunion/way/backend/common/handlers"
+	"github.com/solunion/way/backend/internal/pkg/common/handlers"
 	"go.uber.org/zap"
 )
 

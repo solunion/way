@@ -3,7 +3,7 @@ package tenant
 import (
 	"context"
 	"github.com/google/uuid"
-	"github.com/solunion/way/backend/common"
+	"github.com/solunion/way/backend/internal/pkg/common"
 	"go.uber.org/zap"
 )
 

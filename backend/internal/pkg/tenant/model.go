@@ -2,7 +2,7 @@ package tenant
 
 import (
 	"github.com/google/uuid"
-	"github.com/solunion/way/backend/database"
+	"github.com/solunion/way/backend/internal/pkg/database"
 	"github.com/uptrace/bun"
 )
 
