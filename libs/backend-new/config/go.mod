@@ -3,6 +3,7 @@ module github.com/solunion/way/backend/config
 go 1.23
 
 require (
+	github.com/alexlast/bunzap v0.1.0
 	github.com/spf13/viper v1.19.0
 	github.com/uptrace/bun v1.2.9
 	github.com/uptrace/bun/dialect/pgdialect v1.2.9

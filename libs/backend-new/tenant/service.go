@@ -37,3 +37,10 @@ func (s *Service) GetById(ctx context.Context, model *Tenant, id uuid.UUID) erro
 	}
 	return nil
 }
+
+func (s *Service) Update(ctx context.Context, tenant *Tenant) error {
+	if _, err := s.repository.Update(ctx, tenant); err != nil {
+		return err
+	}
+	return nil
+}

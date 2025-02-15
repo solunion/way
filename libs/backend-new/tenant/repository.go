@@ -30,7 +30,7 @@ func (r *Repository) FindOne(ctx context.Context, tenant *Tenant, id uuid.UUID) 
 }
 
 func (r *Repository) Update(ctx context.Context, tenant *Tenant) (sql.Result, error) {
-	return r.db.NewUpdate().Model(tenant).Exec(ctx)
+	return r.db.NewUpdate().Model(tenant).OmitZero().WherePK().Returning("*").Exec(ctx)
 }
 
 func (r *Repository) Save(ctx context.Context, tenant *Tenant) (sql.Result, error) {

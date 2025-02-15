@@ -1,20 +1,21 @@
 package tenant
 
 import (
-	"database/sql"
 	"github.com/google/uuid"
 	"github.com/solunion/way/backend/database"
+	"github.com/uptrace/bun"
 )
 
+type DatabaseBaseModel = database.BaseModel
+
 type NewTenant struct {
-	database.BaseModel `bun:"table:tenants,alias:t,extends"`
-	Name               string         `bun:"type:text,notnull"`
-	Description        sql.NullString `bun:"type:text"`
+	Tenant `bun:",extend"`
+	ID     uuid.UUID `bun:"-"`
 }
 
 type Tenant struct {
-	NewTenant `bun:",extends"`
-	ID        uuid.UUID `bun:"type:uuid,pk,default:uuid_generate_v4()"`
+	DatabaseBaseModel
+	bun.BaseModel `bun:"table:tenants,alias:t"`
 }
 
 type WithTenantModel struct {

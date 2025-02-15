@@ -94,3 +94,43 @@ func (r *Rest) GetById(ctx fiber.Ctx) error {
 
 	return ctx.JSON(response)
 }
+
+func (r *Rest) Update(ctx fiber.Ctx) error {
+	r.log.Debug("Tenant - Update API called...")
+
+	id, err := uuid.Parse(ctx.Params("id"))
+
+	if err != nil {
+		r.log.Error("Failed to parse id:", err)
+		return err
+	}
+
+	request := new(UpdateRequestDto)
+
+	if err := ctx.Bind().Body(request); err != nil {
+		r.log.Error("Failed to bind body request:", err)
+		return err
+	}
+
+	tenant := new(Tenant)
+
+	if err := copier.CopyWithOption(tenant, request, copier.Option{IgnoreEmpty: true}); err != nil {
+		r.log.Error("Failed to convert tenant DTO:", err)
+		return err
+	}
+
+	tenant.ID = id
+
+	if err := r.service.Update(ctx.Context(), tenant); err != nil {
+		r.log.Error("Failed to update tenant:", err)
+		return err
+	}
+
+	response := make([]ResponseDto, 0)
+
+	if err := copier.Copy(&response, tenant); err != nil {
+		r.log.Error("Failed to build response:", err)
+	}
+
+	return ctx.JSON(response)
+}

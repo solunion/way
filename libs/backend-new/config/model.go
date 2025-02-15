@@ -1,7 +1,7 @@
 package config
 
 type EnvironmentConfig struct {
-	Type string `mapstructure:"ENVIRONMENT"`
+	Type string `mapstructure:"ENVIRONMENT_TYPE"`
 }
 
 type DatabaseConfig struct {

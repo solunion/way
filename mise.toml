@@ -11,6 +11,7 @@ DATABASE_USER = "way"
 DATABASE_PASSWORD = "way"
 DATABASE_NAME = "way"
 DATABASE_SSLMODE = "disable"
+ENVIRONMENT_TYPE = "development"
 WEB_HOST = "localhost"
 WEB_PORT = 3000
 NODE_ENV = "development"
