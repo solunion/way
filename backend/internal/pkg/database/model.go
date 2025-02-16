@@ -17,3 +17,6 @@ type BaseModel struct {
 	Name        string    `bun:"type:text,notnull"`
 	Description *string   `bun:"type:text"`
 }
+
+//goland:noinspection GoNameStartsWithPackageName
+type WayBaseModel = BaseModel

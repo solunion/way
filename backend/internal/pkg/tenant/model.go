@@ -6,19 +6,17 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type DatabaseBaseModel = database.BaseModel
-
 type NewTenant struct {
 	Tenant `bun:",extend"`
 	ID     uuid.UUID `bun:"-"`
 }
 
 type Tenant struct {
-	DatabaseBaseModel
+	database.WayBaseModel
 	bun.BaseModel `bun:"table:tenants,alias:t"`
 }
 
 type WithTenantModel struct {
 	Tenant   Tenant    `bun:"rel:belongs-to,join:tenant_id=id"`
-	TenantId uuid.UUID `bun:"type:uuid,notnull"`
+	TenantId uuid.UUID `bun:"type:uuid"`
 }
