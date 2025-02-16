@@ -134,3 +134,21 @@ func (r *Rest) Update(ctx fiber.Ctx) error {
 
 	return ctx.JSON(response)
 }
+
+func (r *Rest) Delete(ctx fiber.Ctx) error {
+	r.log.Debug("Tenant - Delete API called...")
+
+	id, err := uuid.Parse(ctx.Params("id"))
+
+	if err != nil {
+		r.log.Error("Failed to parse id:", err)
+		return err
+	}
+
+	if err := r.service.Delete(ctx.Context(), id); err != nil {
+		r.log.Error("Failed to delete tenant:", err)
+		return err
+	}
+
+	return ctx.SendStatus(fiber.StatusNoContent)
+}

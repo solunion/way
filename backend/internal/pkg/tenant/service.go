@@ -44,3 +44,10 @@ func (s *Service) Update(ctx context.Context, tenant *Tenant) error {
 	}
 	return nil
 }
+
+func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
+	if _, err := s.repository.Delete(ctx, id); err != nil {
+		return err
+	}
+	return nil
+}
