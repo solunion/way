@@ -1,0 +1,22 @@
+{
+  "form-validator" : {
+    "pattern" : "Il valore inserito non è in un formato valido",
+    "matDatepickerParse" : "Inserire una data nel formato gg/mm/aaaa",
+    "matDatetimePickerParse" : "Inserire una data e un orario nel formato gg/mm/aaaa hh:mm",
+    "maxlength" : "Inserire un massimo di {{value}} caratteri",
+    "minlength" : "Inserire almeno {{value}} caratteri",
+    "max" : "Inserire un valore minore o uguale a {{value}}",
+    "min" : "Inserire un valore maggiore o uguale a {{value}}",
+    "matDatepickerMax" : "Inserire una data precendete al {{value}}",
+    "matDatepickerMin" : "Inserire una data successiva al {{value}}",
+    "minArrayLength" : "Inserire almeno {{value}} elementi",
+    "maxArrayLength" : "Inserire al massimo {{value}} elementi",
+    "required" : "Campo obbligatorio",
+    "email" : "Inserire un indirizzo email valido",
+    "number" : "Inserire un numero",
+    "integer" : "Inserire un numero intero",
+    "decimal" : "Inserire un numero decimale",
+    "url" : "Inserire un URL valido",
+    "default": "Errore sconosciuto"
+  }
+}
