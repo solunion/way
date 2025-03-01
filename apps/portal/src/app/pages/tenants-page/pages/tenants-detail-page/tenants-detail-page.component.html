@@ -1,1 +1,31 @@
-<div>ciao</div>
+<form [formGroup]="tenantForm" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 xxl:grid-cols-4 gap-4 p-4">
+  <div class="">
+    <mat-form-field class="w-full">
+      <mat-label>Name</mat-label>
+      <input type="text" matInput formControlName="name"
+             placeholder="Insert tenant name" aria-label="Tenant name">
+      <mat-error>{{ tenantForm!.get ('name')?.errors | formError }}</mat-error>
+    </mat-form-field>
+  </div>
+  <div class="col-span-full">
+    <mat-form-field class="w-full">
+      <mat-label>Description</mat-label>
+      <input type="text" matInput formControlName="description"
+             placeholder="Insert tenant description" aria-label="Tenant description">
+      <mat-error>{{ tenantForm!.get ('description')?.errors | formError }}</mat-error>
+    </mat-form-field>
+  </div>
+</form>
+
+
+
+<!--<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 xxl:grid-cols-4 gap-4 p-4">-->
+<!--  <div class="bg-blue-500 text-white p-4 rounded">Item 1</div>-->
+<!--  <div class="bg-blue-500 text-white p-4 rounded">Item 2</div>-->
+<!--  <div class="bg-blue-500 text-white p-4 rounded col-span-full">Item 3</div>-->
+<!--  <div class="bg-blue-500 text-white p-4 rounded">Item 4</div>-->
+<!--  <div class="bg-blue-500 text-white p-4 rounded">Item 5</div>-->
+<!--  <div class="bg-blue-500 text-white p-4 rounded">Item 6</div>-->
+<!--  <div class="bg-blue-500 text-white p-4 rounded">Item 7</div>-->
+<!--  <div class="bg-blue-500 text-white p-4 rounded">Item 8</div>-->
+<!--</div>-->
