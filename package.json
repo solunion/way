@@ -23,6 +23,8 @@
     "@nestjs/graphql": "^12.2.2",
     "@nestjs/mapped-types": "^2.0.6",
     "@nestjs/platform-express": "^10.0.2",
+    "@ngx-translate/core": "^16.0.4",
+    "@ngx-translate/http-loader": "^16.0.1",
     "@prisma/client": "^6.2.1",
     "apollo-angular": "^8.0.0",
     "axios": "^1.6.0",
