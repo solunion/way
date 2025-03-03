@@ -8,35 +8,36 @@ import (
 	"github.com/uptrace/bun"
 )
 
-func newRepository(db *bun.DB) *Repository {
+func newHttpRepository(db *bun.DB) *Repository {
 	return &Repository{db: db}
 }
 
 type Repository struct {
-	common.CRUDRepository[Rule, uuid.UUID]
+	common.CRUDRepository[RuleDao, uuid.UUID]
 	db *bun.DB
 }
 
-func (r *Repository) Create(ctx context.Context, rule *Rule) (sql.Result, error) {
+func (r *Repository) Create(ctx context.Context, rule *RuleDao) (sql.Result, error) {
 	return r.db.NewInsert().Model(rule).Exec(ctx)
 }
 
-func (r *Repository) FindAll(ctx context.Context, rules *[]Rule) error {
+func (r *Repository) FindAll(ctx context.Context, rules *[]RuleDao) error {
+	// FIXME: filter by type
 	return r.db.NewSelect().Model(rules).Scan(ctx)
 }
 
-func (r *Repository) FindOne(ctx context.Context, rule *Rule, id uuid.UUID) error {
+func (r *Repository) FindOne(ctx context.Context, rule *RuleDao, id uuid.UUID) error {
 	return r.db.NewSelect().Model(rule).Where("id = ?", id).Scan(ctx)
 }
 
-func (r *Repository) Save(ctx context.Context, rule *Rule) (sql.Result, error) {
+func (r *Repository) Save(ctx context.Context, rule *RuleDao) (sql.Result, error) {
 	return r.db.NewInsert().Model(rule).On("CONFLICT (id) DO UPDATE").Exec(ctx)
 }
 
-func (r *Repository) Update(ctx context.Context, rule *Rule) (sql.Result, error) {
+func (r *Repository) Update(ctx context.Context, rule *RuleDao) (sql.Result, error) {
 	return r.db.NewUpdate().Model(rule).OmitZero().WherePK().Returning("*").Exec(ctx)
 }
 
 func (r *Repository) Delete(ctx context.Context, id uuid.UUID) (sql.Result, error) {
-	return r.db.NewDelete().Model((*Rule)(nil)).Where("?PKs = ?", id).Exec(ctx)
+	return r.db.NewDelete().Model((*RuleDao)(nil)).Where("?PKs = ?", id).Exec(ctx)
 }

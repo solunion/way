@@ -17,6 +17,6 @@ type Tenant struct {
 }
 
 type WithTenantModel struct {
-	Tenant   Tenant    `bun:"rel:belongs-to,join:tenant_id=id"`
-	TenantId uuid.UUID `bun:"type:uuid"`
+	Tenant   Tenant    `bun:"rel:belongs-to,join:tenant_id=id" json:",omitempty"`
+	TenantId uuid.UUID `bun:"type:uuid,nullzero" json:",omitempty"`
 }

@@ -7,9 +7,9 @@ import (
 
 var Module = fx.Module("rule",
 	fx.Provide(
-		newRepository,
-		newService,
-		newRest,
+		newHttpRepository,
+		newHttpService,
+		newHttpRest,
 	),
 	fx.Invoke(
 		registerHandlers,
@@ -17,5 +17,6 @@ var Module = fx.Module("rule",
 )
 
 func registerHandlers(app *fiber.App, rest *Rest) {
-	app.Get("/rules", rest.GetAll)
+	app.Get("/rules/http", rest.GetAll)
+	app.Post("/rules/http", rest.Create)
 }

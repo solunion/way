@@ -8,19 +8,51 @@ import (
 )
 
 type Rest struct {
-	handlers.Rest[Rule]
+	handlers.Rest[RuleDao]
 	service *Service
 	log     *zap.SugaredLogger
 }
 
-func newRest(service *Service, log *zap.SugaredLogger) *Rest {
+func newHttpRest(service *Service, log *zap.SugaredLogger) *Rest {
 	return &Rest{service: service, log: log}
 }
 
-func (r *Rest) GetAll(ctx fiber.Ctx) error {
-	r.log.Debug("Rule - GetAll API called...")
+func (r *Rest) Create(ctx fiber.Ctx) error {
+	r.log.Debug("HttpRule - Create API called...")
 
-	rules := make([]Rule, 0)
+	request := new(CreateRequestDto)
+
+	if err := ctx.Bind().Body(request); err != nil {
+		r.log.Error("Failed to bind body request:", err)
+		return err
+	}
+
+	rule := new(HttpRule)
+
+	if err := copier.Copy(rule, request); err != nil {
+		r.log.Error("Failed to convert rule DTO:", err)
+		return err
+	}
+
+	if err := r.service.Create(ctx.Context(), rule); err != nil {
+		r.log.Error("Failed to create rule:", err)
+		return err
+	}
+
+	response := new(ResponseDto)
+
+	if err := copier.Copy(response, rule); err != nil {
+		r.log.Error("Failed to build response:", err)
+		return err
+	}
+
+	return ctx.JSON(response)
+}
+
+func (r *Rest) GetAll(ctx fiber.Ctx) error {
+	r.log.Debug("HttpRule - GetAll API called...")
+
+	rules := make([]HttpRule, 0)
 
 	if err := r.service.GetAll(ctx.Context(), &rules); err != nil {
 		r.log.Error("Failed to find all rules:", err)

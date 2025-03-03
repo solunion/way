@@ -3,9 +3,6 @@ package rule
 import (
 	"database/sql/driver"
 	"fmt"
-	"github.com/solunion/way/backend/internal/pkg/database"
-	"github.com/solunion/way/backend/internal/pkg/tenant"
-	"github.com/uptrace/bun"
 )
 
 type Type struct {
@@ -45,12 +42,4 @@ func TypeFromString(s string) (Type, error) {
 	default:
 		return Unknown, fmt.Errorf("unknown rule type: %s", s)
 	}
-}
-
-type Rule struct {
-	database.WayBaseModel
-	tenant.WithTenantModel
-	bun.BaseModel `bun:"table:rules,alias:r"`
-	Type          Type   `bun:"type:rule_type,notnull"`
-	Value         string `bun:"type:jsonb,notnull"`
 }
