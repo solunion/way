@@ -6,73 +6,53 @@ import (
 )
 
 type Rule interface {
-	GetType() Type
-	GetValue() GenericRule[map[string]interface{}]
+	Type() string
+	Value() GenericRule[map[string]interface{}]
 }
 
 type GenericRule[T HttpRule | RouteRule | map[string]interface{}] struct {
-	ID          string  `json:"id"`
-	Name        string  `json:"name"`
-	Description *string `json:"description"`
-	Value       T       `json:"value"`
-	Type        Type    `json:"type"`
+	ID            string  `json:"id"`
+	Name          string  `json:"name"`
+	Description   *string `json:"description"`
+	InternalValue T       `json:"value"`
+	InternalType  Type    `json:"type"`
 }
 
-type HttpRule struct {
-	Method string `json:"method"`
-	Path   string `json:"path"`
+func (r GenericRule[T]) Type() string {
+	return r.InternalType.String()
 }
 
-func (r GenericRule[T]) GetType() Type {
-	return r.Type
-}
+func (r GenericRule[T]) Value() GenericRule[map[string]interface{}] {
+	var finalValue map[string]interface{}
+	value, ok := any(r.InternalValue).(map[string]interface{})
+	if !ok {
+		// FIXME: handle it
+		fmt.Printf("Failed to convert finalValue to map[string]interface{} for ID: %s\n", r.ID)
+	}
 
-func (r GenericRule[T]) GetValue() GenericRule[map[string]interface{}] {
-	var value map[string]interface{}
-
-	switch r.Type {
+	switch r.InternalType {
 	case Http:
-		fmt.Println("Convert value to HttpRule")
-		http, ok := any(r.Value).(map[string]interface{})
-		if !ok {
-			// FIXME: handle it
-			fmt.Printf("Failed to convert value to HttpRule for ID: %s\n", r.ID)
-		}
-		value = map[string]interface{}{
-			"method": http["method"],
-			"path":   http["path"],
+		fmt.Println("Convert finalValue to HttpRule")
+		finalValue = map[string]interface{}{
+			"method": value["method"],
+			"path":   value["path"],
 		}
 	case Route:
-		fmt.Println("Convert value to RouteRule")
-		route, ok := any(r.Value).(map[string]interface{})
-		if !ok {
-			// FIXME: handle it
-			fmt.Printf("Failed to convert value to RouteRule for ID: %s\n", r.ID)
-		}
-		fmt.Printf("Route: %s\n", route["route"])
-
-		value = map[string]interface{}{
-			"route": route["route"],
+		fmt.Println("Convert finalValue to RouteRule")
+		finalValue = map[string]interface{}{
+			"route": value["route"],
 		}
 	}
 
 	result := GenericRule[map[string]interface{}]{
-		ID:          r.ID,
-		Name:        r.Name,
-		Description: r.Description,
-		Value:       value,
-		Type:        r.Type,
+		ID:            r.ID,
+		Name:          r.Name,
+		Description:   r.Description,
+		InternalValue: finalValue,
+		InternalType:  r.InternalType,
 	}
 
 	return result
-}
-
-//func (r *HttpRule) FromValue(value []byte) error {
-//	return json.Unmarshal(value, r)
-//}
-
-type RouteRule struct {
-	Route string `json:"route"`
 }
 
 func FromEntity[T map[string]interface{}](entity RuleDao, rule *GenericRule[T]) error {
@@ -81,12 +61,12 @@ func FromEntity[T map[string]interface{}](entity RuleDao, rule *GenericRule[T]) 
 	rule.ID = entity.ID.String()
 	rule.Name = entity.Name
 	rule.Description = entity.Description
-	rule.Type = entity.Type
-	fmt.Println("Inside FromEntity: entity.Value: ", string(entity.Value))
+	rule.InternalType = entity.Type
+	fmt.Println("Inside FromEntity: entity.InternalValue: ", string(entity.Value))
 
-	err = json.Unmarshal(entity.Value, &rule.Value)
+	err = json.Unmarshal(entity.Value, &rule.InternalValue)
 
-	fmt.Println("Inside FromEntity: rule.Value: ", rule.Value)
+	fmt.Println("Inside FromEntity: rule.InternalValue: ", rule.InternalValue)
 
 	return err
 }
