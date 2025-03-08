@@ -37,26 +37,28 @@ func (s *Service[T]) Create(ctx context.Context, rule *GenericRule[T]) error {
 	return nil
 }
 
-func (s *Service[T]) GetAll(ctx context.Context, rules *[]GenericRule[T]) error {
+func (s *Service[T]) GetAll(ctx context.Context) ([]Rule, error) {
 	ctx = context.WithValue(ctx, "type", Http.String())
 	var entities = make([]RuleDao, 0)
+	rules := make([]Rule, 0)
 
 	if err := s.repository.FindAll(ctx, &entities); err != nil {
-		return err
+		return nil, err
 	}
 
 	for _, v := range entities {
+		s.log.Debugf("Entity.Value: %+v", string(v.Value))
 		rule := new(GenericRule[T])
 		err := FromEntity(v, rule)
 
 		if err != nil {
-			return err
+			return nil, err
 		}
 
-		*rules = append(*rules, *rule)
+		rules = append(rules, rule.GetValue())
 	}
 
-	return nil
+	return rules, nil
 }
 
 //

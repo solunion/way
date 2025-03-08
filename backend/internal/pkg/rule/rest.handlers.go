@@ -52,19 +52,15 @@ func (r *Rest[T]) Create(ctx fiber.Ctx) error {
 func (r *Rest[T]) GetAll(ctx fiber.Ctx) error {
 	r.log.Debug("HttpRule - GetAll API called...")
 
-	rules := make([]GenericRule[T], 0)
+	var rules []Rule
 
-	if err := r.service.GetAll(ctx.Context(), &rules); err != nil {
+	if result, err := r.service.GetAll(ctx.Context()); err != nil {
 		r.log.Error("Failed to find all rules:", err)
+	} else {
+		rules = result
 	}
 
 	r.log.Debug("Found rules: %+v", rules)
 
-	response := make([]ResponseDto, 0)
-
-	if err := copier.Copy(&response, rules); err != nil {
-		r.log.Error("Failed to build response:", err)
-	}
-
-	return ctx.JSON(response)
+	return ctx.JSON(rules)
 }

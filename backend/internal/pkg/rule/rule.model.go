@@ -5,17 +5,17 @@ import (
 	"fmt"
 )
 
-//type Rule interface {
-//  Type() Type
-//  ToValue() []byte
-//}
+type Rule interface {
+	GetType() Type
+	GetValue() GenericRule[map[string]interface{}]
+}
 
-type GenericRule[T HttpRule | RouteRule] struct {
+type GenericRule[T HttpRule | RouteRule | map[string]interface{}] struct {
 	ID          string  `json:"id"`
 	Name        string  `json:"name"`
 	Description *string `json:"description"`
-	Value       T
-	Type        Type
+	Value       T       `json:"value"`
+	Type        Type    `json:"type"`
 }
 
 type HttpRule struct {
@@ -23,49 +23,70 @@ type HttpRule struct {
 	Path   string `json:"path"`
 }
 
-func (r *HttpRule) Type() Type {
-	return Http
+func (r GenericRule[T]) GetType() Type {
+	return r.Type
 }
 
-func (r *HttpRule) ToValue() []byte {
-	var value = map[string]interface{}{
-		"method": r.Method,
-		"path":   r.Path,
+func (r GenericRule[T]) GetValue() GenericRule[map[string]interface{}] {
+	var value map[string]interface{}
+
+	switch r.Type {
+	case Http:
+		fmt.Println("Convert value to HttpRule")
+		http, ok := any(r.Value).(HttpRule)
+		if !ok {
+			// FIXME: handle it
+			fmt.Printf("Failed to convert value to HttpRule for ID: %s\n", r.ID)
+		}
+		value = map[string]interface{}{
+			"method": http.Method,
+			"path":   http.Path,
+		}
+	case Route:
+		fmt.Println("Convert value to RouteRule")
+		route, ok := any(r.Value).(RouteRule)
+		if !ok {
+			// FIXME: handle it
+			fmt.Printf("Failed to convert value to RouteRule for ID: %s\n", r.ID)
+		}
+		fmt.Printf("Route: %s\n", route.Route)
+
+		value = map[string]interface{}{
+			"prova": route.Route,
+		}
 	}
 
-	result, err := json.Marshal(value)
-
-	if err != nil {
-		fmt.Println(err)
+	result := GenericRule[map[string]interface{}]{
+		ID:          r.ID,
+		Name:        r.Name,
+		Description: r.Description,
+		Value:       value,
+		Type:        r.Type,
 	}
 
 	return result
 }
 
-func (r *HttpRule) FromValue(value []byte) error {
-	return json.Unmarshal(value, r)
-}
+//func (r *HttpRule) FromValue(value []byte) error {
+//	return json.Unmarshal(value, r)
+//}
 
 type RouteRule struct {
-	Prova string `json:"path"`
+	Route string `json:"route"`
 }
 
-func FromEntity[T HttpRule | RouteRule](entity RuleDao, rule *GenericRule[T]) error {
+func FromEntity[T HttpRule | RouteRule | map[string]interface{}](entity RuleDao, rule *GenericRule[T]) error {
 	var err error
 
 	rule.ID = entity.ID.String()
 	rule.Name = entity.Name
 	rule.Description = entity.Description
 	rule.Type = entity.Type
+	fmt.Println("Inside FromEntity: entity.Value: ", string(entity.Value))
 
-	switch entity.Type {
-	case Http:
-		var value = new(HttpRule)
-		err = json.Unmarshal(entity.Value, value)
-	case Route:
-		var value = new(RouteRule)
-		err = json.Unmarshal(entity.Value, value)
-	}
+	err = json.Unmarshal(entity.Value, &rule.Value)
+
+	fmt.Println("Inside FromEntity: rule.Value: ", rule.Value)
 
 	return err
 }

@@ -13,8 +13,8 @@ type Dto struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	Method      string `json:"method"`
-	Path        string `json:"path"`
+	Value       string `json:"value"`
+	Type        string `json:"type"`
 }
 
 type ResponseDto struct {
