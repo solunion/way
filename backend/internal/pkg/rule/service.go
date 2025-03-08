@@ -47,7 +47,7 @@ func (s *Service) GetAll(ctx context.Context) ([]Rule, error) {
 	}
 
 	for _, v := range entities {
-		s.log.Debugf("Entity.InternalValue: %+v", string(v.Value))
+		s.log.Debugf("Entity.internalValue: %+v", string(v.Value))
 		rule := new(GenericRule[map[string]interface{}])
 		err := FromEntity(v, rule)
 
@@ -55,7 +55,7 @@ func (s *Service) GetAll(ctx context.Context) ([]Rule, error) {
 			return nil, err
 		}
 
-		rules = append(rules, rule.Value())
+		rules = append(rules, rule.GetInstance())
 	}
 
 	return rules, nil
