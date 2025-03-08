@@ -7,17 +7,17 @@ import (
 	"go.uber.org/zap"
 )
 
-func newHttpService(log *zap.SugaredLogger, repository *Repository) *Service {
-	return &Service{repository: repository, log: log}
+func newHttpService[T HttpRule | RouteRule](log *zap.SugaredLogger, repository *Repository) *Service[T] {
+	return &Service[T]{repository: repository, log: log}
 }
 
-type Service struct {
-	common.Service[HttpRule]
+type Service[T HttpRule | RouteRule] struct {
+	common.Service[GenericRule[T]]
 	repository *Repository
 	log        *zap.SugaredLogger
 }
 
-func (s *Service) Create(ctx context.Context, rule *HttpRule) error {
+func (s *Service[T]) Create(ctx context.Context, rule *GenericRule[T]) error {
 	s.log.Debugf("Creating rule model: %+v", rule)
 
 	var entity = new(RuleDao)
@@ -37,7 +37,7 @@ func (s *Service) Create(ctx context.Context, rule *HttpRule) error {
 	return nil
 }
 
-func (s *Service) GetAll(ctx context.Context, rules *[]HttpRule) error {
+func (s *Service[T]) GetAll(ctx context.Context, rules *[]GenericRule[T]) error {
 	ctx = context.WithValue(ctx, "type", Http.String())
 	var entities = make([]RuleDao, 0)
 
@@ -46,14 +46,13 @@ func (s *Service) GetAll(ctx context.Context, rules *[]HttpRule) error {
 	}
 
 	for _, v := range entities {
-		var rule = new(HttpRule)
-		rule.ID = v.ID.String()
-		rule.Name = v.Name
-		rule.Description = v.Description
-		err := rule.FromValue(v.Value)
+		rule := new(GenericRule[T])
+		err := FromEntity(v, rule)
+
 		if err != nil {
 			return err
 		}
+
 		*rules = append(*rules, *rule)
 	}
 

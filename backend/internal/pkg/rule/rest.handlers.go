@@ -7,17 +7,17 @@ import (
 	"go.uber.org/zap"
 )
 
-type Rest struct {
+type Rest[T HttpRule | RouteRule] struct {
 	handlers.Rest[RuleDao]
-	service *Service
+	service *Service[T]
 	log     *zap.SugaredLogger
 }
 
-func newHttpRest(service *Service, log *zap.SugaredLogger) *Rest {
-	return &Rest{service: service, log: log}
+func newHttpRest[T HttpRule | RouteRule](service *Service[T], log *zap.SugaredLogger) *Rest[T] {
+	return &Rest[T]{service: service, log: log}
 }
 
-func (r *Rest) Create(ctx fiber.Ctx) error {
+func (r *Rest[T]) Create(ctx fiber.Ctx) error {
 	r.log.Debug("HttpRule - Create API called...")
 
 	request := new(CreateRequestDto)
@@ -27,7 +27,7 @@ func (r *Rest) Create(ctx fiber.Ctx) error {
 		return err
 	}
 
-	rule := new(HttpRule)
+	rule := new(GenericRule[T])
 
 	if err := copier.Copy(rule, request); err != nil {
 		r.log.Error("Failed to convert rule DTO:", err)
@@ -49,10 +49,10 @@ func (r *Rest) Create(ctx fiber.Ctx) error {
 	return ctx.JSON(response)
 }
 
-func (r *Rest) GetAll(ctx fiber.Ctx) error {
+func (r *Rest[T]) GetAll(ctx fiber.Ctx) error {
 	r.log.Debug("HttpRule - GetAll API called...")
 
-	rules := make([]HttpRule, 0)
+	rules := make([]GenericRule[T], 0)
 
 	if err := r.service.GetAll(ctx.Context(), &rules); err != nil {
 		r.log.Error("Failed to find all rules:", err)
