@@ -2,6 +2,7 @@ package rule
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/solunion/way/backend/internal/pkg/common"
 	"go.uber.org/zap"
 )
@@ -17,7 +18,7 @@ type Service struct {
 }
 
 //
-//func (s *Service) Create(ctx context.Context, rule *GenericRule[T]) error {
+//func (s *Service) Create(ctx context.Context, rule *BaseRule[T]) error {
 //	s.log.Debugf("Creating rule model: %+v", rule)
 //
 //	var entity = new(RuleDao)
@@ -47,15 +48,36 @@ func (s *Service) GetAll(ctx context.Context) ([]Rule, error) {
 	}
 
 	for _, v := range entities {
-		s.log.Debugf("Entity.internalValue: %+v", string(v.Value))
-		rule := new(GenericRule[map[string]interface{}])
-		err := FromEntity(v, rule)
+		s.log.Debugf("Entity.Value: %+v", string(v.Value))
 
-		if err != nil {
-			return nil, err
+		switch v.Type {
+		case Http:
+			rule := new(HttpRule)
+			rule.ID = v.ID.String()
+			rule.Name = v.Name
+			rule.Description = v.Description
+			rule.Type = v.Type
+			rule.TypeInString = v.Type.String()
+			err := json.Unmarshal(v.Value, rule)
+			if err != nil {
+				return nil, err
+			}
+
+			rules = append(rules, rule)
+		case Route:
+			rule := new(RouteRule)
+			rule.ID = v.ID.String()
+			rule.Name = v.Name
+			rule.Description = v.Description
+			rule.Type = v.Type
+			rule.TypeInString = v.Type.String()
+			err := json.Unmarshal(v.Value, rule)
+			if err != nil {
+				return nil, err
+			}
+
+			rules = append(rules, rule)
 		}
-
-		rules = append(rules, rule.GetInstance())
 	}
 
 	return rules, nil

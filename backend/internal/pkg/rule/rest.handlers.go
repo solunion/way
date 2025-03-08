@@ -1,7 +1,6 @@
 package rule
 
 import (
-	"encoding/json"
 	"github.com/gofiber/fiber/v3"
 	"github.com/solunion/way/backend/internal/pkg/common/handlers"
 	"go.uber.org/zap"
@@ -27,7 +26,7 @@ func newHttpRest(service *Service, log *zap.SugaredLogger) *Rest {
 //		return err
 //	}
 //
-//	rule := new(GenericRule[T])
+//	rule := new(BaseRule[T])
 //
 //	if err := copier.Copy(rule, request); err != nil {
 //		r.log.Error("Failed to convert rule DTO:", err)
@@ -58,26 +57,6 @@ func (r *Rest) GetAll(ctx fiber.Ctx) error {
 		r.log.Error("Failed to find all rules:", err)
 	} else {
 		rules = result
-	}
-
-	for _, rule := range rules {
-		if rule.GetType() == "HTTP" {
-
-			var httpRule = new(HttpRule)
-			marshal, err := json.Marshal(rule.GetValue())
-			if err != nil {
-				return err
-			}
-
-			r.log.Debug("Found HTTP rule - Marshal string", string(marshal))
-
-			err = json.Unmarshal(marshal, httpRule)
-			if err != nil {
-				return err
-			}
-
-			r.log.Debug("Found HTTP rule: %+v", httpRule)
-		}
 	}
 
 	r.log.Debug("Found rules: %+v", rules)
