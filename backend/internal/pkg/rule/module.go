@@ -8,18 +8,15 @@ import (
 var Module = fx.Module("rule",
 	fx.Provide(
 		newHttpRepository,
-		newHttpService[HttpRule],
-		newHttpService[RouteRule],
-		newHttpRest[HttpRule],
-		newHttpRest[RouteRule],
+		newHttpService,
+		newHttpRest,
 	),
 	fx.Invoke(
-		registerHandlers[HttpRule],
-		registerHandlers[RouteRule],
+		registerHandlers,
 	),
 )
 
-func registerHandlers[T HttpRule | RouteRule](app *fiber.App, rest *Rest[T]) {
+func registerHandlers(app *fiber.App, rest *Rest) {
 	app.Get("/rules", rest.GetAll)
-	app.Post("/rules", rest.Create)
+	//app.Post("/rules", rest.Create)
 }

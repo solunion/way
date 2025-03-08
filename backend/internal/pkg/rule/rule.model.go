@@ -33,26 +33,26 @@ func (r GenericRule[T]) GetValue() GenericRule[map[string]interface{}] {
 	switch r.Type {
 	case Http:
 		fmt.Println("Convert value to HttpRule")
-		http, ok := any(r.Value).(HttpRule)
+		http, ok := any(r.Value).(map[string]interface{})
 		if !ok {
 			// FIXME: handle it
 			fmt.Printf("Failed to convert value to HttpRule for ID: %s\n", r.ID)
 		}
 		value = map[string]interface{}{
-			"method": http.Method,
-			"path":   http.Path,
+			"method": http["method"],
+			"path":   http["path"],
 		}
 	case Route:
 		fmt.Println("Convert value to RouteRule")
-		route, ok := any(r.Value).(RouteRule)
+		route, ok := any(r.Value).(map[string]interface{})
 		if !ok {
 			// FIXME: handle it
 			fmt.Printf("Failed to convert value to RouteRule for ID: %s\n", r.ID)
 		}
-		fmt.Printf("Route: %s\n", route.Route)
+		fmt.Printf("Route: %s\n", route["route"])
 
 		value = map[string]interface{}{
-			"prova": route.Route,
+			"route": route["route"],
 		}
 	}
 
@@ -75,7 +75,7 @@ type RouteRule struct {
 	Route string `json:"route"`
 }
 
-func FromEntity[T HttpRule | RouteRule | map[string]interface{}](entity RuleDao, rule *GenericRule[T]) error {
+func FromEntity[T map[string]interface{}](entity RuleDao, rule *GenericRule[T]) error {
 	var err error
 
 	rule.ID = entity.ID.String()

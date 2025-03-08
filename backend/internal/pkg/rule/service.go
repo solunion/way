@@ -2,42 +2,42 @@ package rule
 
 import (
 	"context"
-	"github.com/jinzhu/copier"
 	"github.com/solunion/way/backend/internal/pkg/common"
 	"go.uber.org/zap"
 )
 
-func newHttpService[T HttpRule | RouteRule](log *zap.SugaredLogger, repository *Repository) *Service[T] {
-	return &Service[T]{repository: repository, log: log}
+func newHttpService(log *zap.SugaredLogger, repository *Repository) *Service {
+	return &Service{repository: repository, log: log}
 }
 
-type Service[T HttpRule | RouteRule] struct {
-	common.Service[GenericRule[T]]
+type Service struct {
+	common.Service[Rule]
 	repository *Repository
 	log        *zap.SugaredLogger
 }
 
-func (s *Service[T]) Create(ctx context.Context, rule *GenericRule[T]) error {
-	s.log.Debugf("Creating rule model: %+v", rule)
+//
+//func (s *Service) Create(ctx context.Context, rule *GenericRule[T]) error {
+//	s.log.Debugf("Creating rule model: %+v", rule)
+//
+//	var entity = new(RuleDao)
+//
+//	if err := copier.CopyWithOption(entity, rule, copier.Option{IgnoreEmpty: true}); err != nil {
+//		return err
+//	}
+//
+//	s.log.Debugf("Creating rule dao: %+v", entity)
+//
+//	if _, err := s.repository.Create(ctx, entity); err != nil {
+//		return err
+//	}
+//
+//	rule.ID = entity.ID.String()
+//
+//	return nil
+//}
 
-	var entity = new(RuleDao)
-
-	if err := copier.CopyWithOption(entity, rule, copier.Option{IgnoreEmpty: true}); err != nil {
-		return err
-	}
-
-	s.log.Debugf("Creating rule dao: %+v", entity)
-
-	if _, err := s.repository.Create(ctx, entity); err != nil {
-		return err
-	}
-
-	rule.ID = entity.ID.String()
-
-	return nil
-}
-
-func (s *Service[T]) GetAll(ctx context.Context) ([]Rule, error) {
+func (s *Service) GetAll(ctx context.Context) ([]Rule, error) {
 	ctx = context.WithValue(ctx, "type", Http.String())
 	var entities = make([]RuleDao, 0)
 	rules := make([]Rule, 0)
@@ -48,7 +48,7 @@ func (s *Service[T]) GetAll(ctx context.Context) ([]Rule, error) {
 
 	for _, v := range entities {
 		s.log.Debugf("Entity.Value: %+v", string(v.Value))
-		rule := new(GenericRule[T])
+		rule := new(GenericRule[map[string]interface{}])
 		err := FromEntity(v, rule)
 
 		if err != nil {
