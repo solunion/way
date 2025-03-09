@@ -18,12 +18,21 @@ func (r *Type) Value() (driver.Value, error) {
 }
 
 func (r *Type) Scan(src interface{}) error {
-	byteArray := src.([]uint8)
-	if value, err := TypeFromString(string(byteArray)); err != nil {
+	var valueString string
+
+	if _, ok := src.([]uint8); ok {
+		valueString = string(src.([]uint8))
+	} else {
+		srcString := src.(string)
+		valueString = srcString
+	}
+
+	if value, err := TypeFromString(valueString); err != nil {
 		return err
 	} else {
 		*r = value
 	}
+
 	return nil
 }
 

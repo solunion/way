@@ -3,6 +3,7 @@ package rule
 import (
 	"context"
 	"encoding/json"
+	"github.com/jinzhu/copier"
 	"github.com/solunion/way/backend/internal/pkg/common"
 	"go.uber.org/zap"
 )
@@ -17,26 +18,73 @@ type Service struct {
 	log        *zap.SugaredLogger
 }
 
-//
-//func (s *Service) Create(ctx context.Context, rule *BaseRule[T]) error {
-//	s.log.Debugf("Creating rule model: %+v", rule)
-//
-//	var entity = new(RuleDao)
-//
-//	if err := copier.CopyWithOption(entity, rule, copier.Option{IgnoreEmpty: true}); err != nil {
-//		return err
-//	}
-//
-//	s.log.Debugf("Creating rule dao: %+v", entity)
-//
-//	if _, err := s.repository.Create(ctx, entity); err != nil {
-//		return err
-//	}
-//
-//	rule.ID = entity.ID.String()
-//
-//	return nil
-//}
+func (s *Service) Create(ctx context.Context, rule Rule) (Rule, error) {
+	s.log.Debugf("Creating rule model: %+v", rule)
+
+	var entity = new(RuleDao)
+
+	switch rule.(type) {
+	case *HttpRule:
+		httpRule := rule.(*HttpRule)
+		if err := copier.CopyWithOption(entity, httpRule, copier.Option{IgnoreEmpty: true}); err != nil {
+			return nil, err
+		}
+
+		value, err := json.Marshal(struct {
+			Path   string `json:"path"`
+			Method string `json:"method"`
+		}{
+			Path:   httpRule.Path,
+			Method: httpRule.Method,
+		})
+		if err != nil {
+			return nil, err
+		}
+		entity.Value = json.RawMessage(value)
+
+		s.log.Debugf("Creating rule dao: %+v", entity)
+
+		if _, err := s.repository.Create(ctx, entity); err != nil {
+			return nil, err
+		}
+
+		httpRule.ID = entity.ID.String()
+		httpRule.TypeInString = Http.String()
+
+		return httpRule, nil
+
+	case *RouteRule:
+		routeRule := rule.(*RouteRule)
+		if err := copier.CopyWithOption(entity, routeRule, copier.Option{IgnoreEmpty: true}); err != nil {
+			return nil, err
+		}
+
+		value, err := json.Marshal(struct {
+			Path string `json:"path"`
+		}{
+			Path: routeRule.Path,
+		})
+		if err != nil {
+			return nil, err
+		}
+		entity.Value = json.RawMessage(value)
+
+		s.log.Debugf("Creating rule dao: %+v", entity)
+
+		if _, err := s.repository.Create(ctx, entity); err != nil {
+			return nil, err
+		}
+
+		routeRule.ID = entity.ID.String()
+		routeRule.TypeInString = Http.String()
+
+		return routeRule, nil
+	default:
+		// gestisci il caso in cui il tipo non è né HttpRule né RouteRule
+	}
+
+	return nil, nil
+}
 
 func (s *Service) GetAll(ctx context.Context) ([]Rule, error) {
 	ctx = context.WithValue(ctx, "type", Http.String())

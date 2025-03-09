@@ -12,5 +12,5 @@ type RuleDao struct {
 	tenant.WithTenantModel
 	bun.BaseModel `bun:"table:rules,alias:r"`
 	Type          Type            `bun:"type:rule_type,notnull" json:",omitempty"`
-	Value         json.RawMessage `bun:"type:jsonb,notnull" json:",omitempty"`
+	Value         json.RawMessage `bun:"type:jsonb,notnull" json:"value,omitempty"`
 }

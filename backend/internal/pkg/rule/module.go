@@ -18,5 +18,5 @@ var Module = fx.Module("rule",
 
 func registerHandlers(app *fiber.App, rest *Rest) {
 	app.Get("/rules", rest.GetAll)
-	//app.Post("/rules", rest.Create)
+	app.Post("/rules", rest.Create)
 }
