@@ -12,6 +12,7 @@ type Rule interface {
 	GetName() string
 	GetDescription() *string
 	GetValue() (json.RawMessage, error)
+	Validate() error
 }
 
 type BasicRule struct {
@@ -44,4 +45,8 @@ func (r *BasicRule) GetDescription() *string {
 
 func (r *BasicRule) GetValue() (json.RawMessage, error) {
 	return r.Value, nil
+}
+
+func (r *BasicRule) Validate() error {
+	return nil
 }

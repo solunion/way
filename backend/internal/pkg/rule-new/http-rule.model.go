@@ -1,6 +1,8 @@
 package rule_new
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 type HttpRuleValue struct {
 	Method string `json:"method"`
@@ -22,4 +24,10 @@ func (r *HttpRule) GetValue() (json.RawMessage, error) {
 		Path:   r.Path,
 	}
 	return json.Marshal(value)
+}
+
+func (r *HttpRule) Validate() error {
+	// TODO: implement me
+	value := new(HttpRuleValue)
+	return json.Unmarshal(r.Value, &value)
 }
