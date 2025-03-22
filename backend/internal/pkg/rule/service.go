@@ -9,20 +9,16 @@ import (
 	"go.uber.org/zap"
 )
 
-// NewService crea una nuova istanza del servizio con gli handler registrati
-func NewService(log *zap.SugaredLogger, repository *Repository, handlers ...RuleHandler) *Service {
-	hMap := make(map[Type]RuleHandler)
-	for _, h := range handlers {
-		hMap[h.Type()] = h
-	}
-	return &Service{repository: repository, log: log, handlers: hMap}
+// newService crea una nuova istanza del servizio con gli handler registrati
+func newService(log *zap.SugaredLogger, repository *Repository, typeHandlerService *TypeHandlerService) *Service {
+	return &Service{repository: repository, log: log, handlerTypeService: typeHandlerService}
 }
 
 type Service struct {
 	common.Service[Rule]
-	repository *Repository
-	log        *zap.SugaredLogger
-	handlers   map[Type]RuleHandler
+	repository         *Repository
+	log                *zap.SugaredLogger
+	handlerTypeService *TypeHandlerService
 }
 
 // CreateFromRequest crea una nuova regola a partire da una richiesta
@@ -35,7 +31,7 @@ func (s *Service) CreateFromRequest(ctx context.Context, req CreateRuleRequest) 
 	}
 
 	// Verifica che esista un handler per il tipo richiesto
-	handler, exists := s.handlers[ruleType]
+	handler, exists := s.handlerTypeService.GetHandler(ruleType)
 	if !exists {
 		return RuleResponse{}, fmt.Errorf("unsupported rule type: %s", req.Type)
 	}
@@ -87,7 +83,7 @@ func (s *Service) Create(ctx context.Context, rule Rule) (Rule, error) {
 	var entity = new(RuleDao)
 
 	// Ottieni l'handler appropriato per il tipo di regola
-	handler, exists := s.handlers[rule.GetType()]
+	handler, exists := s.handlerTypeService.GetHandler(rule.GetType())
 	if !exists {
 		return nil, fmt.Errorf("unsupported rule type: %s", rule.GetType())
 	}

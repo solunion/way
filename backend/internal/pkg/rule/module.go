@@ -9,13 +9,18 @@ var Module = fx.Module("rule",
 	fx.Provide(
 		// Repository
 		newHttpRepository,
+
 		// Handlers per i diversi tipi di regole con annotazioni
 		AsRuleHandler(NewHttpHandler),
 		AsRuleHandler(NewRouteHandler),
 		fx.Annotate(
-			NewService,
-			fx.ParamTags(``, ``, `group:"handlers"`),
+			newTypeHandlerService,
+			fx.ParamTags(``, `group:"handlers"`),
 		),
+
+		// Service
+		newService,
+
 		// REST API
 		newHttpRest,
 	),
