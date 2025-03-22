@@ -7,8 +7,23 @@ import (
 
 var Module = fx.Module("rule",
 	fx.Provide(
+		// Repository
 		newHttpRepository,
-		newHttpService,
+		// Handlers per i diversi tipi di regole con annotazioni
+		fx.Annotated{
+			Target: NewHttpHandler,
+			Name:   "http_handler",
+		},
+		fx.Annotated{
+			Target: NewRouteHandler,
+			Name:   "route_handler",
+		},
+		// Service che utilizza gli handler
+		fx.Annotate(
+			NewService,
+			fx.ParamTags(``, ``, `name:"http_handler"`, `name:"route_handler"`),
+		),
+		// REST API
 		newHttpRest,
 	),
 	fx.Invoke(

@@ -2,7 +2,6 @@ package rule
 
 import (
 	"github.com/gofiber/fiber/v3"
-	"github.com/jinzhu/copier"
 	"github.com/solunion/way/backend/internal/pkg/common/handlers"
 	"go.uber.org/zap"
 )
@@ -18,48 +17,24 @@ func newHttpRest(service *Service, log *zap.SugaredLogger) *Rest {
 }
 
 func (r *Rest) Create(ctx fiber.Ctx) error {
-	r.log.Debug("HttpRule - Create API called...")
+	r.log.Debug("Rule - Create API called...")
 
-	request := new(CreateRequestDto)
+	// Utilizziamo il nuovo DTO CreateRuleRequest
+	request := new(CreateRuleRequest)
 
 	if err := ctx.Bind().Body(request); err != nil {
 		r.log.Error("Failed to bind body request:", err)
-		return err
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	//response := new(ResponseDto)
-
-	switch request.Type {
-	case Http.String():
-		rule := new(HttpRule)
-
-		httpRequest := new(CreateHttpRequestDto)
-
-		if err := ctx.Bind().Body(httpRequest); err != nil {
-			r.log.Error("Failed to bind body request:", err)
-			return err
-		}
-
-		if err := copier.Copy(rule, httpRequest); err != nil {
-			r.log.Error("Failed to convert rule DTO:", err)
-			return err
-		}
-
-		if result, err := r.service.Create(ctx.Context(), rule); err != nil {
-			r.log.Error("Failed to create rule:", err)
-			return err
-		} else {
-			rule = result.(*HttpRule)
-		}
-
-		return ctx.JSON(rule)
-		//if err := copier.Copy(response, rule); err != nil {
-		//  r.log.Error("Failed to build response:", err)
-		//  return err
-		//}
+	// Utilizziamo il nuovo metodo CreateFromRequest che gestisce tutti i tipi di regole
+	response, err := r.service.CreateFromRequest(ctx.Context(), *request)
+	if err != nil {
+		r.log.Error("Failed to create rule:", err)
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	return nil
+	return ctx.Status(fiber.StatusCreated).JSON(response)
 }
 
 func (r *Rest) GetAll(ctx fiber.Ctx) error {

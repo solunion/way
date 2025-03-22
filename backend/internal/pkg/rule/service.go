@@ -3,87 +3,123 @@ package rule
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/jinzhu/copier"
 	"github.com/solunion/way/backend/internal/pkg/common"
 	"go.uber.org/zap"
 )
 
-func newHttpService(log *zap.SugaredLogger, repository *Repository) *Service {
-	return &Service{repository: repository, log: log}
+// NewService crea una nuova istanza del servizio con gli handler registrati
+func NewService(
+	log *zap.SugaredLogger,
+	repository *Repository,
+	httpHandler RuleHandler,
+	routeHandler RuleHandler,
+) *Service {
+	hMap := make(map[Type]RuleHandler)
+	hMap[httpHandler.Type()] = httpHandler
+	hMap[routeHandler.Type()] = routeHandler
+	return &Service{repository: repository, log: log, handlers: hMap}
 }
 
 type Service struct {
 	common.Service[Rule]
 	repository *Repository
 	log        *zap.SugaredLogger
+	handlers   map[Type]RuleHandler
 }
 
+// CreateFromRequest crea una nuova regola a partire da una richiesta
+func (s *Service) CreateFromRequest(ctx context.Context, req CreateRuleRequest) (RuleResponse, error) {
+	s.log.Debugf("Creating rule from request: %+v", req)
+
+	ruleType, err := TypeFromString(req.Type)
+	if err != nil {
+		return RuleResponse{}, err
+	}
+
+	// Verifica che esista un handler per il tipo richiesto
+	handler, exists := s.handlers[ruleType]
+	if !exists {
+		return RuleResponse{}, fmt.Errorf("unsupported rule type: %s", req.Type)
+	}
+
+	// Valida i dettagli specifici del tipo
+	if err := handler.Validate(req.Details); err != nil {
+		return RuleResponse{}, err
+	}
+
+	// Crea l'entità comune
+	common := CommonRuleDTO{
+		Name:        req.Name,
+		Description: req.Description,
+	}
+
+	// Converte i dettagli in un'entità
+	entity, err := handler.ToEntity(req.Details, common)
+	if err != nil {
+		return RuleResponse{}, err
+	}
+
+	// Crea la regola nel database
+	created, err := s.Create(ctx, entity)
+	if err != nil {
+		return RuleResponse{}, err
+	}
+
+	// Converte l'entità in dettagli per la risposta
+	details, err := handler.ToDTO(created)
+	if err != nil {
+		return RuleResponse{}, err
+	}
+
+	// Prepara la risposta
+	return RuleResponse{
+		ID:          created.GetInfo().ID,
+		Type:        created.GetType(),
+		Name:        created.GetInfo().Name,
+		Description: *created.GetInfo().Description,
+		Details:     details,
+	}, nil
+}
+
+// Create crea una nuova regola (metodo originale per retrocompatibilità)
 func (s *Service) Create(ctx context.Context, rule Rule) (Rule, error) {
 	s.log.Debugf("Creating rule model: %+v", rule)
 
 	var entity = new(RuleDao)
 
-	switch rule.(type) {
-	case *HttpRule:
-		httpRule := rule.(*HttpRule)
-		if err := copier.CopyWithOption(entity, httpRule, copier.Option{IgnoreEmpty: true}); err != nil {
-			return nil, err
-		}
-
-		value, err := json.Marshal(struct {
-			Path   string `json:"path"`
-			Method string `json:"method"`
-		}{
-			Path:   httpRule.Path,
-			Method: httpRule.Method,
-		})
-		if err != nil {
-			return nil, err
-		}
-		entity.Value = json.RawMessage(value)
-
-		s.log.Debugf("Creating rule dao: %+v", entity)
-
-		if _, err := s.repository.Create(ctx, entity); err != nil {
-			return nil, err
-		}
-
-		httpRule.ID = entity.ID.String()
-		httpRule.TypeInString = Http.String()
-
-		return httpRule, nil
-
-	case *RouteRule:
-		routeRule := rule.(*RouteRule)
-		if err := copier.CopyWithOption(entity, routeRule, copier.Option{IgnoreEmpty: true}); err != nil {
-			return nil, err
-		}
-
-		value, err := json.Marshal(struct {
-			Path string `json:"path"`
-		}{
-			Path: routeRule.Path,
-		})
-		if err != nil {
-			return nil, err
-		}
-		entity.Value = json.RawMessage(value)
-
-		s.log.Debugf("Creating rule dao: %+v", entity)
-
-		if _, err := s.repository.Create(ctx, entity); err != nil {
-			return nil, err
-		}
-
-		routeRule.ID = entity.ID.String()
-		routeRule.TypeInString = Http.String()
-
-		return routeRule, nil
-	default:
-		// gestisci il caso in cui il tipo non è né HttpRule né RouteRule
+	// Ottieni l'handler appropriato per il tipo di regola
+	handler, exists := s.handlers[rule.GetType()]
+	if !exists {
+		return nil, fmt.Errorf("unsupported rule type: %s", rule.GetType())
 	}
 
-	return nil, nil
+	// Copia i campi comuni
+	if err := copier.CopyWithOption(entity, rule.GetInfo(), copier.Option{IgnoreEmpty: true}); err != nil {
+		return nil, err
+	}
+
+	// Converti l'entità in dettagli JSON
+	details, err := handler.ToDTO(rule)
+	if err != nil {
+		return nil, err
+	}
+	entity.Value = details
+	entity.Type = rule.GetType()
+
+	s.log.Debugf("Creating rule dao: %+v", entity)
+
+	// Salva nel database
+	if _, err := s.repository.Create(ctx, entity); err != nil {
+		return nil, err
+	}
+
+	// Aggiorna l'ID nell'entità originale
+	info := rule.GetInfo()
+	info.ID = entity.ID.String()
+
+	return rule, nil
 }
 
 func (s *Service) GetAll(ctx context.Context) ([]Rule, error) {
