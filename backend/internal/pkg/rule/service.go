@@ -21,61 +21,6 @@ type Service struct {
 	handlerTypeService *TypeHandlerService
 }
 
-// CreateFromRequest crea una nuova regola a partire da una richiesta
-func (s *Service) CreateFromRequest(ctx context.Context, req CreateRuleRequest) (RuleResponse, error) {
-	s.log.Debugf("Creating rule from request: %+v", req)
-
-	ruleType, err := TypeFromString(req.Type)
-	if err != nil {
-		return RuleResponse{}, err
-	}
-
-	// Verifica che esista un handler per il tipo richiesto
-	handler, exists := s.handlerTypeService.GetHandler(ruleType)
-	if !exists {
-		return RuleResponse{}, fmt.Errorf("unsupported rule type: %s", req.Type)
-	}
-
-	// Valida i dettagli specifici del tipo
-	if err := handler.Validate(req.Details); err != nil {
-		return RuleResponse{}, err
-	}
-
-	// Crea l'entità comune
-	common := CommonRuleDTO{
-		Name:        req.Name,
-		Description: req.Description,
-	}
-
-	// Converte i dettagli in un'entità
-	entity, err := handler.ToEntity(req.Details, common)
-	if err != nil {
-		return RuleResponse{}, err
-	}
-
-	// Crea la regola nel database
-	created, err := s.Create(ctx, entity)
-	if err != nil {
-		return RuleResponse{}, err
-	}
-
-	// Converte l'entità in dettagli per la risposta
-	details, err := handler.ToDTO(created)
-	if err != nil {
-		return RuleResponse{}, err
-	}
-
-	// Prepara la risposta
-	getType := created.GetType()
-	return RuleResponse{
-		ID:          created.GetInfo().ID,
-		Type:        getType.String(),
-		Name:        created.GetInfo().Name,
-		Description: *created.GetInfo().Description,
-		Details:     details,
-	}, nil
-}
-
 // Create crea una nuova regola (metodo originale per retrocompatibilità)
 func (s *Service) Create(ctx context.Context, rule Rule) (Rule, error) {
 	s.log.Debugf("Creating rule model: %+v", rule)

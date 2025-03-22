@@ -19,7 +19,7 @@ func (h *RouteHandler) Type() Type {
 }
 
 // ToEntity converte i dettagli JSON in un'entità RouteRule
-func (h *RouteHandler) ToEntity(data json.RawMessage, common CommonRuleDTO) (Rule, error) {
+func (h *RouteHandler) ToRule(data json.RawMessage, common CommonRuleDTO) (Rule, error) {
 	var details RouteRuleDetails
 	if err := json.Unmarshal(data, &details); err != nil {
 		return nil, fmt.Errorf("invalid Route rule details: %w", err)

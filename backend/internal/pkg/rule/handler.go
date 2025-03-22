@@ -8,7 +8,7 @@ type RuleHandler interface {
 	Type() Type
 
 	// ToEntity converte i dettagli JSON in un'entità Rule
-	ToEntity(details json.RawMessage, common CommonRuleDTO) (Rule, error)
+	ToRule(details json.RawMessage, common CommonRuleDTO) (Rule, error)
 
 	// ToDTO converte un'entità Rule in dettagli JSON
 	ToDTO(rule Rule) (json.RawMessage, error)

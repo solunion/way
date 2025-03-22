@@ -19,7 +19,7 @@ func (h *HttpHandler) Type() Type {
 }
 
 // ToEntity converte i dettagli JSON in un'entità HttpRule
-func (h *HttpHandler) ToEntity(data json.RawMessage, common CommonRuleDTO) (Rule, error) {
+func (h *HttpHandler) ToRule(data json.RawMessage, common CommonRuleDTO) (Rule, error) {
 	var details HttpRuleDetails
 	if err := json.Unmarshal(data, &details); err != nil {
 		return nil, fmt.Errorf("invalid HTTP rule details: %w", err)
