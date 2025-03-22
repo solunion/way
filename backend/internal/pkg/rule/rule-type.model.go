@@ -2,11 +2,29 @@ package rule
 
 import (
 	"database/sql/driver"
+	"encoding/json"
 	"fmt"
 )
 
 type Type struct {
 	slug string
+}
+
+func (r *Type) MarshalJSON() ([]byte, error) {
+	return json.Marshal(r.slug)
+}
+
+func (r *Type) UnmarshalJSON(data []byte) error {
+	var s string
+	if err := json.Unmarshal(data, &s); err != nil {
+		return err
+	}
+	t, err := TypeFromString(s)
+	if err != nil {
+		return err
+	}
+	*r = t
+	return nil
 }
 
 func (r *Type) String() string {

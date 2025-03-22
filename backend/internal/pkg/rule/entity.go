@@ -7,7 +7,7 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type RuleDao struct {
+type Entity struct {
 	database.WayBaseModel
 	tenant.WithTenantModel
 	bun.BaseModel `bun:"table:rules,alias:r"`

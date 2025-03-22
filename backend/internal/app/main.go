@@ -7,7 +7,6 @@ import (
 	"github.com/solunion/way/backend/internal/pkg/config"
 	"github.com/solunion/way/backend/internal/pkg/http"
 	"github.com/solunion/way/backend/internal/pkg/rule"
-	rule_new "github.com/solunion/way/backend/internal/pkg/rule-new"
 	"github.com/solunion/way/backend/internal/pkg/tenant"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
@@ -20,7 +19,6 @@ func main() {
 		http.Module,
 		tenant.Module,
 		rule.Module,
-		rule_new.Module,
 		fx.Invoke(runWebApp),
 		fx.WithLogger(func(log *zap.Logger) fxevent.Logger {
 			return &fxevent.ZapLogger{Logger: log}

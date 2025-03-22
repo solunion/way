@@ -1,4 +1,4 @@
-package rule_new
+package rule
 
 import (
 	"encoding/json"

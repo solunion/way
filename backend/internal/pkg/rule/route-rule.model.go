@@ -1,6 +1,23 @@
 package rule
 
+import "encoding/json"
+
+type RouteRuleValue struct {
+	Route string `json:"route"`
+}
+
 type RouteRule struct {
-	BaseRule
-	Path string `json:"route"`
+	BasicRule
+	RouteRuleValue
+}
+
+func (r *RouteRule) GetType() Type {
+	return Http
+}
+
+func (r *RouteRule) GetValue() (json.RawMessage, error) {
+	value := RouteRuleValue{
+		Route: r.Route,
+	}
+	return json.Marshal(value)
 }

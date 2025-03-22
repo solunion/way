@@ -8,34 +8,18 @@ import (
 var Module = fx.Module("rule",
 	fx.Provide(
 		// Repository
-		newHttpRepository,
-
-		// Handlers per i diversi tipi di regole con annotazioni
-		AsRuleHandler(NewHttpHandler),
-		AsRuleHandler(NewRouteHandler),
-		fx.Annotate(
-			newTypeHandlerService,
-			fx.ParamTags(``, `group:"handlers"`),
-		),
+		newRepository,
 
 		// Service
 		newService,
 
 		// REST API
-		newHttpRest,
+		newRest,
 	),
 	fx.Invoke(
 		registerHandlers,
 	),
 )
-
-func AsRuleHandler(f any) any {
-	return fx.Annotate(
-		f,
-		fx.As(new(RuleHandler)),
-		fx.ResultTags(`group:"handlers"`),
-	)
-}
 
 func registerHandlers(app *fiber.App, rest *Rest) {
 	app.Get("/rules", rest.GetAll)
