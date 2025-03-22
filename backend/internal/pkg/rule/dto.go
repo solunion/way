@@ -46,7 +46,7 @@ type UpdateRuleRequest struct {
 // RuleResponse è il DTO utilizzato per restituire una regola
 type RuleResponse struct {
 	ID          string          `json:"id"`
-	Type        Type            `json:"type"`
+	Type        string          `json:"type"`
 	Name        string          `json:"name"`
 	Description string          `json:"description"`
 	Details     json.RawMessage `json:"details"`

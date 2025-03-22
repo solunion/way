@@ -9,8 +9,8 @@ import (
 type HttpHandler struct{}
 
 // NewHttpHandler crea una nuova istanza di HttpHandler
-func NewHttpHandler() (RuleHandler, *HttpRuleHandlerKey) {
-	return &HttpHandler{}, &HttpRuleHandlerKey{}
+func NewHttpHandler() *HttpHandler {
+	return &HttpHandler{}
 }
 
 // Type restituisce il tipo di regola gestito da questo handler

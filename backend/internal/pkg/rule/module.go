@@ -10,18 +10,11 @@ var Module = fx.Module("rule",
 		// Repository
 		newHttpRepository,
 		// Handlers per i diversi tipi di regole con annotazioni
-		fx.Annotated{
-			Target: NewHttpHandler,
-			Name:   "http_handler",
-		},
-		fx.Annotated{
-			Target: NewRouteHandler,
-			Name:   "route_handler",
-		},
-		// Service che utilizza gli handler
+		AsRuleHandler(NewHttpHandler),
+		AsRuleHandler(NewRouteHandler),
 		fx.Annotate(
 			NewService,
-			fx.ParamTags(``, ``, `name:"http_handler"`, `name:"route_handler"`),
+			fx.ParamTags(``, ``, `group:"handlers"`),
 		),
 		// REST API
 		newHttpRest,
@@ -30,6 +23,14 @@ var Module = fx.Module("rule",
 		registerHandlers,
 	),
 )
+
+func AsRuleHandler(f any) any {
+	return fx.Annotate(
+		f,
+		fx.As(new(RuleHandler)),
+		fx.ResultTags(`group:"handlers"`),
+	)
+}
 
 func registerHandlers(app *fiber.App, rest *Rest) {
 	app.Get("/rules", rest.GetAll)

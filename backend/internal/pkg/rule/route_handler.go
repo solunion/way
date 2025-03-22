@@ -9,8 +9,8 @@ import (
 type RouteHandler struct{}
 
 // NewRouteHandler crea una nuova istanza di RouteHandler
-func NewRouteHandler() (RuleHandler, *RouteRuleHandlerKey) {
-	return &RouteHandler{}, &RouteRuleHandlerKey{}
+func NewRouteHandler() *RouteHandler {
+	return &RouteHandler{}
 }
 
 // Type restituisce il tipo di regola gestito da questo handler

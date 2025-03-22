@@ -10,15 +10,11 @@ import (
 )
 
 // NewService crea una nuova istanza del servizio con gli handler registrati
-func NewService(
-	log *zap.SugaredLogger,
-	repository *Repository,
-	httpHandler RuleHandler,
-	routeHandler RuleHandler,
-) *Service {
+func NewService(log *zap.SugaredLogger, repository *Repository, handlers ...RuleHandler) *Service {
 	hMap := make(map[Type]RuleHandler)
-	hMap[httpHandler.Type()] = httpHandler
-	hMap[routeHandler.Type()] = routeHandler
+	for _, h := range handlers {
+		hMap[h.Type()] = h
+	}
 	return &Service{repository: repository, log: log, handlers: hMap}
 }
 
@@ -74,9 +70,10 @@ func (s *Service) CreateFromRequest(ctx context.Context, req CreateRuleRequest) 
 	}
 
 	// Prepara la risposta
+	getType := created.GetType()
 	return RuleResponse{
 		ID:          created.GetInfo().ID,
-		Type:        created.GetType(),
+		Type:        getType.String(),
 		Name:        created.GetInfo().Name,
 		Description: *created.GetInfo().Description,
 		Details:     details,
@@ -115,9 +112,7 @@ func (s *Service) Create(ctx context.Context, rule Rule) (Rule, error) {
 		return nil, err
 	}
 
-	// Aggiorna l'ID nell'entità originale
-	info := rule.GetInfo()
-	info.ID = entity.ID.String()
+	rule.SetId(entity.ID.String())
 
 	return rule, nil
 }

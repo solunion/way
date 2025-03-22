@@ -2,10 +2,6 @@ package rule
 
 import "encoding/json"
 
-// Annotazioni per l'iniezione delle dipendenze
-type HttpRuleHandlerKey struct{}
-type RouteRuleHandlerKey struct{}
-
 // RuleHandler definisce l'interfaccia per i gestori di regole specifiche per tipo
 type RuleHandler interface {
 	// Type restituisce il tipo di regola gestito da questo handler

@@ -3,6 +3,7 @@ package rule
 type Rule interface {
 	GetType() Type
 	GetInfo() BaseRule
+	SetId(id string)
 }
 
 type BaseRule struct {
@@ -19,4 +20,8 @@ func (r *BaseRule) GetType() Type {
 
 func (r *BaseRule) GetInfo() BaseRule {
 	return *r
+}
+
+func (r *BaseRule) SetId(id string) {
+	r.ID = id
 }
