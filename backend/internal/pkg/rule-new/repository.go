@@ -3,6 +3,7 @@ package rule_new
 import (
 	"context"
 	"database/sql"
+
 	"github.com/google/uuid"
 	"github.com/solunion/way/backend/internal/pkg/common"
 	"github.com/uptrace/bun"
@@ -25,9 +26,27 @@ func (r *Repository) Create(ctx context.Context, rule Rule) (sql.Result, error) 
 	}
 }
 
-//func (r *Repository) FindAll(ctx context.Context, rules *[]Rule) error {
-//	return r.db.NewSelect().Model(rules).Scan(ctx)
-//}
+func (r *Repository) FindAll(ctx context.Context, rules *[]Rule) error {
+	entities := make([]Entity, 0)
+	result := make([]Rule, 0)
+
+	if err := r.db.NewSelect().Model(&entities).Scan(ctx); err != nil {
+		return err
+	}
+
+	for _, entity := range entities {
+		rule, err := r.fromEntity(&entity)
+		if err != nil {
+			return err
+		}
+		result = append(result, rule)
+	}
+
+	*rules = result
+
+	return nil
+}
+
 //
 //func (r *Repository) FindOne(ctx context.Context, rule *Rule, id uuid.UUID) error {
 //	return r.db.NewSelect().Model(rule).Where("id = ?", id).Scan(ctx)

@@ -51,6 +51,33 @@ func (r *Rest) Create(ctx fiber.Ctx) error {
 	return ctx.Status(fiber.StatusCreated).JSON(response)
 }
 
+func (r *Rest) GetAll(ctx fiber.Ctx) error {
+	r.log.Debug("HttpRule - GetAll API called...")
+
+	var rules []Rule = make([]Rule, 0)
+
+	if err := r.service.GetAll(ctx.Context(), &rules); err != nil {
+		r.log.Error("Failed to find all rules:", err)
+	}
+
+	response := make([]Response, 0)
+
+	for _, rule := range rules {
+		item, err := r.fromModel(rule)
+
+		if err != nil {
+			r.log.Error("Failed to build response:", err)
+			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		}
+
+		response = append(response, *item)
+	}
+
+	r.log.Debug("Found rules: %+v", rules)
+
+	return ctx.JSON(response)
+}
+
 func (r *Rest) toModel(request *CreateRequest) (Rule, error) {
 	rule := new(BasicRule)
 

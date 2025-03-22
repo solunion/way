@@ -36,6 +36,10 @@ func (s *Service) Create(ctx context.Context, rule Rule) (Rule, error) {
 	return rule, nil
 }
 
+func (s *Service) GetAll(ctx context.Context, rules *[]Rule) error {
+	return s.repository.FindAll(ctx, rules)
+}
+
 func (s *Service) Validate(rule Rule) error {
 	switch rule.GetType() {
 	case Http:
