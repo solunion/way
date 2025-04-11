@@ -5,10 +5,13 @@ import (
 	"github.com/solunion/way/backend/internal/pkg/typed-rule/generic"
 )
 
+type HttpRuleValue struct {
+	Method string `json:"method"`
+	Path   string `json:"path"`
+}
 type HttpRule struct {
 	generic.Rule
-	Method string
-	Path   string
+	HttpRuleValue
 }
 
 func (r *HttpRule) Type() generic.Type {
@@ -16,10 +19,7 @@ func (r *HttpRule) Type() generic.Type {
 }
 
 func (r *HttpRule) Value() json.RawMessage {
-	value := &struct {
-		Method string `json:"method"`
-		Path   string `json:"path"`
-	}{
+	value := &HttpRuleValue{
 		Method: r.Method,
 		Path:   r.Path,
 	}

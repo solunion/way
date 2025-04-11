@@ -48,22 +48,18 @@ func (s *Service) GetAll(ctx context.Context, rules *[]HttpRule) error {
 	result := make([]HttpRule, 0)
 
 	for _, model := range models {
-		rule := new(HttpRule)
-
-		if err := copier.Copy(rule, model); err != nil {
-			return err
-		}
-
-		value := &struct {
-			Method string `json:"method"`
-			Path   string `json:"path"`
-		}{}
+		value := new(HttpRuleValue)
 
 		if err := json.Unmarshal(model.Value, value); err != nil {
 			return err
 		}
 
-		if err := copier.Copy(rule, value); err != nil {
+		rule := new(HttpRule)
+
+		if err := copier.Copy(rule, &HttpRule{
+			Rule:          model,
+			HttpRuleValue: *value,
+		}); err != nil {
 			return err
 		}
 
