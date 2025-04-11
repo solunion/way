@@ -3,6 +3,7 @@ package generic
 import (
 	"context"
 	"database/sql"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/solunion/way/backend/internal/pkg/common"
@@ -24,4 +25,8 @@ func (r *Repository) Create(ctx context.Context, rule *Rule) (sql.Result, error)
 
 func (r *Repository) FindAll(ctx context.Context, rules *[]Rule) error {
 	return r.db.NewSelect().Model(rules).Scan(ctx)
+}
+
+func (r *Repository) FindAllWithType(ctx context.Context, rules *[]Rule) error {
+	return r.db.NewSelect().Model(rules).Where("type = ?", strings.ToUpper(ctx.Value("rule_type").(string))).Scan(ctx)
 }

@@ -46,19 +46,30 @@ func (r *Rest) Create(ctx fiber.Ctx) error {
 func (r *Rest) GetAll(ctx fiber.Ctx) error {
 	r.log.Debug("Rule - GetAll API called...")
 
-	roles := make([]generic.Rule, 0)
+	ruleType := ctx.Params("type")
+	r.log.Debugf("Optional rule type: %q", ruleType)
 
-	if err := r.service.GetAll(ctx.Context(), &roles); err != nil {
-		r.log.Error("Failed to find all rules:", err)
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	switch strings.ToLower(ruleType) {
+	case "":
+		roles := make([]generic.Rule, 0)
+
+		if err := r.service.GetAll(ctx.Context(), &roles); err != nil {
+			r.log.Error("Failed to find all rules:", err)
+			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		}
+
+		response := make([]generic.Response, 0)
+
+		if err := copier.Copy(&response, roles); err != nil {
+			r.log.Error("Failed to build response:", err)
+			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		}
+
+		return ctx.Status(fiber.StatusOK).JSON(response)
+	case "http":
+		return r.httpRest.GetAll(ctx)
+	default:
+		r.log.Error("Unsupported type:", ruleType)
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Unsupported type"})
 	}
-
-	response := make([]generic.Response, 0)
-
-	if err := copier.Copy(&response, roles); err != nil {
-		r.log.Error("Failed to build response:", err)
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
-	}
-
-	return ctx.Status(fiber.StatusOK).JSON(response)
 }

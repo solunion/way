@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/jinzhu/copier"
 	"github.com/solunion/way/backend/internal/pkg/common"
 	"github.com/solunion/way/backend/internal/pkg/typed-rule/generic"
@@ -32,4 +33,44 @@ func (s *Service) Create(ctx context.Context, rule *HttpRule) error {
 	}
 
 	return copier.Copy(rule, entity)
+}
+
+func (s *Service) GetAll(ctx context.Context, rules *[]HttpRule) error {
+	s.log.Debugf("Find all rules with type http...")
+	ctx = context.WithValue(ctx, "rule_type", "http")
+
+	models := make([]generic.Rule, 0)
+
+	if err := s.repository.FindAllWithType(ctx, &models); err != nil {
+		return err
+	}
+
+	result := make([]HttpRule, 0)
+
+	for _, model := range models {
+		rule := new(HttpRule)
+
+		if err := copier.Copy(rule, model); err != nil {
+			return err
+		}
+
+		value := &struct {
+			Method string `json:"method"`
+			Path   string `json:"path"`
+		}{}
+
+		if err := json.Unmarshal(model.Value, value); err != nil {
+			return err
+		}
+
+		if err := copier.Copy(rule, value); err != nil {
+			return err
+		}
+
+		result = append(result, *rule)
+	}
+
+	*rules = result
+
+	return nil
 }
