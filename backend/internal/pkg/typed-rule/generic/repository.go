@@ -14,14 +14,14 @@ func NewRepository(db *bun.DB) *Repository {
 }
 
 type Repository struct {
-	common.CRUDRepository[Generic, uuid.UUID]
+	common.CRUDRepository[Rule, uuid.UUID]
 	db *bun.DB
 }
 
-func (r *Repository) Create(ctx context.Context, rule *Generic) (sql.Result, error) {
+func (r *Repository) Create(ctx context.Context, rule *Rule) (sql.Result, error) {
 	return r.db.NewInsert().Model(rule).Exec(ctx)
 }
 
-func (r *Repository) FindAll(ctx context.Context, rules *[]Generic) error {
+func (r *Repository) FindAll(ctx context.Context, rules *[]Rule) error {
 	return r.db.NewSelect().Model(rules).Scan(ctx)
 }

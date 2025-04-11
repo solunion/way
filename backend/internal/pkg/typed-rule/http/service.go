@@ -21,7 +21,7 @@ type Service struct {
 func (s *Service) Create(ctx context.Context, rule *HttpRule) error {
 	s.log.Debugf("Creating http rule: %+v", rule)
 
-	entity := new(generic.Generic)
+	entity := new(generic.Rule)
 
 	if err := copier.Copy(entity, rule); err != nil {
 		return err

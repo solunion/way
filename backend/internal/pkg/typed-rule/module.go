@@ -16,6 +16,7 @@ var Module = fx.Module("rule",
 		http.NewService,
 
 		// REST API
+		NewRest,
 		http.NewRest,
 	),
 	fx.Invoke(
@@ -23,6 +24,6 @@ var Module = fx.Module("rule",
 	),
 )
 
-func registerHandlers(app *fiber.App, rest *http.Rest) {
+func registerHandlers(app *fiber.App, rest *Rest) {
 	app.Post("/rules", rest.Create)
 }

@@ -6,7 +6,7 @@ import (
 )
 
 type HttpRule struct {
-	generic.Generic
+	generic.Rule
 	Method string
 	Path   string
 }

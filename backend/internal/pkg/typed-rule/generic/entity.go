@@ -7,7 +7,7 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type Generic struct {
+type Rule struct {
 	database.WayBaseModel
 	tenant.WithTenantModel
 	bun.BaseModel `bun:"table:rules,alias:r"`
