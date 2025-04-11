@@ -2,8 +2,8 @@ package http
 
 import (
 	"github.com/gofiber/fiber/v3"
+	"github.com/jinzhu/copier"
 	"github.com/solunion/way/backend/internal/pkg/common/handlers"
-	"github.com/solunion/way/backend/internal/pkg/typed-rule/generic"
 	"go.uber.org/zap"
 )
 
@@ -27,7 +27,9 @@ func (r *Rest) Create(ctx fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	rule, err := r.toModel(request)
+	rule := new(HttpRule)
+
+	err := copier.Copy(rule, request)
 
 	if err != nil {
 		r.log.Error("Failed to build request model:", err)
@@ -41,7 +43,8 @@ func (r *Rest) Create(ctx fiber.Ctx) error {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	response, err := r.fromModel(rule)
+	response := new(Response)
+	err = copier.Copy(response, rule)
 
 	if err != nil {
 		r.log.Error("Failed to build response:", err)
@@ -55,7 +58,7 @@ func (r *Rest) toModel(request *CreateRequest) (*HttpRule, error) {
 	rule := new(HttpRule)
 	rule.Name = request.Name
 	rule.Description = request.Description
-	rule.Type = generic.Http
+	//rule.Type = generic.Http
 	rule.Method = request.Method
 	rule.Path = request.Path
 	return rule, nil
@@ -64,15 +67,15 @@ func (r *Rest) toModel(request *CreateRequest) (*HttpRule, error) {
 func (r *Rest) fromModel(rule *HttpRule) (*Response, error) {
 	response := new(Response)
 
-	value, err := rule.Type.Value()
-	if err != nil {
-		return nil, err
-	}
+	//value, err := rule.Type.Value()
+	//if err != nil {
+	//	return nil, err
+	//}
 
 	response.ID = rule.ID.String()
 	response.Name = rule.Name
 	response.Description = rule.Description
-	response.Type = (value).(string)
+	//response.Type = (value).(string)
 	response.Method = rule.Method
 	response.Path = rule.Path
 

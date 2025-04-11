@@ -2,7 +2,7 @@ package http
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/jinzhu/copier"
 	"github.com/solunion/way/backend/internal/pkg/common"
 	"github.com/solunion/way/backend/internal/pkg/typed-rule/generic"
 	"go.uber.org/zap"
@@ -21,48 +21,15 @@ type Service struct {
 func (s *Service) Create(ctx context.Context, rule *HttpRule) error {
 	s.log.Debugf("Creating http rule: %+v", rule)
 
-	if entity, err := s.toEntity(rule); err != nil {
-		return err
-	} else {
-		_, err := s.repository.Create(ctx, entity)
-		s.log.Info("Created http entity: %+v", entity)
+	entity := new(generic.Generic)
+
+	if err := copier.Copy(entity, rule); err != nil {
 		return err
 	}
-}
 
-func (s *Service) fromEntity(entity *generic.Generic) (*HttpRule, error) {
-	value := &struct {
-		Method string `json:"method"`
-		Path   string `json:"path"`
-	}{}
-
-	if err := json.Unmarshal(entity.Value, value); err != nil {
-		return nil, err
+	if _, err := s.repository.Create(ctx, entity); err != nil {
+		return err
 	}
 
-	result := &HttpRule{
-		Generic: *entity,
-		Method:  value.Method,
-		Path:    value.Path,
-	}
-
-	return result, nil
-}
-
-func (s *Service) toEntity(rule *HttpRule) (*generic.Generic, error) {
-	value := &struct {
-		Method string `json:"method"`
-		Path   string `json:"path"`
-	}{
-		Method: rule.Method,
-		Path:   rule.Path,
-	}
-
-	if raw, err := json.Marshal(value); err == nil {
-		result := &rule.Generic
-		result.Value = raw
-		return result, nil
-	} else {
-		return nil, err
-	}
+	return copier.Copy(rule, entity)
 }
