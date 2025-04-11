@@ -18,14 +18,11 @@ func (r *HttpRule) Type() generic.Type {
 	return generic.Http
 }
 
-func (r *HttpRule) Value() json.RawMessage {
-	value := &HttpRuleValue{
-		Method: r.Method,
-		Path:   r.Path,
-	}
+func (r *HttpRule) FromModel(rule *generic.Rule) error {
+	r.Rule = *rule
 
-	if raw, err := json.Marshal(value); err == nil {
-		return raw
+	if err := json.Unmarshal(rule.Value, &r.HttpRuleValue); err != nil {
+		return err
 	}
 
 	return nil

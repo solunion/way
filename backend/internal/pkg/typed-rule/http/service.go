@@ -2,7 +2,6 @@ package http
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/jinzhu/copier"
 	"github.com/solunion/way/backend/internal/pkg/common"
 	"github.com/solunion/way/backend/internal/pkg/typed-rule/generic"
@@ -48,18 +47,9 @@ func (s *Service) GetAll(ctx context.Context, rules *[]HttpRule) error {
 	result := make([]HttpRule, 0)
 
 	for _, model := range models {
-		value := new(HttpRuleValue)
-
-		if err := json.Unmarshal(model.Value, value); err != nil {
-			return err
-		}
-
 		rule := new(HttpRule)
 
-		if err := copier.Copy(rule, &HttpRule{
-			Rule:          model,
-			HttpRuleValue: *value,
-		}); err != nil {
+		if err := rule.FromModel(&model); err != nil {
 			return err
 		}
 
