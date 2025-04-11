@@ -29,55 +29,22 @@ func (r *Rest) Create(ctx fiber.Ctx) error {
 
 	rule := new(HttpRule)
 
-	err := copier.Copy(rule, request)
-
-	if err != nil {
+	if err := copier.Copy(rule, request); err != nil {
 		r.log.Error("Failed to build request model:", err)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	err = r.service.Create(ctx.Context(), rule)
-
-	if err != nil {
+	if err := r.service.Create(ctx.Context(), rule); err != nil {
 		r.log.Error("Failed to create rule:", err)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	response := new(Response)
-	err = copier.Copy(response, rule)
 
-	if err != nil {
+	if err := copier.Copy(response, rule); err != nil {
 		r.log.Error("Failed to build response:", err)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	return ctx.Status(fiber.StatusCreated).JSON(response)
-}
-
-func (r *Rest) toModel(request *CreateRequest) (*HttpRule, error) {
-	rule := new(HttpRule)
-	rule.Name = request.Name
-	rule.Description = request.Description
-	//rule.Type = generic.Http
-	rule.Method = request.Method
-	rule.Path = request.Path
-	return rule, nil
-}
-
-func (r *Rest) fromModel(rule *HttpRule) (*Response, error) {
-	response := new(Response)
-
-	//value, err := rule.Type.Value()
-	//if err != nil {
-	//	return nil, err
-	//}
-
-	response.ID = rule.ID.String()
-	response.Name = rule.Name
-	response.Description = rule.Description
-	//response.Type = (value).(string)
-	response.Method = rule.Method
-	response.Path = rule.Path
-
-	return response, nil
 }

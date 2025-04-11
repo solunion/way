@@ -2,6 +2,7 @@ package rule
 
 import (
 	"github.com/gofiber/fiber/v3"
+	"github.com/jinzhu/copier"
 	"github.com/solunion/way/backend/internal/pkg/common/handlers"
 	"github.com/solunion/way/backend/internal/pkg/typed-rule/generic"
 	"github.com/solunion/way/backend/internal/pkg/typed-rule/http"
@@ -13,11 +14,12 @@ import (
 type Rest struct {
 	handlers.Rest[generic.Rule]
 	log      *zap.SugaredLogger
+	service  *Service
 	httpRest *http.Rest
 }
 
-func NewRest(log *zap.SugaredLogger, httpRest *http.Rest) *Rest {
-	return &Rest{log: log, httpRest: httpRest}
+func NewRest(log *zap.SugaredLogger, service *Service, httpRest *http.Rest) *Rest {
+	return &Rest{log: log, service: service, httpRest: httpRest}
 }
 
 func (r *Rest) Create(ctx fiber.Ctx) error {
@@ -39,4 +41,24 @@ func (r *Rest) Create(ctx fiber.Ctx) error {
 		r.log.Error("Unsupported type:", request.Type)
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Unsupported type"})
 	}
+}
+
+func (r *Rest) GetAll(ctx fiber.Ctx) error {
+	r.log.Debug("Rule - GetAll API called...")
+
+	roles := make([]generic.Rule, 0)
+
+	if err := r.service.GetAll(ctx.Context(), &roles); err != nil {
+		r.log.Error("Failed to find all rules:", err)
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	response := make([]generic.Response, 0)
+
+	if err := copier.Copy(&response, roles); err != nil {
+		r.log.Error("Failed to build response:", err)
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(response)
 }
