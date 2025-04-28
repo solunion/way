@@ -1,52 +1,15 @@
 package rule
 
 import (
-	"encoding/json"
-	"github.com/google/uuid"
+	"github.com/solunion/way/backend/internal/pkg/database"
+	"github.com/solunion/way/backend/internal/pkg/tenant"
+	"github.com/uptrace/bun"
 )
 
-type Rule interface {
-	SetID(id uuid.UUID)
-	GetID() uuid.UUID
-	GetType() Type
-	GetName() string
-	GetDescription() *string
-	GetValue() (json.RawMessage, error)
-	Validate() error
-}
-
-type BasicRule struct {
-	ID          uuid.UUID       `json:"id"`
-	Name        string          `json:"name"`
-	Description *string         `json:"description"`
-	Type        Type            `json:"type"`
-	Value       json.RawMessage `json:"-"`
-}
-
-func (r *BasicRule) SetID(id uuid.UUID) {
-	r.ID = id
-}
-
-func (r *BasicRule) GetID() uuid.UUID {
-	return r.ID
-}
-
-func (r *BasicRule) GetType() Type {
-	return r.Type
-}
-
-func (r *BasicRule) GetName() string {
-	return r.Name
-}
-
-func (r *BasicRule) GetDescription() *string {
-	return r.Description
-}
-
-func (r *BasicRule) GetValue() (json.RawMessage, error) {
-	return r.Value, nil
-}
-
-func (r *BasicRule) Validate() error {
-	return nil
+type Rule[T any] struct {
+	database.WayBaseModel
+	tenant.WithTenantModel
+	bun.BaseModel `bun:"table:rules,alias:r"`
+	Type          Type `bun:"type:rule_type,notnull" json:"type,omitempty"`
+	Value         T    `bun:"type:jsonb,notnull" json:"value,omitempty"`
 }

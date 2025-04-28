@@ -1,8 +1,9 @@
-package generic
+package rule
 
 import (
 	"database/sql/driver"
 	"encoding/json"
+	"strings"
 )
 
 type Type struct {
@@ -10,7 +11,7 @@ type Type struct {
 }
 
 func (r *Type) Value() (driver.Value, error) {
-	return r.slug, nil
+	return strings.ToUpper(r.slug), nil
 }
 
 func (r *Type) Scan(src interface{}) error {
@@ -23,7 +24,7 @@ func (r *Type) Scan(src interface{}) error {
 		valueString = srcString
 	}
 
-	r.slug = valueString
+	r.slug = strings.ToUpper(valueString)
 
 	return nil
 }
@@ -37,7 +38,7 @@ func (r *Type) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &s); err != nil {
 		return err
 	}
-	r.slug = s
+	r.slug = strings.ToUpper(s)
 	return nil
 }
 

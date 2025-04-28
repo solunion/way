@@ -3,17 +3,13 @@ package rule
 import "encoding/json"
 
 type CreateRequest struct {
-	ID          string          `json:"id"`
-	Type        string          `json:"type"`
-	Name        string          `json:"name"`
-	Description *string         `json:"description"`
-	Value       json.RawMessage `json:"value"`
+	Response
+	ID    string `json:"-"`
+	Value json.RawMessage
 }
-
 type Response struct {
-	ID          string          `json:"id"`
-	Type        Type            `json:"type"`
-	Name        string          `json:"name"`
-	Description *string         `json:"description"`
-	Value       json.RawMessage `json:"value"`
+	ID          string  `json:"id"`
+	Type        string  `json:"type"`
+	Name        string  `json:"name"`
+	Description *string `json:"description"`
 }

@@ -2,19 +2,20 @@ package rule
 
 import (
 	"github.com/gofiber/fiber/v3"
+
 	"go.uber.org/fx"
 )
 
 var Module = fx.Module("rule",
 	fx.Provide(
 		// Repository
-		newRepository,
+		NewRepository,
 
 		// Service
-		newService,
+		NewService,
 
 		// REST API
-		newRest,
+		NewRest,
 	),
 	fx.Invoke(
 		registerHandlers,
@@ -22,6 +23,6 @@ var Module = fx.Module("rule",
 )
 
 func registerHandlers(app *fiber.App, rest *Rest) {
-	app.Get("/rules", rest.GetAll)
 	app.Post("/rules", rest.Create)
+	app.Get("/rules/:type?", rest.GetAll)
 }
