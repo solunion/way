@@ -41,7 +41,7 @@ func (r *Rest) Create(ctx fiber.Ctx) error {
 
 	response := new(Response)
 
-	if err := copier.Copy(response, rule); err != nil {
+	if err := response.FromModel(rule); err != nil {
 		r.log.Error("Failed to build response:", err)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}

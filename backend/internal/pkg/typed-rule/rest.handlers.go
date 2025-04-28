@@ -12,7 +12,7 @@ import (
 )
 
 type Rest struct {
-	handlers.Rest[generic.Rule]
+	handlers.Rest[generic.Rule[any]]
 	log      *zap.SugaredLogger
 	service  *Service
 	httpRest *http.Rest
@@ -51,7 +51,7 @@ func (r *Rest) GetAll(ctx fiber.Ctx) error {
 
 	switch strings.ToLower(ruleType) {
 	case "":
-		roles := make([]generic.Rule, 0)
+		roles := make([]generic.Rule[any], 0)
 
 		if err := r.service.GetAll(ctx.Context(), &roles); err != nil {
 			r.log.Error("Failed to find all rules:", err)

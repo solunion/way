@@ -21,42 +21,48 @@ type Service struct {
 func (s *Service) Create(ctx context.Context, rule *HttpRule) error {
 	s.log.Debugf("Creating http rule: %+v", rule)
 
-	entity := new(generic.Rule)
+	entity := new(generic.Rule[HttpRuleValue])
 
 	if err := copier.Copy(entity, rule); err != nil {
 		return err
 	}
 
-	if _, err := s.repository.Create(ctx, entity); err != nil {
+	entityRule := new(generic.Rule[any])
+
+	if err := copier.Copy(entityRule, entity); err != nil {
 		return err
 	}
 
-	return copier.Copy(rule, entity)
-}
-
-func (s *Service) GetAll(ctx context.Context, rules *[]HttpRule) error {
-	s.log.Debugf("Find all rules with type http...")
-	ctx = context.WithValue(ctx, "rule_type", "http")
-
-	models := make([]generic.Rule, 0)
-
-	if err := s.repository.FindAllWithType(ctx, &models); err != nil {
+	if _, err := s.repository.Create(ctx, entityRule); err != nil {
 		return err
 	}
 
-	result := make([]HttpRule, 0)
-
-	for _, model := range models {
-		rule := new(HttpRule)
-
-		if err := rule.FromModel(&model); err != nil {
-			return err
-		}
-
-		result = append(result, *rule)
-	}
-
-	*rules = result
-
-	return nil
+	return copier.Copy(rule, entityRule)
 }
+
+//func (s *Service) GetAll(ctx context.Context, rules *[]HttpRule) error {
+//	s.log.Debugf("Find all rules with type http...")
+//	ctx = context.WithValue(ctx, "rule_type", "http")
+//
+//	models := make([]generic.Rule, 0)
+//
+//	if err := s.repository.FindAllWithType(ctx, &models); err != nil {
+//		return err
+//	}
+//
+//	result := make([]HttpRule, 0)
+//
+//	for _, model := range models {
+//		rule := new(HttpRule)
+//
+//		if err := rule.FromModel(&model); err != nil {
+//			return err
+//		}
+//
+//		result = append(result, *rule)
+//	}
+//
+//	*rules = result
+//
+//	return nil
+//}

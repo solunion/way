@@ -12,12 +12,12 @@ func NewService(log *zap.SugaredLogger, repository *generic.Repository) *Service
 }
 
 type Service struct {
-	common.Service[generic.Rule]
+	common.Service[generic.Rule[any]]
 	repository *generic.Repository
 	log        *zap.SugaredLogger
 }
 
-func (s *Service) GetAll(ctx context.Context, rules *[]generic.Rule) error {
+func (s *Service) GetAll(ctx context.Context, rules *[]generic.Rule[any]) error {
 	s.log.Debugf("Find all rules...")
 	return s.repository.FindAll(ctx, rules)
 }

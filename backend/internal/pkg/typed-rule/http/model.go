@@ -1,7 +1,6 @@
 package http
 
 import (
-	"encoding/json"
 	"github.com/solunion/way/backend/internal/pkg/typed-rule/generic"
 )
 
@@ -10,20 +9,19 @@ type HttpRuleValue struct {
 	Path   string `json:"path"`
 }
 type HttpRule struct {
-	generic.Rule
-	HttpRuleValue
+	generic.Rule[HttpRuleValue]
 }
 
 func (r *HttpRule) Type() generic.Type {
 	return generic.Http
 }
 
-func (r *HttpRule) FromModel(rule *generic.Rule) error {
-	r.Rule = *rule
-
-	if err := json.Unmarshal(rule.Value, &r.HttpRuleValue); err != nil {
-		return err
-	}
-
-	return nil
-}
+//func (r *HttpRule) FromModel(rule *generic.Rule) error {
+//	r.Rule = *rule
+//
+//	if err := json.Unmarshal(rule.Value, &r.HttpRuleValue); err != nil {
+//		return err
+//	}
+//
+//	return nil
+//}

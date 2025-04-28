@@ -15,18 +15,18 @@ func NewRepository(db *bun.DB) *Repository {
 }
 
 type Repository struct {
-	common.CRUDRepository[Rule, uuid.UUID]
+	common.CRUDRepository[Rule[any], uuid.UUID]
 	db *bun.DB
 }
 
-func (r *Repository) Create(ctx context.Context, rule *Rule) (sql.Result, error) {
+func (r *Repository) Create(ctx context.Context, rule *Rule[any]) (sql.Result, error) {
 	return r.db.NewInsert().Model(rule).Exec(ctx)
 }
 
-func (r *Repository) FindAll(ctx context.Context, rules *[]Rule) error {
+func (r *Repository) FindAll(ctx context.Context, rules *[]Rule[any]) error {
 	return r.db.NewSelect().Model(rules).Scan(ctx)
 }
 
-func (r *Repository) FindAllWithType(ctx context.Context, rules *[]Rule) error {
+func (r *Repository) FindAllWithType(ctx context.Context, rules *[]Rule[any]) error {
 	return r.db.NewSelect().Model(rules).Where("type = ?", strings.ToUpper(ctx.Value("rule_type").(string))).Scan(ctx)
 }
