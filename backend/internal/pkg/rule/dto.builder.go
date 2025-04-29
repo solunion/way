@@ -1,9 +1,9 @@
 package rule
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/go-viper/mapstructure/v2"
 	"strings"
 )
 
@@ -19,37 +19,40 @@ func buildRequest(ruleType string) (any, error) {
 }
 
 func buildResponse(rule *Rule[any]) (any, error) {
-	response := new(Response)
+	common := Response{
+		ID:          rule.ID.String(),
+		Type:        rule.Type.String(),
+		Name:        rule.Name,
+		Description: rule.Description,
+	}
 
-	if marshal, err := json.Marshal(rule); err != nil {
-		return nil, err
-	} else {
-		if err := json.Unmarshal(marshal, response); err != nil {
+	switch rule.Type {
+	case Http:
+		var val HttpRuleValue
+		err := mapstructure.Decode(rule.Value, &val)
+		if err != nil {
 			return nil, err
 		}
-
-		if marshalValue, err := json.Marshal(rule.Value); err != nil {
+		return &HttpResponse{
+			Response: common,
+			HttpRuleValue: HttpRuleValue{
+				Method: val.Method,
+				Path:   val.Path,
+			},
+		}, nil
+	case Route:
+		var val RouteRuleValue
+		err := mapstructure.Decode(rule.Value, &val)
+		if err != nil {
 			return nil, err
-		} else {
-			switch rule.Type {
-			case Http:
-				http := new(HttpResponse)
-				http.Response = *response
-				if err := json.Unmarshal(marshalValue, &http.HttpRuleValue); err != nil {
-					return nil, err
-				}
-				return http, nil
-
-			case Route:
-				route := new(RouteResponse)
-				route.Response = *response
-				if err := json.Unmarshal(marshalValue, &route.RouteRuleValue); err != nil {
-					return nil, err
-				}
-				return route, nil
-			default:
-				return nil, errors.New("unknown rule type")
-			}
 		}
+		return &RouteResponse{
+			Response: common,
+			RouteRuleValue: RouteRuleValue{
+				Path: val.Path,
+			},
+		}, nil
+	default:
+		return nil, errors.New("unhandled rule type")
 	}
 }

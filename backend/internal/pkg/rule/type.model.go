@@ -10,6 +10,10 @@ type Type struct {
 	slug string
 }
 
+func (r *Type) String() string {
+	return r.slug
+}
+
 func (r *Type) Value() (driver.Value, error) {
 	return strings.ToUpper(r.slug), nil
 }
