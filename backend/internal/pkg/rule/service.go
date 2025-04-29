@@ -11,12 +11,12 @@ func NewService(log *zap.SugaredLogger, repository *Repository) *Service {
 }
 
 type Service struct {
-	common.Service[Rule[any]]
+	common.Service[Rule]
 	repository *Repository
 	log        *zap.SugaredLogger
 }
 
-func (s *Service) Create(ctx context.Context, rule *Rule[any]) error {
+func (s *Service) Create(ctx context.Context, rule *Rule) error {
 	s.log.Debugf("Creating http rule: %+v", rule)
 
 	if _, err := s.repository.Create(ctx, rule); err != nil {
@@ -26,7 +26,7 @@ func (s *Service) Create(ctx context.Context, rule *Rule[any]) error {
 	return nil
 }
 
-func (s *Service) GetAll(ctx context.Context, rules *[]Rule[any]) error {
+func (s *Service) GetAll(ctx context.Context, rules *[]Rule) error {
 	s.log.Debugf("Find all rules...")
 	return s.repository.FindAll(ctx, rules)
 }

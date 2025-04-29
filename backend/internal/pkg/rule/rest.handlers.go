@@ -2,9 +2,9 @@ package rule
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/go-viper/mapstructure/v2"
 	"github.com/gofiber/fiber/v3"
 	"github.com/jinzhu/copier"
 	"github.com/solunion/way/backend/internal/pkg/common/handlers"
@@ -13,7 +13,7 @@ import (
 )
 
 type Rest struct {
-	handlers.Rest[any]
+	handlers.Rest[Rule]
 	service *Service
 	log     *zap.SugaredLogger
 }
@@ -32,10 +32,15 @@ func (r *Rest) Create(ctx fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	rule := new(Rule[any])
+	rule := new(Rule)
 
 	if err := copier.Copy(rule, request); err != nil {
 		r.log.Error("Failed to build request model:", err)
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	rule.Value, err = json.Marshal(request.Value)
+	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
@@ -66,14 +71,14 @@ func (r *Rest) GetAll(ctx fiber.Ctx) error {
 		requestCtx = context.WithValue(requestCtx, "rule_type", ruleType)
 	}
 
-	rules := make([]Rule[any], 0)
+	rules := make([]Rule, 0)
 
 	if err := r.service.GetAll(requestCtx, &rules); err != nil {
 		r.log.Error("Failed to find all rules:", err)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	response := make([]any, 0)
+	response := make([]RuleResponse, 0)
 
 	for _, rule := range rules {
 		item, err := r.buildResponse(&rule)
@@ -89,7 +94,7 @@ func (r *Rest) GetAll(ctx fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(response)
 }
 
-func (r *Rest) buildRequest(ctx fiber.Ctx) (any, error) {
+func (r *Rest) buildRequest(ctx fiber.Ctx) (*CreateRequest, error) {
 	ruleType := &struct {
 		Type string `json:"type"`
 	}{}
@@ -98,22 +103,51 @@ func (r *Rest) buildRequest(ctx fiber.Ctx) (any, error) {
 		return nil, err
 	}
 
-	var request any
+	request := new(CreateRequest)
+	var err error
+	var jsonMsg json.RawMessage
 
 	switch strings.ToUpper(ruleType.Type) {
 	case "HTTP":
-		request = new(CreateHttpRequest)
+		httpReq := new(CreateHttpRequest)
+
+		err = ctx.Bind().Body(httpReq)
+		if err != nil {
+			return nil, err
+		}
+
+		jsonMsg, err = httpReq.Value()
+		if err != nil {
+			return nil, err
+		}
+
+		*request = httpReq.CreateRequest
+		request.Value = jsonMsg
+
 	case "ROUTE":
-		request = new(CreateRouteRequest)
+		routeReq := new(CreateRouteRequest)
+
+		err = ctx.Bind().Body(routeReq)
+		if err != nil {
+			return nil, err
+		}
+
+		jsonMsg, err = routeReq.Value()
+		if err != nil {
+			return nil, err
+		}
+
+		*request = routeReq.CreateRequest
+		request.Value = jsonMsg
 	default:
 		return nil, fmt.Errorf("unknown rule type '%s'", ruleType)
 	}
 
-	return request, ctx.Bind().Body(request)
+	return request, err
 }
 
-func (r *Rest) buildResponse(rule *Rule[any]) (any, error) {
-	var response any
+func (r *Rest) buildResponse(rule *Rule) (RuleResponse, error) {
+	var response RuleResponse
 
 	common := Response{
 		ID:          rule.ID.String(),
@@ -124,8 +158,8 @@ func (r *Rest) buildResponse(rule *Rule[any]) (any, error) {
 
 	switch rule.Type {
 	case Http:
-		var val HttpRuleValue
-		err := mapstructure.Decode(rule.Value, &val)
+		val := new(HttpRuleValue)
+		err := json.Unmarshal(rule.Value, val)
 		if err != nil {
 			return nil, err
 		}
@@ -137,8 +171,8 @@ func (r *Rest) buildResponse(rule *Rule[any]) (any, error) {
 			},
 		}
 	case Route:
-		var val RouteRuleValue
-		err := mapstructure.Decode(rule.Value, &val)
+		val := new(RouteRuleValue)
+		err := json.Unmarshal(rule.Value, val)
 		if err != nil {
 			return nil, err
 		}
