@@ -21,23 +21,9 @@ func NewRest(service *Service, log *zap.SugaredLogger) *Rest {
 func (r *Rest) Create(ctx fiber.Ctx) error {
 	r.log.Debug("Rule - Create: API called...")
 
-	ruleType := &struct {
-		Type string `json:"type"`
-	}{}
-
-	if err := ctx.Bind().Body(ruleType); err != nil {
-		r.log.Error("Failed to bind body request type:", err)
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
-	}
-
-	request, err := buildRequest(ruleType.Type)
+	request, err := buildRequest(ctx)
 
 	if err != nil {
-		r.log.Error("Failed to create request strategy:", err)
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
-	}
-
-	if err := ctx.Bind().Body(request); err != nil {
 		r.log.Error("Failed to bind body request:", err)
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}

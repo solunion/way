@@ -4,18 +4,31 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-viper/mapstructure/v2"
+	"github.com/gofiber/fiber/v3"
 	"strings"
 )
 
-func buildRequest(ruleType string) (any, error) {
-	switch strings.ToUpper(ruleType) {
+func buildRequest(ctx fiber.Ctx) (any, error) {
+	ruleType := &struct {
+		Type string `json:"type"`
+	}{}
+
+	if err := ctx.Bind().Body(ruleType); err != nil {
+		return nil, err
+	}
+
+	var request any
+
+	switch strings.ToUpper(ruleType.Type) {
 	case "HTTP":
-		return new(CreateHttpRequest), nil
+		request = new(CreateHttpRequest)
 	case "ROUTE":
-		return new(CreateRouteRequest), nil
+		request = new(CreateRouteRequest)
 	default:
 		return nil, fmt.Errorf("unknown rule type '%s'", ruleType)
 	}
+
+	return request, ctx.Bind().Body(request)
 }
 
 func buildResponse(rule *Rule[any]) (any, error) {
