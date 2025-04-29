@@ -2,10 +2,14 @@ package rule
 
 import (
 	"context"
+	"errors"
+	"fmt"
+	"github.com/go-viper/mapstructure/v2"
 	"github.com/gofiber/fiber/v3"
 	"github.com/jinzhu/copier"
 	"github.com/solunion/way/backend/internal/pkg/common/handlers"
 	"go.uber.org/zap"
+	"strings"
 )
 
 type Rest struct {
@@ -21,7 +25,7 @@ func NewRest(service *Service, log *zap.SugaredLogger) *Rest {
 func (r *Rest) Create(ctx fiber.Ctx) error {
 	r.log.Debug("Rule - Create: API called...")
 
-	request, err := buildRequest(ctx)
+	request, err := r.buildRequest(ctx)
 
 	if err != nil {
 		r.log.Error("Failed to bind body request:", err)
@@ -40,14 +44,9 @@ func (r *Rest) Create(ctx fiber.Ctx) error {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	response, err := buildResponse(rule)
+	response, err := r.buildResponse(rule)
 
 	if err != nil {
-		r.log.Error("Failed to build response:", err)
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
-	}
-
-	if err := copier.Copy(response, rule); err != nil {
 		r.log.Error("Failed to build response:", err)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -77,7 +76,7 @@ func (r *Rest) GetAll(ctx fiber.Ctx) error {
 	response := make([]any, 0)
 
 	for _, rule := range rules {
-		item, err := buildResponse(&rule)
+		item, err := r.buildResponse(&rule)
 
 		if err != nil {
 			r.log.Error("Failed to build response:", err)
@@ -88,4 +87,70 @@ func (r *Rest) GetAll(ctx fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(response)
+}
+
+func (r *Rest) buildRequest(ctx fiber.Ctx) (any, error) {
+	ruleType := &struct {
+		Type string `json:"type"`
+	}{}
+
+	if err := ctx.Bind().Body(ruleType); err != nil {
+		return nil, err
+	}
+
+	var request any
+
+	switch strings.ToUpper(ruleType.Type) {
+	case "HTTP":
+		request = new(CreateHttpRequest)
+	case "ROUTE":
+		request = new(CreateRouteRequest)
+	default:
+		return nil, fmt.Errorf("unknown rule type '%s'", ruleType)
+	}
+
+	return request, ctx.Bind().Body(request)
+}
+
+func (r *Rest) buildResponse(rule *Rule[any]) (any, error) {
+	var response any
+
+	common := Response{
+		ID:          rule.ID.String(),
+		Type:        rule.Type.String(),
+		Name:        rule.Name,
+		Description: rule.Description,
+	}
+
+	switch rule.Type {
+	case Http:
+		var val HttpRuleValue
+		err := mapstructure.Decode(rule.Value, &val)
+		if err != nil {
+			return nil, err
+		}
+		response = &HttpResponse{
+			Response: common,
+			HttpRuleValue: HttpRuleValue{
+				Method: val.Method,
+				Path:   val.Path,
+			},
+		}
+	case Route:
+		var val RouteRuleValue
+		err := mapstructure.Decode(rule.Value, &val)
+		if err != nil {
+			return nil, err
+		}
+		response = &RouteResponse{
+			Response: common,
+			RouteRuleValue: RouteRuleValue{
+				Path: val.Path,
+			},
+		}
+	default:
+		return nil, errors.New("unhandled rule type")
+	}
+
+	return response, copier.Copy(response, rule)
 }
