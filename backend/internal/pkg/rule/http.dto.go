@@ -1,21 +1,17 @@
 package rule
 
-import (
-	"encoding/json"
-)
-
 type HttpRuleValue struct {
 	Method string `json:"method"`
 	Path   string `json:"path"`
 }
 
+func (v HttpRuleValue) GetRuleType() Type {
+	return Http
+}
+
 type CreateHttpRequest struct {
 	CreateRequest
 	HttpRuleValue
-}
-
-func (r *CreateHttpRequest) Value() (json.RawMessage, error) {
-	return json.Marshal(r.HttpRuleValue)
 }
 
 type HttpResponse struct {
