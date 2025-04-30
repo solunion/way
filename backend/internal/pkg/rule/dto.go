@@ -1,11 +1,9 @@
 package rule
 
-import "encoding/json"
-
 type CreateRequest struct {
 	Response
-	ID    string          `json:"-"`
-	Value json.RawMessage `json:"value"`
+	ID    string                 `json:"-"`
+	Value map[string]interface{} `json:"value"`
 }
 
 type Response struct {

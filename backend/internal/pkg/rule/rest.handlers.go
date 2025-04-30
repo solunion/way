@@ -2,9 +2,9 @@ package rule
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/go-viper/mapstructure/v2"
 	"github.com/gofiber/fiber/v3"
 	"github.com/jinzhu/copier"
 	"github.com/solunion/way/backend/internal/pkg/common/handlers"
@@ -36,11 +36,6 @@ func (r *Rest) Create(ctx fiber.Ctx) error {
 
 	if err := copier.Copy(rule, request); err != nil {
 		r.log.Error("Failed to build request model:", err)
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
-	}
-
-	rule.Value, err = json.Marshal(request.Value)
-	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
@@ -105,7 +100,6 @@ func (r *Rest) buildRequest(ctx fiber.Ctx) (*CreateRequest, error) {
 
 	request := new(CreateRequest)
 	var err error
-	var jsonMsg json.RawMessage
 
 	switch strings.ToUpper(ruleType.Type) {
 	case "HTTP":
@@ -116,14 +110,8 @@ func (r *Rest) buildRequest(ctx fiber.Ctx) (*CreateRequest, error) {
 			return nil, err
 		}
 
-		jsonMsg, err = httpReq.Value()
-		if err != nil {
-			return nil, err
-		}
-
 		*request = httpReq.CreateRequest
-		request.Value = jsonMsg
-
+		err = mapstructure.Decode(httpReq.HttpRuleValue, &request.Value)
 	case "ROUTE":
 		routeReq := new(CreateRouteRequest)
 
@@ -132,13 +120,8 @@ func (r *Rest) buildRequest(ctx fiber.Ctx) (*CreateRequest, error) {
 			return nil, err
 		}
 
-		jsonMsg, err = routeReq.Value()
-		if err != nil {
-			return nil, err
-		}
-
 		*request = routeReq.CreateRequest
-		request.Value = jsonMsg
+		err = mapstructure.Decode(routeReq.RouteRuleValue, &request.Value)
 	default:
 		return nil, fmt.Errorf("unknown rule type '%s'", ruleType)
 	}
@@ -159,7 +142,7 @@ func (r *Rest) buildResponse(rule *Rule) (RuleResponse, error) {
 	switch rule.Type {
 	case Http:
 		val := new(HttpRuleValue)
-		err := json.Unmarshal(rule.Value, val)
+		err := mapstructure.Decode(rule.Value, val)
 		if err != nil {
 			return nil, err
 		}
@@ -172,7 +155,7 @@ func (r *Rest) buildResponse(rule *Rule) (RuleResponse, error) {
 		}
 	case Route:
 		val := new(RouteRuleValue)
-		err := json.Unmarshal(rule.Value, val)
+		err := mapstructure.Decode(rule.Value, val)
 		if err != nil {
 			return nil, err
 		}
