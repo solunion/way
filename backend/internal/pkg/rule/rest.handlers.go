@@ -2,7 +2,6 @@ package rule
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/go-viper/mapstructure/v2"
 	"github.com/gofiber/fiber/v3"
@@ -73,7 +72,7 @@ func (r *Rest) GetAll(ctx fiber.Ctx) error {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	response := make([]RuleResponse, 0)
+	response := make([]map[string]interface{}, 0)
 
 	for _, rule := range rules {
 		item, err := r.buildResponse(&rule)
@@ -129,8 +128,8 @@ func (r *Rest) buildRequest(ctx fiber.Ctx) (*CreateRequest, error) {
 	return request, err
 }
 
-func (r *Rest) buildResponse(rule *Rule) (RuleResponse, error) {
-	var response RuleResponse
+func (r *Rest) buildResponse(rule *Rule) (map[string]interface{}, error) {
+	mapResult := make(map[string]interface{})
 
 	common := Response{
 		ID:          rule.ID.String(),
@@ -139,35 +138,41 @@ func (r *Rest) buildResponse(rule *Rule) (RuleResponse, error) {
 		Description: rule.Description,
 	}
 
+	var err error
+
 	switch rule.Type {
 	case Http:
 		val := new(HttpRuleValue)
-		err := mapstructure.Decode(rule.Value, val)
+		err = mapstructure.Decode(rule.Value, val)
+
 		if err != nil {
 			return nil, err
 		}
-		response = &HttpResponse{
+		httpResponse := &HttpResponse{
 			Response: common,
-			HttpRuleValue: HttpRuleValue{
+			Value: HttpRuleValue{
 				Method: val.Method,
 				Path:   val.Path,
 			},
 		}
+
+		err = mapstructure.Decode(httpResponse, &mapResult)
 	case Route:
 		val := new(RouteRuleValue)
-		err := mapstructure.Decode(rule.Value, val)
+		err = mapstructure.Decode(rule.Value, val)
 		if err != nil {
 			return nil, err
 		}
-		response = &RouteResponse{
+		routeResponse := &RouteResponse{
 			Response: common,
-			RouteRuleValue: RouteRuleValue{
+			Value: RouteRuleValue{
 				Path: val.Path,
 			},
 		}
+		err = mapstructure.Decode(routeResponse, &mapResult)
 	default:
-		return nil, errors.New("unhandled rule type")
+		return nil, fmt.Errorf("unhandled rule type '%s'", rule.Type)
 	}
 
-	return response, copier.Copy(response, rule)
+	return mapResult, err
 }

@@ -14,6 +14,6 @@ type CreateRouteRequest struct {
 }
 
 type RouteResponse struct {
-	Response
-	RouteRuleValue
+	Response Response       `mapstructure:",squash"`
+	Value    RouteRuleValue `mapstructure:",squash"`
 }

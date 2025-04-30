@@ -15,6 +15,6 @@ type CreateHttpRequest struct {
 }
 
 type HttpResponse struct {
-	Response
-	HttpRuleValue
+	Response Response      `mapstructure:",squash"`
+	Value    HttpRuleValue `mapstructure:",squash"`
 }
