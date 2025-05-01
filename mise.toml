@@ -1,6 +1,6 @@
 [tools]
 pnpm = "9.15.1"
-go = "1.23.3"
+go = "1.24"
 "go:github.com/golang-migrate/migrate/v4/cmd/migrate" = { version = "latest", build = "postgres" }
 
 [env]
