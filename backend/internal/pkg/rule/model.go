@@ -13,8 +13,3 @@ type Rule struct {
 	Type          Type                   `bun:"type:rule_type,notnull" json:"type,omitempty"`
 	Value         map[string]interface{} `bun:"type:jsonb,notnull" json:"value,omitempty"`
 }
-
-type RuleValues interface {
-	HttpRuleValue | RouteRuleValue
-	GetRuleType() Type
-}

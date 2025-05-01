@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/go-viper/mapstructure/v2"
 	"github.com/gofiber/fiber/v3"
+	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
 	"github.com/solunion/way/backend/internal/pkg/common/handlers"
 	"go.uber.org/zap"
@@ -83,6 +84,33 @@ func (r *Rest) GetAll(ctx fiber.Ctx) error {
 		}
 
 		response = append(response, item)
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(response)
+}
+
+func (r *Rest) GetById(ctx fiber.Ctx) error {
+	r.log.Debug("Rule - GetById API called...")
+
+	id, err := uuid.Parse(ctx.Params("id"))
+
+	if err != nil {
+		r.log.Error("Failed to parse id:", err)
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	rule := new(Rule)
+
+	if err := r.service.GetByID(ctx.Context(), rule, id); err != nil {
+		r.log.Error("Failed to find rule by id:", err)
+		return ctx.Status(fiber.StatusNoContent).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	response, err := r.buildResponse(rule)
+
+	if err != nil {
+		r.log.Error("Failed to build response:", err)
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(response)

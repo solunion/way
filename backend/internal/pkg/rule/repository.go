@@ -31,6 +31,10 @@ func (r *Repository) FindAll(ctx context.Context, rules *[]Rule) error {
 	}
 }
 
+func (r *Repository) FindOne(ctx context.Context, rule *Rule, id uuid.UUID) error {
+	return r.db.NewSelect().Model(rule).Where("id = ?", id).Scan(ctx)
+}
+
 func (r *Repository) Update(ctx context.Context, rule *Rule) (sql.Result, error) {
 	return r.db.NewUpdate().Model(rule).OmitZero().WherePK().Returning("*").Exec(ctx)
 }

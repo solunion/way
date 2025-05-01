@@ -2,6 +2,7 @@ package rule
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/solunion/way/backend/internal/pkg/common"
 	"go.uber.org/zap"
 )
@@ -29,4 +30,9 @@ func (s *Service) Create(ctx context.Context, rule *Rule) error {
 func (s *Service) GetAll(ctx context.Context, rules *[]Rule) error {
 	s.log.Debugf("Find all rules...")
 	return s.repository.FindAll(ctx, rules)
+}
+
+func (s *Service) GetByID(ctx context.Context, rule *Rule, id uuid.UUID) error {
+	s.log.Debugf("Find rule by id: %s", id)
+	return s.repository.FindOne(ctx, rule, id)
 }
