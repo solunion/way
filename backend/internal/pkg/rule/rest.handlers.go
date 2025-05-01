@@ -147,6 +147,24 @@ func (r *Rest) Update(ctx fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(response)
 }
 
+func (r *Rest) Delete(ctx fiber.Ctx) error {
+	r.log.Debug("Rule - Delete API called...")
+
+	id, err := uuid.Parse(ctx.Params("id"))
+
+	if err != nil {
+		r.log.Error("Failed to parse id:", err)
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	if err := r.service.Delete(ctx.Context(), id); err != nil {
+		r.log.Error("Failed to delete rule:", err)
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusNoContent).JSON(fiber.Map{})
+}
+
 func (r *Rest) buildCreateRequest(ctx fiber.Ctx) (*CreateRequest, error) {
 	ruleType := &struct {
 		Type string `json:"type"`

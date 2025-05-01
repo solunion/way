@@ -42,3 +42,9 @@ func (s *Service) Update(ctx context.Context, rule *Rule) error {
 	_, err := s.repository.Update(ctx, rule)
 	return err
 }
+
+func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
+	s.log.Debugf("Deleting rule by id: %s", id)
+	_, err := s.repository.Delete(ctx, id)
+	return err
+}
