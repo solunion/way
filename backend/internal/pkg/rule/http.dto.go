@@ -1,8 +1,8 @@
 package rule
 
 type HttpRuleValue struct {
-	Method string `json:"method"`
-	Path   string `json:"path"`
+	Method string `mapstructure:"method" json:"method"`
+	Path   string `mapstructure:"path" json:"path"`
 }
 
 func (v HttpRuleValue) GetRuleType() Type {
@@ -11,6 +11,11 @@ func (v HttpRuleValue) GetRuleType() Type {
 
 type CreateHttpRequest struct {
 	CreateRequest
+	HttpRuleValue
+}
+
+type UpdateHttpRequest struct {
+	UpdateRequest
 	HttpRuleValue
 }
 

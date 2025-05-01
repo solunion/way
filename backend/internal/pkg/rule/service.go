@@ -36,3 +36,9 @@ func (s *Service) GetByID(ctx context.Context, rule *Rule, id uuid.UUID) error {
 	s.log.Debugf("Find rule by id: %s", id)
 	return s.repository.FindOne(ctx, rule, id)
 }
+
+func (s *Service) Update(ctx context.Context, rule *Rule) error {
+	s.log.Debugf("Updating rule: %+v", rule)
+	_, err := s.repository.Update(ctx, rule)
+	return err
+}

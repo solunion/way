@@ -1,14 +1,23 @@
 package rule
 
+type Common struct {
+	ID          string  `mapstructure:"id" json:"id"`
+	Type        string  `mapstructure:"type" json:"type"`
+	Name        string  `mapstructure:"name" json:"name"`
+	Description *string `mapstructure:"description" json:"description"`
+}
+
 type CreateRequest struct {
-	Response
+	Common
 	ID    string                 `json:"-"`
 	Value map[string]interface{} `json:"value"`
 }
 
+type UpdateRequest struct {
+	Common
+	Value map[string]interface{} `json:"value"`
+}
+
 type Response struct {
-	ID          string  `json:"id"`
-	Type        string  `json:"type"`
-	Name        string  `json:"name"`
-	Description *string `json:"description"`
+	Common Common `mapstructure:", squash"`
 }

@@ -26,4 +26,5 @@ func registerHandlers(app *fiber.App, rest *Rest) {
 	app.Post("/rules", rest.Create)
 	app.Get("/rules/types/:type?", rest.GetAll)
 	app.Get("/rules/:id", rest.GetById)
+	app.Put("/rules/:id", rest.Update)
 }
